@@ -21,6 +21,11 @@ namespace DOMAIN_LAYER.Entity.User
         public string Email { get; set; }
 
         /// <summary>
+        /// Username for authentication (unique)
+        /// </summary>
+        public string Username { get; set; }
+
+        /// <summary>
         /// User's phone number
         /// </summary>
         public string Phone { get; set; }
@@ -39,6 +44,16 @@ namespace DOMAIN_LAYER.Entity.User
         /// Flag indicating if ID/identity is verified
         /// </summary>
         public bool IdVerified { get; set; }
+
+        /// <summary>
+        /// Hashed password (never store plain)
+        /// </summary>
+        public string PasswordHash { get; set; }
+
+        /// <summary>
+        /// Password salt for secure hashing
+        /// </summary>
+        public string PasswordSalt { get; set; }
 
         /// <summary>
         /// Timestamp when the user account was created

@@ -29,5 +29,35 @@ namespace DOMAIN_LAYER.Repository
         /// Update user rating
         /// </summary>
         Task UpdateRatingAsync(int userId, double rating);
+
+        /// <summary>
+        /// Get user by username (for authentication)
+        /// </summary>
+        Task<Entity.User.User> GetByUsernameAsync(string username);
+
+        /// <summary>
+        /// Check if email already exists
+        /// </summary>
+        Task<bool> EmailExistsAsync(string email);
+
+        /// <summary>
+        /// Check if phone already exists
+        /// </summary>
+        Task<bool> PhoneExistsAsync(string phone);
+
+        /// <summary>
+        /// Check if username already exists
+        /// </summary>
+        Task<bool> UsernameExistsAsync(string username);
+
+        /// <summary>
+        /// Update user password hash and salt
+        /// </summary>
+        Task UpdatePasswordAsync(int userId, string passwordHash, string passwordSalt);
+
+        /// <summary>
+        /// Get user with password for authentication
+        /// </summary>
+        Task<Entity.User.User> GetUserForAuthenticationAsync(string username);
     }
 }
