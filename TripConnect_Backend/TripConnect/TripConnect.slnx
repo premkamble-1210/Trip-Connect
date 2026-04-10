@@ -1,1 +1,6 @@
-<Solution />
+<Solution>
+  <Project Path="API_LAYER/API_LAYER.csproj" Id="43b58692-b79a-48b6-840d-28a95b05198b" />
+  <Project Path="APPLICATION_LAYER/APPLICATION_LAYER.csproj" Id="d7f6ded3-7271-435e-93d3-e90473129251" />
+  <Project Path="DOMAIN_LAYER/DOMAIN_LAYER.csproj" Id="161c499a-a3a8-4d58-be1e-d80316f454b8" />
+  <Project Path="INFRASTRUCTURE_LAYER/INFRASTRUCTURE_LAYER.csproj" Id="c63d9bee-b0f4-4b38-92e4-0d107af5d000" />
+</Solution>
