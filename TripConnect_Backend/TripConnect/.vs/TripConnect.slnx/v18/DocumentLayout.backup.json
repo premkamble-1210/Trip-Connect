@@ -1,12 +1,37 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\PremGaneshKamble\\Desktop\\TripConnect\\tripconnect\\TripConnect_Backend\\TripConnect\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{D7F6DED3-7271-435E-93D3-E90473129251}|APPLICATION_LAYER\\APPLICATION_LAYER.csproj|c:\\users\\premganeshkamble\\desktop\\tripconnect\\tripconnect\\tripconnect_backend\\tripconnect\\application_layer\\services\\implementations\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D7F6DED3-7271-435E-93D3-E90473129251}|APPLICATION_LAYER\\APPLICATION_LAYER.csproj|solutionrelative:application_layer\\services\\implementations\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "UserService.cs",
+              "DocumentMoniker": "C:\\Users\\PremGaneshKamble\\Desktop\\TripConnect\\tripconnect\\TripConnect_Backend\\TripConnect\\APPLICATION_LAYER\\Services\\Implementations\\UserService.cs",
+              "RelativeDocumentMoniker": "APPLICATION_LAYER\\Services\\Implementations\\UserService.cs",
+              "ToolTip": "C:\\Users\\PremGaneshKamble\\Desktop\\TripConnect\\tripconnect\\TripConnect_Backend\\TripConnect\\APPLICATION_LAYER\\Services\\Implementations\\UserService.cs",
+              "RelativeToolTip": "APPLICATION_LAYER\\Services\\Implementations\\UserService.cs",
+              "ViewState": "AgIAAEgBAAAAAAAAAAAcwFIBAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-11T10:57:19.696Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }
