@@ -29,6 +29,9 @@ namespace INFRASTRUCTURE_LAYER
                 options.UseSqlServer(
                     configuration.GetConnectionString("DefaultConnection")));
 
+            // Register DbContext as generic DbContext for repositories
+            services.AddScoped<DbContext>(provider => provider.GetRequiredService<TripConnectDbContext>());
+
             // Register Generic Repository
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 

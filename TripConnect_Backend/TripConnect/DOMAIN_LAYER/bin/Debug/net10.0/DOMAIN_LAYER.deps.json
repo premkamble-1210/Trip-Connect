@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "DOMAIN_LAYER/1.0.0": {
+        "runtime": {
+          "DOMAIN_LAYER.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "DOMAIN_LAYER/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "+ZTn6m+NwB0=",
+  "dgSpecHash": "notEszF0mM0=",
   "success": true,
   "projectFilePath": "C:\\Users\\PremGaneshKamble\\Desktop\\TripConnect\\tripconnect\\TripConnect_Backend\\TripConnect\\APPLICATION_LAYER\\APPLICATION_LAYER.csproj",
   "expectedPackageFiles": [
@@ -18,6 +18,7 @@
     "C:\\Users\\PremGaneshKamble\\.nuget\\packages\\microsoft.entityframeworkcore.sqlserver\\10.0.5\\microsoft.entityframeworkcore.sqlserver.10.0.5.nupkg.sha512",
     "C:\\Users\\PremGaneshKamble\\.nuget\\packages\\microsoft.extensions.caching.abstractions\\10.0.5\\microsoft.extensions.caching.abstractions.10.0.5.nupkg.sha512",
     "C:\\Users\\PremGaneshKamble\\.nuget\\packages\\microsoft.extensions.caching.memory\\10.0.5\\microsoft.extensions.caching.memory.10.0.5.nupkg.sha512",
+    "C:\\Users\\PremGaneshKamble\\.nuget\\packages\\microsoft.extensions.configuration\\10.0.5\\microsoft.extensions.configuration.10.0.5.nupkg.sha512",
     "C:\\Users\\PremGaneshKamble\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\10.0.5\\microsoft.extensions.configuration.abstractions.10.0.5.nupkg.sha512",
     "C:\\Users\\PremGaneshKamble\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\10.0.5\\microsoft.extensions.dependencyinjection.10.0.5.nupkg.sha512",
     "C:\\Users\\PremGaneshKamble\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\10.0.5\\microsoft.extensions.dependencyinjection.abstractions.10.0.5.nupkg.sha512",
