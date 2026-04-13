@@ -4,11 +4,12 @@ import { Login } from './Pages/login/login';
 import { Register } from './Pages/register/register';
 import { Navbar } from './Components/navbar/navbar';
 import { ExporeTrips } from './Pages/expore-trips/expore-trips';
+import { Trip } from './Pages/trip/trip';
 
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet,Register,Login,Navbar,ExporeTrips],
+  imports: [RouterOutlet,Register,Login,Navbar,ExporeTrips,Trip],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

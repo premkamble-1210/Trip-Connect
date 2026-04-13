@@ -1,0 +1,78 @@
+<div class="min-h-screen bg-gradient-to-br from-[#e8eff9] via-[#edf2fc] to-[#f6f9fe] py-8 px-4 sm:px-6 lg:px-12 font-sans text-gray-900 pb-20">
+  
+  <!-- Top Title -->
+  <div class="max-w-7xl mx-auto mb-6">
+    <h1 class="text-[28px] font-bold tracking-tight text-gray-900">{{ tripData.Title }}</h1>
+  </div>
+
+  <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8 items-start">
+    
+    <!-- Left Column (Main Content) -->
+    <div class="flex-1 w-full flex flex-col gap-8">
+      
+      <!-- Big Hero Image -->
+      <div class="w-full h-[360px] md:h-[450px] rounded-2xl overflow-hidden shadow-sm">
+        <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1200&q=80" alt="Cover Image" class="w-full h-full object-cover">
+      </div>
+
+      <!-- Expanded Description -->
+      <div class="bg-transparent mt-2">
+        <h2 class="text-[17px] font-bold mb-3">Expanded description</h2>
+        <p class="text-[14px] text-gray-600 leading-[1.65] max-w-4xl tracking-[0.01em]">
+          {{ tripData.Description }}
+        </p>
+      </div>
+
+      <!-- Two Cols (Itinerary Preview & Member list) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mt-6">
+        
+        <!-- Itinerary -->
+        <app-trip-itinerary [itinerary]="itinerary"></app-trip-itinerary>
+
+        <!-- Members -->
+        <app-trip-member-list [members]="members"></app-trip-member-list>
+      </div>
+    
+    </div> <!-- End Left Col -->
+
+    <!-- Right Column (Sticky Card) -->
+    <div class="w-full lg:w-[350px] flex-shrink-0 lg:sticky lg:top-8 mt-2 lg:mt-0">
+      
+      <div class="bg-white rounded-[20px] shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 p-6 flex flex-col">
+        <h2 class="text-[16px] font-bold text-gray-900 leading-[1.3] mb-1.5 pr-4">{{ tripData.Title }}</h2>
+        <p class="text-[12px] text-gray-400 mb-5 font-medium">Dates - {{ tripData.StartDate | date:'yyyy' }} - {{ tripData.EndDate | date:'MMM yyyy' }}</p>
+        
+        <div class="text-[28px] font-black text-gray-900 mb-6 tracking-tight">
+          ₹{{ tripData.Budget | number:'1.0-0' }}
+        </div>
+
+        <hr class="border-gray-100 mb-6 -mx-2">
+
+        <h3 class="text-[14px] font-bold text-gray-900 mb-5">Organizer</h3>
+        
+        <div class="flex items-center gap-3.5 mb-7">
+          <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=64&q=80" class="w-[44px] h-[44px] rounded-full object-cover">
+          <div>
+             <h4 class="font-bold text-[14px] text-gray-900 leading-tight mb-0.5">Sarah P.</h4>
+             <p class="text-[12px] text-[#417cca] hover:text-blue-700 cursor-pointer font-medium">profile profile_link</p>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="flex items-center mb-8 px-2">
+           <div class="text-center block">
+             <div class="font-bold text-[16px] text-gray-900 leading-tight mb-0.5">{{ tripData.Seats }}</div>
+             <div class="text-[11px] text-gray-400 font-medium uppercase tracking-wider">Seats</div>
+           </div>
+        </div>
+
+        <!-- Action Button -->
+        <button class="w-full bg-[#417cca] hover:bg-[#3466a9] text-white font-semibold py-3.5 rounded-[12px] shadow-sm transition-colors text-[15px] transform hover:-translate-y-0.5 ease-in-out duration-200">
+          Request to Join Trip
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+</div>
