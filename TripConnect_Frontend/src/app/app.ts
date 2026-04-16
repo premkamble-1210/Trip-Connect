@@ -6,11 +6,12 @@ import { Navbar } from './Components/navbar/navbar';
 import { ExporeTrips } from './Pages/expore-trips/expore-trips';
 import { Trip } from './Pages/trip/trip';
 import { NewTrip } from './Pages/new-trip/new-trip';
+import { JoinRequest } from './Pages/join-request/join-request';
 
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet,Register,Login,Navbar,ExporeTrips,Trip,NewTrip],
+  imports: [RouterOutlet,Register,Login,Navbar,ExporeTrips,Trip,NewTrip,JoinRequest],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
