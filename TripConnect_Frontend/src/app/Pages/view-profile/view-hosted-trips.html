@@ -1,0 +1,48 @@
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4 w-full">
+  <!-- Trip Card -->
+  <div class="border border-gray-300 rounded-lg p-2 sm:p-3 bg-white transition-all hover:shadow-lg hover:border-blue-600" *ngFor="let trip of trips">
+    <!-- Trip Header -->
+    <div class="flex justify-between items-start gap-2 mb-2 sm:mb-3">
+      <h3 class="text-xs sm:text-sm font-semibold text-gray-900 m-0 flex-1">{{ trip.title }}</h3>
+      <span class="text-xs font-semibold px-2 py-1 rounded whitespace-nowrap"
+        [ngClass]="trip.status.toLowerCase() === 'upcoming' ? 'bg-blue-100 text-blue-600' : 
+                   trip.status.toLowerCase() === 'completed' ? 'bg-green-100 text-green-600' : 
+                   'bg-orange-100 text-orange-600'">
+        {{ trip.status }}
+      </span>
+    </div>
+    
+    <!-- Trip Details -->
+    <div class="mb-2 sm:mb-3">
+      <div class="flex justify-between items-center py-0.5 sm:py-1 px-0 text-xs border-b border-gray-100">
+        <span class="text-gray-600 font-medium">📍 Location:</span>
+        <span class="text-gray-900 font-semibold">{{ trip.location }}</span>
+      </div>
+      <div class="flex justify-between items-center py-0.5 sm:py-1 px-0 text-xs border-b border-gray-100">
+        <span class="text-gray-600 font-medium">📅 Dates:</span>
+        <span class="text-gray-900 font-semibold">{{ trip.dates }}</span>
+      </div>
+      <div class="flex justify-between items-center py-0.5 sm:py-1 px-0 text-xs border-b border-gray-100">
+        <span class="text-gray-600 font-medium">💰 Budget:</span>
+        <span class="text-gray-900 font-semibold">{{ trip.budget }}</span>
+      </div>
+      <div class="flex justify-between items-center py-0.5 sm:py-1 px-0 text-xs">
+        <span class="text-gray-600 font-medium">👥 Seats:</span>
+        <span class="text-gray-900 font-semibold">{{ trip.seats }}</span>
+      </div>
+    </div>
+    
+    <!-- Organizer -->
+    <div class="flex items-center gap-2 py-1.5 sm:py-2 px-0 border-b border-gray-300 text-xs text-gray-600 mb-2 sm:mb-3">
+      <img [src]="trip.organizerAvatar" [alt]="trip.organizerName" class="w-6 sm:w-8 h-6 sm:h-8 rounded-full object-cover">
+      <span class="text-xs">Organizer: {{ trip.organizerName }}</span>
+    </div>
+    
+    <!-- Actions (Read-Only) -->
+    <div class="flex gap-1 sm:gap-2">
+      <button class="w-full py-1.5 sm:py-2 px-2 sm:px-3 bg-gray-400 text-white text-xs font-semibold rounded-md cursor-not-allowed opacity-70" disabled title="Read-only view">
+        🔒 View Trip Details
+      </button>
+    </div>
+  </div>
+</div>
