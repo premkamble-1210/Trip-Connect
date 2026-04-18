@@ -39,11 +39,11 @@ export class TripService {
   }
 
   getHostedTrips(userId: number): Observable<TripResponseDto[]> {
-    return this.http.get<TripResponseDto[]>(`${this.base}/created-by/${userId}`);
+    return this.http.get<TripResponseDto[]>(`${environment.apiBaseUrl}/api/Trip/user/${userId}`);
   }
 
   getJoinedTrips(userId: number): Observable<TripResponseDto[]> {
-    return this.http.get<TripResponseDto[]>(`${this.base}/user-trips/${userId}`);
+    return this.http.get<TripResponseDto[]>(`${environment.apiBaseUrl}/api/Trip/member/${userId}`);
   }
 
   getUpcomingTrips(): Observable<TripResponseDto[]> {

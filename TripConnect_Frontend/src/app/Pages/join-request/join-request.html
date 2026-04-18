@@ -43,10 +43,10 @@
           <div class="bg-white rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-5">
             <div class="flex items-center justify-between">
               <div class="flex items-center space-x-3">
-                <img [src]="request.userAvatar || 'https://ui-avatars.com/api/?name=' + request.userName" [alt]="request.userName" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover ring-2 ring-gray-100" />
-                <a [href]="'/user/' + request.userId" class="group">
+                <img [src]="'https://ui-avatars.com/api/?name=' + request.userName + '&background=random'" [alt]="request.userName" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover ring-2 ring-gray-100" />
+                <a [routerLink]="['/user', request.userId]" class="group">
                   <div class="font-semibold text-gray-900 text-sm sm:text-base group-hover:text-blue-600 transition">{{ request.userName }}</div>
-                  <div class="text-xs text-gray-400 group-hover:text-blue-500 transition">{{ request.userUsername }}</div>
+                  <div class="text-xs text-gray-400 group-hover:text-blue-500 transition">Requested {{ request.requestedAt | date:'MMM d, yyyy' }}</div>
                 </a>
               </div>
               <div class="flex items-center space-x-2 sm:space-x-3">

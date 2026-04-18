@@ -1,6 +1,6 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { JoinRequestService } from '../../services/join-request.service';
 import { TripService } from '../../services/trip.service';
 import { AuthService } from '../../services/auth.service';
@@ -14,7 +14,8 @@ export interface FilterOption {
 
 @Component({
   selector: 'app-join-request',
-  imports: [CommonModule],
+  standalone: true,
+  imports: [CommonModule, DatePipe, RouterLink],
   templateUrl: './join-request.html',
   styleUrl: './join-request.css',
 })
@@ -23,6 +24,7 @@ export class JoinRequest implements OnInit {
   private readonly joinRequestService = inject(JoinRequestService);
   private readonly tripService = inject(TripService);
   private readonly authService = inject(AuthService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   tripId!: number;
   tripName = 'Loading...';
@@ -76,8 +78,13 @@ export class JoinRequest implements OnInit {
       next: (data) => {
         this.requests = data;
         this.isLoading = false;
+        console.log('Join requests loaded:', data);
+        this.cdr.detectChanges();
       },
-      error: () => { this.isLoading = false; }
+      error: () => { 
+        this.isLoading = false; 
+        this.cdr.detectChanges();
+      }
     });
   }
 

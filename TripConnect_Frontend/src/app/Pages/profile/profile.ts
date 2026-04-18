@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProfileTabs } from './profile-tabs';
@@ -14,16 +14,50 @@ import { UserResponseDto } from '../../models/api.types';
 export class Profile implements OnInit {
   private readonly profileService = inject(ProfileService);
   private readonly authService = inject(AuthService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   user: UserResponseDto | null = null;
   isEditModalOpen = false;
+  isLoading = true;
+  errorMessage: string | null = null;
   editForm = { name: '', phone: '' };
 
   ngOnInit(): void {
+    console.log('Profile component initialized');
+    if (!this.authService.isAuthenticated()) {
+      this.errorMessage = 'Please log in to view your profile';
+      this.isLoading = false;
+      this.cdr.markForCheck();
+      console.log('Not authenticated');
+      return;
+    }
+
     const userId = this.authService.getCurrentUserId();
+    console.log('Current userId:', userId);
+    
+    if (!userId || userId === 0) {
+      this.errorMessage = 'Invalid user ID. Please log in again';
+      this.isLoading = false;
+      this.cdr.markForCheck();
+      console.log('Invalid userId');
+      return;
+    }
+
+    console.log('About to fetch profile...');
     this.profileService.getUserById(userId).subscribe({
-      next: (u) => { this.user = u; },
-      error: () => {}
+      next: (u) => { 
+        console.log('Profile data received:', u);
+        this.user = u; 
+        this.isLoading = false;
+        this.cdr.markForCheck();
+        console.log('isLoading set to false, user:', this.user?.name);
+      },
+      error: (err) => { 
+        console.error('Failed to load profile:', err);
+        this.errorMessage = 'Failed to load profile. Please try again.';
+        this.isLoading = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 

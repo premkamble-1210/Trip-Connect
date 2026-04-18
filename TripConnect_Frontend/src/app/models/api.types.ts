@@ -30,10 +30,16 @@ export interface UserResponseDto {
   username: string;
   email: string;
   phone: string;
-  averageRating: number;
-  totalRatings: number;
+  rating: number;
+  phoneVerified: boolean;
+  idVerified: boolean;
   createdAt: string;
+}
+
+export interface UserFullDto extends UserResponseDto {
   avatarUrl?: string;
+  averageRating?: number;
+  totalRatings?: number;
 }
 
 export interface UpdateUserDto {
@@ -55,8 +61,9 @@ export interface TripResponseDto {
   travelType: string;
   status: string;
   hostId: number;
-  createdAt: string;
+  hostName: string | null;
   imgUrl: string;
+  createdAt: string;
 }
 
 export interface CreateTripDto {
@@ -89,10 +96,11 @@ export interface JoinRequestResponseDto {
   tripId: number;
   userId: number;
   userName: string;
-  userUsername: string;
+  userUsername?: string;
   userAvatar?: string;
   status: 'Pending' | 'Accepted' | 'Rejected' | 'Cancelled';
   requestedAt: string;
+  respondedAt?: string | null;
 }
 
 // ─── Rating / Review ──────────────────────────────────────────────────────────

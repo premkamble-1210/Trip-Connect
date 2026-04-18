@@ -14,12 +14,22 @@ export class Reviews implements OnInit {
   private readonly authService = inject(AuthService);
 
   reviews: RatingResponseDto[] = [];
+  isLoading = true;
+  errorMessage: string | null = null;
 
   ngOnInit(): void {
     const userId = this.authService.getCurrentUserId();
     this.profileService.getReviews(userId).subscribe({
-      next: (data) => { this.reviews = data; },
-      error: () => {}
+      next: (data) => { 
+        this.reviews = data; 
+        this.isLoading = false;
+        console.log('Reviews loaded:', data);
+      },
+      error: (err) => {
+        console.error('Error loading reviews:', err);
+        this.errorMessage = 'Failed to load reviews';
+        this.isLoading = false;
+      }
     });
   }
 

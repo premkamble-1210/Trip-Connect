@@ -1,5 +1,5 @@
 <!-- Tabs Section -->
-<div class="flex-1 min-w-0 bg-white rounded-lg overflow-hidden shadow-sm flex flex-col max-h-screen lg:max-h-96 xl:max-h-full">
+<div class="flex-1 min-w-0 bg-white rounded-lg overflow-hidden shadow-sm flex flex-col max-h-screen lg:max-h-screen xl:max-h-full">
   <!-- Tab Buttons -->
   <div class="flex w-full border-b-2 border-gray-200 bg-gray-50 flex-shrink-0">
     <button 
@@ -23,14 +23,14 @@
   </div>
   
   <!-- Tab Content -->
-  <div class="p-2 sm:p-3 md:p-4 flex-1 overflow-y-auto">
-    <div *ngIf="activeTab === 'hosted'" class="animate-fadeIn">
+  <div class="flex-1 overflow-hidden flex flex-col">
+    <div *ngIf="activeTab === 'hosted'" class="animate-fadeIn flex-1 overflow-y-auto p-2 sm:p-3 md:p-4">
       <app-hosted-trips></app-hosted-trips>
     </div>
-    <div *ngIf="activeTab === 'joined'" class="animate-fadeIn">
+    <div *ngIf="activeTab === 'joined'" class="animate-fadeIn flex-1 overflow-y-auto p-2 sm:p-3 md:p-4">
       <app-joined-trips></app-joined-trips>
     </div>
-    <div *ngIf="activeTab === 'reviews'" class="animate-fadeIn">
+    <div *ngIf="activeTab === 'reviews'" class="animate-fadeIn flex-1 overflow-y-auto p-2 sm:p-3 md:p-4">
       <app-reviews></app-reviews>
     </div>
   </div>

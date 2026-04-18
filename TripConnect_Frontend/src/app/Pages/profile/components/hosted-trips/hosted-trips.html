@@ -1,46 +1,84 @@
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4 w-full">
-  <!-- Trip Card -->
-  <div class="border border-gray-300 rounded-lg p-2 sm:p-3 bg-white transition-all hover:shadow-lg hover:border-blue-600" *ngFor="let trip of trips">
-    <!-- Trip Header -->
-    <div class="flex justify-between items-start gap-2 mb-2 sm:mb-3">
-      <h3 class="text-xs sm:text-sm font-semibold text-gray-900 m-0 flex-1">{{ trip.title }}</h3>
-      <span class="text-xs font-semibold px-2 py-1 rounded whitespace-nowrap"
-        [ngClass]="trip.status.toLowerCase() === 'upcoming' ? 'bg-blue-100 text-blue-600' : 
-                   trip.status.toLowerCase() === 'completed' ? 'bg-green-100 text-green-600' : 
-                   'bg-orange-100 text-orange-600'">
-        {{ trip.status }}
-      </span>
+<div class="w-full">
+  <!-- Loading State -->
+  @if (isLoading) {
+    <div class="p-4 text-center text-gray-600">Loading hosted trips...</div>
+  }
+  
+  <!-- Error State -->
+  @if (errorMessage) {
+    <div class="p-4 text-center text-red-600 font-semibold">{{ errorMessage }}</div>
+  }
+  
+  <!-- Empty State -->
+  @if (!isLoading && !errorMessage && trips.length === 0) {
+    <div class="p-4 text-center text-gray-500">
+      No hosted trips yet
     </div>
-    
-    <!-- Trip Details -->
-    <div class="mb-2 sm:mb-3">
-      <div class="flex justify-between items-center py-0.5 sm:py-1 px-0 text-xs border-b border-gray-100">
-        <span class="text-gray-600 font-medium">📍 Location:</span>
-        <span class="text-gray-900 font-semibold">{{ trip.location }}</span>
-      </div>
-      <div class="flex justify-between items-center py-0.5 sm:py-1 px-0 text-xs border-b border-gray-100">
-        <span class="text-gray-600 font-medium">📅 Dates:</span>
-        <span class="text-gray-900 font-semibold">{{ trip.startDate | date:'MMM d' }} – {{ trip.endDate | date:'MMM d, yyyy' }}</span>
-      </div>
-      <div class="flex justify-between items-center py-0.5 sm:py-1 px-0 text-xs border-b border-gray-100">
-        <span class="text-gray-600 font-medium">💰 Budget:</span>
-        <span class="text-gray-900 font-semibold">{{ trip.budget }}</span>
-      </div>
-      <div class="flex justify-between items-center py-0.5 sm:py-1 px-0 text-xs">
-        <span class="text-gray-600 font-medium">👥 Seats:</span>
-        <span class="text-gray-900 font-semibold">{{ trip.seats }}</span>
-      </div>
+  }
+
+  <!-- Trips Grid -->
+  @if (trips.length > 0) {
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4 w-full">
+      @for (trip of trips; track trip.id) {
+        <div class="border border-gray-300 rounded-lg overflow-hidden bg-white transition-all hover:shadow-lg hover:border-blue-600">
+          <!-- Trip Image -->
+          @if (trip.imgUrl) {
+            <div class="h-48 sm:h-48 bg-gray-200 overflow-hidden">
+              <img [src]="trip.imgUrl" [alt]="trip.title" class="w-full h-full object-cover">
+            </div>
+          }
+          @if (!trip.imgUrl) {
+            <div class="h-28 sm:h-32 bg-gradient-to-br from-blue-100 to-blue-50 flex items-center justify-center">
+              <span class="text-3xl">✈️</span>
+            </div>
+          }
+
+          <!-- Trip Content -->
+          <div class="p-2 sm:p-3">
+            <!-- Trip Header -->
+            <div class="flex justify-between items-start gap-2 mb-2 sm:mb-3">
+              <h3 class="text-xs sm:text-sm font-semibold text-gray-900 m-0 flex-1">{{ trip.title }}</h3>
+              <span class="text-xs font-semibold px-2 py-1 rounded whitespace-nowrap"
+                [ngClass]="trip.status.toLowerCase() === 'planned' ? 'bg-blue-100 text-blue-600' : 
+                           trip.status.toLowerCase() === 'completed' ? 'bg-green-100 text-green-600' : 
+                           'bg-orange-100 text-orange-600'">
+                {{ trip.status }}
+              </span>
+            </div>
+          
+            <!-- Trip Details -->
+            <div class="mb-2 sm:mb-3">
+              <div class="flex justify-between items-center py-0.5 sm:py-1 px-0 text-xs border-b border-gray-100">
+                <span class="text-gray-600 font-medium">📍 Location:</span>
+                <span class="text-gray-900 font-semibold">{{ trip.location }}</span>
+              </div>
+              <div class="flex justify-between items-center py-0.5 sm:py-1 px-0 text-xs border-b border-gray-100">
+                <span class="text-gray-600 font-medium">📅 Dates:</span>
+                <span class="text-gray-900 font-semibold">{{ trip.startDate | date:'MMM d' }} – {{ trip.endDate | date:'MMM d, yyyy' }}</span>
+              </div>
+              <div class="flex justify-between items-center py-0.5 sm:py-1 px-0 text-xs border-b border-gray-100">
+                <span class="text-gray-600 font-medium">💰 Budget:</span>
+                <span class="text-gray-900 font-semibold">₹{{ trip.budget | number:'1.0-0' }}</span>
+              </div>
+              <div class="flex justify-between items-center py-0.5 sm:py-1 px-0 text-xs">
+                <span class="text-gray-600 font-medium">👥 Seats:</span>
+                <span class="text-gray-900 font-semibold">{{ trip.seats }}</span>
+              </div>
+            </div>
+            
+            <!-- Travel Type -->
+            <div class="flex items-center gap-2 py-1.5 sm:py-2 px-0 border-b border-gray-300 text-xs text-gray-600 mb-2 sm:mb-3">
+              <span class="text-xs">✈️ {{ trip.travelType }}</span>
+            </div>
+            
+            <!-- Actions -->
+            <div class="flex gap-1 sm:gap-2">
+              <button class="flex-1 py-1.5 sm:py-2 px-2 sm:px-3 border border-gray-300 bg-white text-gray-600 text-xs font-semibold rounded-md cursor-pointer transition-all hover:border-blue-600 hover:text-blue-600 hover:bg-gray-50">Edit Trip</button>
+              <button class="flex-1 py-1.5 sm:py-2 px-2 sm:px-3 bg-blue-600 text-white text-xs font-semibold rounded-md cursor-pointer transition-all hover:bg-blue-700" (click)="onclick(trip.id)">{{ trip.status === 'Completed' ? 'View Trip' : 'Manage' }}</button>
+            </div>
+          </div>
+        </div>
+      }
     </div>
-    
-    <!-- Travel Type -->
-    <div class="flex items-center gap-2 py-1.5 sm:py-2 px-0 border-b border-gray-300 text-xs text-gray-600 mb-2 sm:mb-3">
-      <span class="text-xs">✈️ {{ trip.travelType }}</span>
-    </div>
-    
-    <!-- Actions -->
-    <div class="flex gap-1 sm:gap-2">
-      <button class="flex-1 py-1.5 sm:py-2 px-2 sm:px-3 border border-gray-300 bg-white text-gray-600 text-xs font-semibold rounded-md cursor-pointer transition-all hover:border-blue-600 hover:text-blue-600 hover:bg-gray-50">Edit Trip</button>
-      <button class="flex-1 py-1.5 sm:py-2 px-2 sm:px-3 bg-blue-600 text-white text-xs font-semibold rounded-md cursor-pointer transition-all hover:bg-blue-700" (click)="onclick(trip.id)">{{ trip.status === 'Completed' ? 'View Trip Details' : 'Manage Members' }}</button>
-    </div>
-  </div>
+  }
 </div>

@@ -13,7 +13,7 @@ export class JoinRequestService {
   private readonly base = `${environment.apiBaseUrl}/api/joinrequest`;
 
   getRequestsForTrip(tripId: number): Observable<JoinRequestResponseDto[]> {
-    return this.http.get<JoinRequestResponseDto[]>(`${this.base}/trip/${tripId}/all`);
+    return this.http.get<JoinRequestResponseDto[]>(`${this.base}/trip/${tripId}`);
   }
 
   sendJoinRequest(userId: number, tripId: number): Observable<JoinRequestResponseDto> {
@@ -23,13 +23,13 @@ export class JoinRequestService {
   }
 
   acceptRequest(requestId: number, hostId: number): Observable<void> {
-    const params = new HttpParams().set('hostId', hostId);
-    return this.http.put<void>(`${this.base}/${requestId}/accept`, null, { params });
+    const params = new HttpParams().set('tripHostId', hostId);
+    return this.http.post<void>(`${this.base}/${requestId}/accept`, null, { params });
   }
 
   rejectRequest(requestId: number, hostId: number): Observable<void> {
-    const params = new HttpParams().set('hostId', hostId);
-    return this.http.put<void>(`${this.base}/${requestId}/reject`, null, { params });
+    const params = new HttpParams().set('tripHostId', hostId);
+    return this.http.post<void>(`${this.base}/${requestId}/reject`, null, { params });
   }
 
   checkHasRequested(userId: number, tripId: number): Observable<boolean> {
