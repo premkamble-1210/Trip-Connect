@@ -843,6 +843,22 @@
   },
   {
     "ContainingType": "API_LAYER.Controllers.TripController",
+    "Method": "GetTripMembers",
+    "RelativePath": "api/Trip/{tripId}/members",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "tripId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API_LAYER.Controllers.TripController",
     "Method": "GetUserTrips",
     "RelativePath": "api/Trip/member/{userId}",
     "HttpMethod": "GET",

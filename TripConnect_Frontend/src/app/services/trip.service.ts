@@ -5,7 +5,9 @@ import { environment } from '../../environments/environment';
 import {
   TripResponseDto,
   CreateTripDto,
-  TripSearchFilters
+  UpdateTripDto,
+  TripSearchFilters,
+  TripMemberResponseDto
 } from '../models/api.types';
 
 @Injectable({ providedIn: 'root' })
@@ -48,5 +50,14 @@ export class TripService {
 
   getUpcomingTrips(): Observable<TripResponseDto[]> {
     return this.http.get<TripResponseDto[]>(`${this.base}/upcoming`);
+  }
+
+  getTripMembers(tripId: number): Observable<TripMemberResponseDto[]> {
+    return this.http.get<TripMemberResponseDto[]>(`${this.base}/${tripId}/members`);
+  }
+
+  updateTrip(tripId: number, userId: number, dto: UpdateTripDto): Observable<TripResponseDto> {
+    const params = new HttpParams().set('userId', userId);
+    return this.http.put<TripResponseDto>(`${this.base}/${tripId}`, dto, { params });
   }
 }

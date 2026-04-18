@@ -1,4 +1,5 @@
 using APPLICATION_LAYER.DTOs.Trip;
+using APPLICATION_LAYER.DTOs.TripMember;
 using APPLICATION_LAYER.Services.Interfaces;
 using AutoMapper;
 using DOMAIN_LAYER.Entity.Trip;
@@ -272,6 +273,37 @@ namespace APPLICATION_LAYER.Services.Implementations
             catch (Exception ex)
             {
                 _logger.Error($"Error fetching trips for user {userId}: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<TripMemberResponseDto>> GetTripMembersAsync(int tripId)
+        {
+            try
+            {
+                _logger.Information($"Fetching members for trip: {tripId}");
+
+                var tripMembers = await _unitOfWork.TripMembers.GetMembersByTripAsync(tripId);
+                var memberDtos = new List<TripMemberResponseDto>();
+
+                foreach (var member in tripMembers)
+                {
+                    var user = await _unitOfWork.Users.GetByIdAsync(member.UserId);
+                    memberDtos.Add(new TripMemberResponseDto
+                    {
+                        Id = member.Id,
+                        UserId = member.UserId,
+                        UserName = user?.Name ?? "Unknown",
+                        Role = member.Role.ToString(),
+                        JoinedAt = member.JoinedAt
+                    });
+                }
+
+                return memberDtos;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Error fetching members for trip {tripId}: {ex.Message}");
                 throw;
             }
         }

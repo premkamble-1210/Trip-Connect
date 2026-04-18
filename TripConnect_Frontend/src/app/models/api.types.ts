@@ -78,11 +78,33 @@ export interface CreateTripDto {
   ImgUrl: string;
 }
 
+export interface UpdateTripDto {
+  title: string;
+  description: string;
+  location: string;
+  budget: number;
+  startDate: string;
+  endDate: string;
+  seats: number;
+  travelType: string;
+  ImgUrl?: string;
+}
+
 export interface TripSearchFilters {
   location?: string;
   startDate?: string;
   maxBudget?: number;
   travelType?: string;
+}
+
+// ─── Trip Member ──────────────────────────────────────────────────────────────
+
+export interface TripMemberResponseDto {
+  id: number;
+  userId: number;
+  userName: string;
+  role: string;
+  joinedAt: string;
 }
 
 // ─── Join Request ─────────────────────────────────────────────────────────────

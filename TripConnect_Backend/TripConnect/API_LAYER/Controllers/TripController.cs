@@ -248,5 +248,23 @@ namespace API_LAYER.Controllers
                 return StatusCode(500, new { success = false, message = "An error occurred" });
             }
         }
+
+        /// <summary>
+        /// Get members of a trip
+        /// </summary>
+        [HttpGet("{tripId}/members")]
+        public async Task<IActionResult> GetTripMembers([FromRoute] int tripId)
+        {
+            try
+            {
+                var members = await _tripService.GetTripMembersAsync(tripId);
+                return Ok(members);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching trip members");
+                return StatusCode(500, new { success = false, message = "An error occurred" });
+            }
+        }
     }
 }

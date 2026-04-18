@@ -1,4 +1,5 @@
 using APPLICATION_LAYER.DTOs.Trip;
+using APPLICATION_LAYER.DTOs.TripMember;
 
 namespace APPLICATION_LAYER.Services.Interfaces
 {
@@ -61,5 +62,10 @@ namespace APPLICATION_LAYER.Services.Interfaces
         /// Get trips user is member of
         /// </summary>
         Task<IEnumerable<TripResponseDto>> GetUserTripsAsync(int userId);
+
+        /// <summary>
+        /// Get members of a trip
+        /// </summary>
+        Task<IEnumerable<TripMemberResponseDto>> GetTripMembersAsync(int tripId);
     }
 }

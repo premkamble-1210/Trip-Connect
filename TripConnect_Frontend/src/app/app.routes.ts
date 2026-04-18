@@ -4,6 +4,7 @@ import { Login } from './Pages/login/login';
 import { ExporeTrips } from './Pages/expore-trips/expore-trips';
 import { Trip } from './Pages/trip/trip';
 import { NewTrip } from './Pages/new-trip/new-trip';
+import { EditTrip } from './Pages/edit-trip/edit-trip';
 import { JoinRequest } from './Pages/join-request/join-request';
 import { Profile } from './Pages/profile/profile';
 import { ViewProfile } from './Pages/view-profile/view-profile';
@@ -37,6 +38,11 @@ export const routes: Routes = [
       {
         path: 'trip/:id',
         component: Trip,
+        canActivate: [authGuard]
+      },
+      {
+        path: 'edit/:id',
+        component: EditTrip,
         canActivate: [authGuard]
       },
       {

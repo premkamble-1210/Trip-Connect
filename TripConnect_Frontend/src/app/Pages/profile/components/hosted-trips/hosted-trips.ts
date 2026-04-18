@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, DatePipe, DecimalPipe } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ProfileService } from '../../profile.service';
 import { AuthService } from '../../../../services/auth.service';
 import { TripResponseDto } from '../../../../models/api.types';
@@ -8,7 +8,7 @@ import { TripResponseDto } from '../../../../models/api.types';
 @Component({
   selector: 'app-hosted-trips',
   standalone: true,
-  imports: [DatePipe, DecimalPipe,CommonModule],
+  imports: [DatePipe, DecimalPipe, CommonModule, RouterLink],
   templateUrl: './hosted-trips.html',
 })
 export class HostedTrips implements OnInit {

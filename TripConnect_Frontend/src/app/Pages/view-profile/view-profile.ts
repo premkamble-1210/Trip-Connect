@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { ViewProfileTabs } from './view-profile-tabs';
@@ -14,6 +14,7 @@ import { UserResponseDto } from '../../models/api.types';
 export class ViewProfile implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly profileService = inject(ProfileService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   user: UserResponseDto | null = null;
   targetUserId!: number;
@@ -21,7 +22,11 @@ export class ViewProfile implements OnInit {
   ngOnInit(): void {
     this.targetUserId = Number(this.route.snapshot.paramMap.get('id'));
     this.profileService.getUserById(this.targetUserId).subscribe({
-      next: (u) => { this.user = u; },
+      next: (u) => { 
+        this.user = u; 
+        console.log(u);
+        this.cdr.markForCheck();
+      },
       error: () => {}
     });
   }

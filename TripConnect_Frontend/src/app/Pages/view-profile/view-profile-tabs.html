@@ -28,10 +28,10 @@
       <app-view-hosted-trips [userId]="userId"></app-view-hosted-trips>
     </div>
     <div *ngIf="activeTab === 'joined'" class="animate-fadeIn">
-      <app-joined-trips></app-joined-trips>
+      <app-joined-trips [userId]="userId"></app-joined-trips>
     </div>
     <div *ngIf="activeTab === 'reviews'" class="animate-fadeIn">
-      <app-reviews></app-reviews>
+      <app-reviews [userId]="userId"></app-reviews>
     </div>
   </div>
 </div>

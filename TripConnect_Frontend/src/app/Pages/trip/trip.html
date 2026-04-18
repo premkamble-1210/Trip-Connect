@@ -78,6 +78,11 @@
             class="w-full bg-gray-700 hover:bg-gray-800 text-white font-semibold py-3.5 rounded-[12px] shadow-sm transition-colors text-[15px]">
             Manage Join Requests
           </button>
+        } @else if (isMember()) {
+          <button
+            class="w-full bg-[#417cca] hover:bg-[#3466a9] text-white font-semibold py-3.5 rounded-[12px] shadow-sm transition-colors text-[15px]">
+            Chat
+          </button>
         } @else if (joinSuccess()) {
           <button disabled
             class="w-full bg-green-500 text-white font-semibold py-3.5 rounded-[12px] text-[15px] opacity-70 cursor-not-allowed">

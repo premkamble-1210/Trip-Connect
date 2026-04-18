@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProfileService } from '../../profile.service';
 import { AuthService } from '../../../../services/auth.service';
@@ -13,12 +13,14 @@ export class Reviews implements OnInit {
   private readonly profileService = inject(ProfileService);
   private readonly authService = inject(AuthService);
 
+  @Input() userId?: number;
+
   reviews: RatingResponseDto[] = [];
   isLoading = true;
   errorMessage: string | null = null;
 
   ngOnInit(): void {
-    const userId = this.authService.getCurrentUserId();
+    const userId = this.userId ?? this.authService.getCurrentUserId();
     this.profileService.getReviews(userId).subscribe({
       next: (data) => { 
         this.reviews = data; 

@@ -1,5 +1,6 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef, Input } from '@angular/core';
 import { CommonModule, DatePipe, DecimalPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { ProfileService } from '../../profile.service';
 import { AuthService } from '../../../../services/auth.service';
 import { TripResponseDto } from '../../../../models/api.types';
@@ -7,7 +8,7 @@ import { TripResponseDto } from '../../../../models/api.types';
 @Component({
   selector: 'app-joined-trips',
   standalone: true,
-  imports: [CommonModule, DatePipe, DecimalPipe],
+  imports: [CommonModule, DatePipe, DecimalPipe, RouterLink],
   templateUrl: './joined-trips.html',
 })
 export class JoinedTrips implements OnInit {
@@ -15,12 +16,14 @@ export class JoinedTrips implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly cdr = inject(ChangeDetectorRef);
 
+  @Input() userId?: number;
+
   trips: TripResponseDto[] = [];
   isLoading = true;
   errorMessage: string | null = null;
 
   ngOnInit(): void {
-    const userId = this.authService.getCurrentUserId();
+    const userId = this.userId ?? this.authService.getCurrentUserId();
     this.profileService.getJoinedTrips(userId).subscribe({
       next: (data) => { 
         this.trips = data; 
