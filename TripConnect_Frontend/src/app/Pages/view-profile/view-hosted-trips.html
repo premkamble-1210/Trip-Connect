@@ -20,7 +20,7 @@
       </div>
       <div class="flex justify-between items-center py-0.5 sm:py-1 px-0 text-xs border-b border-gray-100">
         <span class="text-gray-600 font-medium">📅 Dates:</span>
-        <span class="text-gray-900 font-semibold">{{ trip.dates }}</span>
+        <span class="text-gray-900 font-semibold">{{ trip.startDate | date:'MMM d' }} – {{ trip.endDate | date:'MMM d, yyyy' }}</span>
       </div>
       <div class="flex justify-between items-center py-0.5 sm:py-1 px-0 text-xs border-b border-gray-100">
         <span class="text-gray-600 font-medium">💰 Budget:</span>
@@ -32,10 +32,9 @@
       </div>
     </div>
     
-    <!-- Organizer -->
+    <!-- Travel Type -->
     <div class="flex items-center gap-2 py-1.5 sm:py-2 px-0 border-b border-gray-300 text-xs text-gray-600 mb-2 sm:mb-3">
-      <img [src]="trip.organizerAvatar" [alt]="trip.organizerName" class="w-6 sm:w-8 h-6 sm:h-8 rounded-full object-cover">
-      <span class="text-xs">Organizer: {{ trip.organizerName }}</span>
+      <span class="text-xs">✈️ {{ trip.travelType }}</span>
     </div>
     
     <!-- Actions (Read-Only) -->

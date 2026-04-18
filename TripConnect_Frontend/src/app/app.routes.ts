@@ -6,9 +6,12 @@ import { Trip } from './Pages/trip/trip';
 import { NewTrip } from './Pages/new-trip/new-trip';
 import { JoinRequest } from './Pages/join-request/join-request';
 import { Profile } from './Pages/profile/profile';
-import { JoinedTrips } from './Pages/profile/components/joined-trips/joined-trips';
+import { ViewProfile } from './Pages/view-profile/view-profile';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
+  { path: 'login', component: Login },
+  { path: 'register', component: Register },
   {
     path: '',
     children: [
@@ -23,20 +26,28 @@ export const routes: Routes = [
       },
       {
         path: 'create',
-        component: NewTrip
+        component: NewTrip,
+        canActivate: [authGuard]
       },
       {
         path: 'profile',
-        component: Profile
+        component: Profile,
+        canActivate: [authGuard]
       },
       {
         path: 'trip/:id',
-        component: Trip
+        component: Trip,
+        canActivate: [authGuard]
       },
       {
-        path:'request/:id',
-        component:JoinRequest
-
+        path: 'request/:id',
+        component: JoinRequest,
+        canActivate: [authGuard]
+      },
+      {
+        path: 'user/:id',
+        component: ViewProfile,
+        canActivate: [authGuard]
       }
     ]
   }

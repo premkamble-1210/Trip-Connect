@@ -1,4 +1,5 @@
-import { Component, signal } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-navbar-profile',
@@ -7,5 +8,15 @@ import { Component, signal } from '@angular/core';
   styleUrl: './navbar-profile.css',
 })
 export class NavbarProfile {
-  userAvatar=signal("https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80");
+  private readonly authService = inject(AuthService);
+
+  userAvatar = computed(() => {
+    const raw = localStorage.getItem('tc_user');
+    if (raw) {
+      const user = JSON.parse(raw);
+      if (user?.avatarUrl) return user.avatarUrl;
+      if (user?.name) return `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random`;
+    }
+    return 'https://ui-avatars.com/api/?name=User&background=random';
+  });
 }

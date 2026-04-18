@@ -44,8 +44,9 @@ namespace APPLICATION_LAYER.Services.Implementations
                     throw new InvalidOperationException("Username already taken");
                 }
 
-                // Hash password
-                var passwordHash = HashPassword(createUserDto.Password);
+                // Generate salt and hash password
+                var passwordSalt = GenerateSalt();
+                var passwordHash = HashPassword(createUserDto.Password, passwordSalt);
 
                 var newUser = new User
                 {
@@ -54,7 +55,7 @@ namespace APPLICATION_LAYER.Services.Implementations
                     Username = createUserDto.Username,
                     Phone = createUserDto.Phone,
                     PasswordHash = passwordHash,
-                    PasswordSalt = GenerateSalt(),
+                    PasswordSalt = passwordSalt,
                     PhoneVerified = false,
                     IdVerified = false,
                     Rating = 0.0,
@@ -96,7 +97,7 @@ namespace APPLICATION_LAYER.Services.Implementations
                 }
 
                 // Verify password
-                if (!VerifyPassword(loginUserDto.Password, user.PasswordHash))
+                if (!VerifyPassword(loginUserDto.Password, user.PasswordHash, user.PasswordSalt))
                 {
                     _logger.Warning($"Login failed - Invalid password for user: {user.Id}");
                     throw new InvalidOperationException("Invalid credentials");
@@ -313,9 +314,10 @@ namespace APPLICATION_LAYER.Services.Implementations
         }
 
         // Helper Methods
-        private string HashPassword(string password)
+        private string HashPassword(string password, string salt)
         {
-            using (var hmac = new HMACSHA512())
+            var saltBytes = Convert.FromBase64String(salt);
+            using (var hmac = new HMACSHA512(saltBytes))
             {
                 var hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
                 return Convert.ToBase64String(hash);
@@ -332,9 +334,9 @@ namespace APPLICATION_LAYER.Services.Implementations
             }
         }
 
-        private bool VerifyPassword(string password, string storedHash)
+        private bool VerifyPassword(string password, string storedHash, string salt)
         {
-            var hashOfInput = HashPassword(password);
+            var hashOfInput = HashPassword(password, salt);
             return hashOfInput == storedHash;
         }
     }

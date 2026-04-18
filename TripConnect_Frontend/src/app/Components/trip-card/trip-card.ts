@@ -1,5 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 export interface Trip {
   id: number;
@@ -20,4 +21,9 @@ export interface Trip {
 })
 export class TripCard {
   @Input() trip!: Trip;
+  private readonly router = inject(Router);
+
+  navigateToTrip(): void {
+    this.router.navigate(['/trip', this.trip.id]);
+  }
 }

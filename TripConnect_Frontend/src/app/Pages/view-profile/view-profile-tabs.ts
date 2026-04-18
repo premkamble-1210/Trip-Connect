@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ViewHostedTrips } from './view-hosted-trips';
 import { JoinedTrips } from '../profile/components/joined-trips/joined-trips';
@@ -11,6 +11,8 @@ import { Reviews } from '../profile/components/reviews/reviews';
   templateUrl: './view-profile-tabs.html',
 })
 export class ViewProfileTabs {
+  @Input() userId!: number;
+
   activeTab: string = 'hosted';
 
   setActiveTab(tab: string): void {

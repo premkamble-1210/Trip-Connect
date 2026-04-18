@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProfileService, Trip } from '../profile/profile.service';
+import { ProfileService } from '../profile/profile.service';
+import { TripResponseDto } from '../../models/api.types';
 
 @Component({
   selector: 'app-view-hosted-trips',
@@ -9,11 +10,18 @@ import { ProfileService, Trip } from '../profile/profile.service';
   templateUrl: './view-hosted-trips.html',
 })
 export class ViewHostedTrips implements OnInit {
-  trips: Trip[] = [];
+  @Input() userId!: number;
 
-  constructor(private profileService: ProfileService) {}
+  private readonly profileService = inject(ProfileService);
+
+  trips: TripResponseDto[] = [];
 
   ngOnInit(): void {
-    this.trips = this.profileService.getHostedTrips();
+    if (this.userId) {
+      this.profileService.getHostedTrips(this.userId).subscribe({
+        next: (data) => { this.trips = data; },
+        error: () => {}
+      });
+    }
   }
 }

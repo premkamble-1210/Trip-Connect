@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProfileService, Trip } from '../../profile.service';
+import { ProfileService } from '../../profile.service';
+import { AuthService } from '../../../../services/auth.service';
+import { TripResponseDto } from '../../../../models/api.types';
 
 @Component({
   selector: 'app-joined-trips',
@@ -8,11 +10,16 @@ import { ProfileService, Trip } from '../../profile.service';
   templateUrl: './joined-trips.html',
 })
 export class JoinedTrips implements OnInit {
-  trips: Trip[] = [];
+  private readonly profileService = inject(ProfileService);
+  private readonly authService = inject(AuthService);
 
-  constructor(private profileService: ProfileService) {}
+  trips: TripResponseDto[] = [];
 
   ngOnInit(): void {
-    this.trips = this.profileService.getJoinedTrips();
+    const userId = this.authService.getCurrentUserId();
+    this.profileService.getJoinedTrips(userId).subscribe({
+      next: (data) => { this.trips = data; },
+      error: () => {}
+    });
   }
 }

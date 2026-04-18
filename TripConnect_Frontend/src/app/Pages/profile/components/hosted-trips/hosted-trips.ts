@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProfileService, Trip } from '../../profile.service';
 import { Router } from '@angular/router';
+import { ProfileService } from '../../profile.service';
+import { AuthService } from '../../../../services/auth.service';
+import { TripResponseDto } from '../../../../models/api.types';
 
 @Component({
   selector: 'app-hosted-trips',
@@ -9,15 +11,21 @@ import { Router } from '@angular/router';
   templateUrl: './hosted-trips.html',
 })
 export class HostedTrips implements OnInit {
-  trips: Trip[] = [];
+  private readonly profileService = inject(ProfileService);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
-  constructor(private profileService: ProfileService, private route: Router) {}
+  trips: TripResponseDto[] = [];
 
   ngOnInit(): void {
-    this.trips = this.profileService.getHostedTrips();
+    const userId = this.authService.getCurrentUserId();
+    this.profileService.getHostedTrips(userId).subscribe({
+      next: (data) => { this.trips = data; },
+      error: () => {}
+    });
   }
 
-  onclick(tripId: string | number): void {
-    this.route.navigate(['request/', tripId]);
+  onclick(tripId: number): void {
+    this.router.navigate(['/request', tripId]);
   }
 }

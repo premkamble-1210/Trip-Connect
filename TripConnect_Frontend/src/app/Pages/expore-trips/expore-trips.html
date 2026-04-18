@@ -36,16 +36,16 @@
           <div class="relative w-full h-[6px] bg-gray-200 rounded-full">
             <!-- Dynamic Filled Track -->
             <div class="absolute h-full bg-[#87b4ce] rounded-full pointer-events-none" 
-                 [style.left.%]="(budgetMin() / 1400) * 100" 
-                 [style.right.%]="100 - (budgetMax() / 1400) * 100"></div>
+                 [style.left.%]="(budgetMin() / 10000) * 100" 
+                 [style.right.%]="100 - (budgetMax() / 10000) * 100"></div>
             
             <!-- Min Input Slider -->
-            <input type="range" min="0" max="1400" step="10"
+            <input type="range" min="0" max="10000" step="100"
                    [value]="budgetMin()" (input)="updateBudgetMin($event)"
                    class="absolute w-full -top-[6px] h-[18px] appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-[18px] [&::-webkit-slider-thumb]:h-[18px] [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-[3px] [&::-webkit-slider-thumb]:border-[#87b4ce] [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-sm [&::-webkit-slider-thumb]:cursor-pointer z-20" />
 
             <!-- Max Input Slider -->
-            <input type="range" min="0" max="1400" step="10"
+            <input type="range" min="0" max="10000" step="100"
                    [value]="budgetMax()" (input)="updateBudgetMax($event)"
                    class="absolute w-full -top-[6px] h-[18px] appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-[18px] [&::-webkit-slider-thumb]:h-[18px] [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-[3px] [&::-webkit-slider-thumb]:border-[#87b4ce] [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-sm [&::-webkit-slider-thumb]:cursor-pointer z-20" />
           </div>
@@ -86,7 +86,13 @@
     <!-- Main Content - Grid -->
     <div class="flex-1 pb-12">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <app-trip-card *ngFor="let trip of trips" [trip]="trip"></app-trip-card>
+        @if (isLoading()) {
+          <div class="col-span-full flex justify-center py-12 text-gray-400">Loading trips...</div>
+        } @else if (trips().length === 0) {
+          <div class="col-span-full flex justify-center py-12 text-gray-400">No trips found.</div>
+        } @else {
+          <app-trip-card *ngFor="let trip of trips()" [trip]="toCardTrip(trip)"></app-trip-card>
+        }
       </div>
     </div>
     
