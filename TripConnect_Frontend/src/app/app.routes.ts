@@ -6,6 +6,7 @@ import { Trip } from './Pages/trip/trip';
 import { NewTrip } from './Pages/new-trip/new-trip';
 import { JoinRequest } from './Pages/join-request/join-request';
 import { Profile } from './Pages/profile/profile';
+import { JoinedTrips } from './Pages/profile/components/joined-trips/joined-trips';
 
 export const routes: Routes = [
   {
@@ -31,6 +32,11 @@ export const routes: Routes = [
       {
         path: 'trip/:id',
         component: Trip
+      },
+      {
+        path:'request/:id',
+        component:JoinRequest
+
       }
     ]
   }

@@ -17,10 +17,12 @@ namespace APPLICATION_LAYER.Mappers
 
             // CreateTripDto → Trip
             CreateMap<CreateTripDto, Trip>()
-                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.UtcNow))
+                .ForMember(dest => dest.ImgUrl, opt => opt.Condition(src => !string.IsNullOrEmpty(src.ImgUrl)));
 
             // UpdateTripDto → Trip
-            CreateMap<UpdateTripDto, Trip>();
+            CreateMap<UpdateTripDto, Trip>()
+                .ForMember(dest => dest.ImgUrl, opt => opt.Condition(src => !string.IsNullOrEmpty(src.ImgUrl)));
         }
     }
 }

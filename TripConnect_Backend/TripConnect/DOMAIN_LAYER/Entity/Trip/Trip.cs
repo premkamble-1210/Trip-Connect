@@ -53,6 +53,11 @@ namespace DOMAIN_LAYER.Entity.Trip
         public string TravelType { get; set; }
 
         /// <summary>
+        /// Cover image URL for the trip
+        /// </summary>
+        public string ImgUrl { get; set; } = "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800";
+
+        /// <summary>
         /// Status of the trip (Planned, Ongoing, Completed, Cancelled)
         /// </summary>
         public TripStatus Status { get; set; }

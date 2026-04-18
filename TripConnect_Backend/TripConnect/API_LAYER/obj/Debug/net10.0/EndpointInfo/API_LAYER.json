@@ -1826,6 +1826,10 @@
           "travelType": {
             "type": "string",
             "nullable": true
+          },
+          "imgUrl": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -1940,6 +1944,10 @@
             "format": "int32"
           },
           "travelType": {
+            "type": "string",
+            "nullable": true
+          },
+          "imgUrl": {
             "type": "string",
             "nullable": true
           }

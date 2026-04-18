@@ -13,5 +13,6 @@ namespace APPLICATION_LAYER.DTOs.Trip
         public DateTime EndDate { get; set; }
         public int Seats { get; set; }
         public string TravelType { get; set; }
+        public string? ImgUrl { get; set; }
     }
 }
