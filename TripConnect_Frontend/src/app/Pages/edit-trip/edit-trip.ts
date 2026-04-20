@@ -116,4 +116,21 @@ export class EditTrip implements OnInit {
   cancel(): void {
     this.router.navigate(['/trip', this.tripId]);
   }
+  deleteTrip(): void {
+    if (!confirm('Are you sure you want to delete this trip?')) return;
+
+    const userId = this.authService.getCurrentUserId();
+    this.isLoading.set(true);
+
+    this.tripService.deleteTrip(this.tripId, userId).subscribe({
+      next: () => {
+        this.isLoading.set(false);
+        this.router.navigate(['/explore']);
+      },
+      error: () => {
+        this.isLoading.set(false);
+        this.errors.set({ general: 'Failed to delete trip. Please try again.' });
+      }
+    });
+  }
 }

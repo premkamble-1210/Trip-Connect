@@ -81,6 +81,10 @@ export class Profile implements OnInit {
   closeEditModal(): void {
     this.isEditModalOpen = false;
   }
+  logout(): void {
+    this.authService.logout();
+    window.location.reload();
+  }
 
   saveChanges(): void {
     if (!this.user) return;

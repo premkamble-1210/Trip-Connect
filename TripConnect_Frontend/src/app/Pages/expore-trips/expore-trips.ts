@@ -52,7 +52,7 @@ export class ExporeTrips implements OnInit {
 
     request$.subscribe({
       next: (data) => {
-        this.trips.set(data);
+        this.trips.set(data.filter(trip => trip.status !== 'Cancelled'));
         this.isLoading.set(false);
       },
       error: () => {
@@ -101,7 +101,21 @@ export class ExporeTrips implements OnInit {
       dates: `${new Date(trip.startDate).toLocaleDateString()} - ${new Date(trip.endDate).toLocaleDateString()}`,
       status: trip.status,
       price: trip.budget,
-      avatars: []
+      avatars: this.generateRandomAvatars()
     };
+  }
+
+  // Generate random avatars (1-4)
+  private generateRandomAvatars(): string[] {
+    const randomCount = Math.floor(Math.random() * 4) + 1; // 1 to 4 avatars
+    const avatars: string[] = [];
+    const names = ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve', 'Frank', 'Grace', 'Henry', 'Iris', 'Jack'];
+    
+    for (let i = 0; i < randomCount; i++) {
+      const randomName = names[Math.floor(Math.random() * names.length)];
+      avatars.push(`https://ui-avatars.com/api/?name=${randomName}`);
+    }
+    
+    return avatars;
   }
 }

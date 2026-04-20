@@ -60,4 +60,9 @@ export class TripService {
     const params = new HttpParams().set('userId', userId);
     return this.http.put<TripResponseDto>(`${this.base}/${tripId}`, dto, { params });
   }
+
+  deleteTrip(tripId: number, userId: number): Observable<void> {
+    const params = new HttpParams().set('userId', userId);
+    return this.http.delete<void>(`${this.base}/${tripId}`, { params });
+  }
 }
