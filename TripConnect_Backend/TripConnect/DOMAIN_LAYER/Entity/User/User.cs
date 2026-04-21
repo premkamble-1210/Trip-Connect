@@ -60,6 +60,23 @@ namespace DOMAIN_LAYER.Entity.User
         /// </summary>
         public DateTime CreatedAt { get; set; }
 
+        /// <summary>
+        /// Refresh token for JWT authentication (nullable)
+        /// </summary>
+    public string? RefreshToken { get; set; }
+
+    /// <summary>
+    /// Expiration time of the refresh token
+    /// </summary>
+    public DateTime? RefreshTokenExpiryTime { get; set; }
+        /// </summary>
+        public DateTime? LastLoginAt { get; set; }
+
+        /// <summary>
+        /// Flag indicating if the user's token has been blacklisted
+        /// </summary>
+        public bool IsTokenBlacklisted { get; set; } = false;
+
     /// <summary>
     /// Navigation property - Trips created by this user (1:M)
     /// </summary>

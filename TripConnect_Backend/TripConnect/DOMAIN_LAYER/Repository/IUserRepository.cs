@@ -59,5 +59,10 @@ namespace DOMAIN_LAYER.Repository
         /// Get user with password for authentication
         /// </summary>
         Task<Entity.User.User> GetUserForAuthenticationAsync(string username);
+
+        /// <summary>
+        /// Get user by refresh token
+        /// </summary>
+        Task<Entity.User.User> GetByRefreshTokenAsync(string refreshToken);
     }
 }

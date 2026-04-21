@@ -21,12 +21,48 @@ The **API_LAYER** is the presentation and gateway layer for TripConnect. It hand
 
 ---
 
+## **🔐 JWT Authentication Overview**
+
+The TripConnect API uses **JWT (JSON Web Token)** based authentication for secure stateless communication.
+
+### **Authentication Flow**
+
+1. **Register/Login** → Receive `accessToken` + `refreshToken`
+2. **Use accessToken** → Include in `Authorization: Bearer <accessToken>` header for API requests
+3. **Token Expires** → Use `refreshToken` to get new `accessToken`
+4. **Logout** → Revoke `refreshToken` on server
+
+### **Token Configuration**
+
+- **Access Token Lifetime:** 60 minutes (configurable in `appsettings.json`)
+- **Refresh Token Lifetime:** 7 days (stored in database)
+- **Algorithm:** HS256 (HMAC-SHA256)
+- **Signing Key:** Configured in `JwtSettings:SecretKey`
+
+### **Required Headers for Protected Endpoints**
+
+All endpoints marked with `[Authorize]` require:
+```http
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+### **JWT Claims**
+
+The following claims are included in the token:
+- `NameIdentifier` - User ID
+- `Email` - User's email
+- `Name` - Username
+- `FullName` - User's full name
+- `Phone` - User's phone number
+
+---
+
 ## **Directory Structure**
 
 ```
 API_LAYER/
 ├── Controllers/                        # API Endpoints (7 controllers)
-│   ├── UserController.cs               # User auth & management (11 endpoints)
+│   ├── UserController.cs               # User auth & management (11 endpoints + 2 new token endpoints)
 │   ├── TripController.cs               # Trip operations (11 endpoints)
 │   ├── JoinRequestController.cs        # Join requests (9 endpoints)
 │   ├── ExpenseController.cs            # Expense tracking (10 endpoints)
@@ -36,16 +72,16 @@ API_LAYER/
 │   └── WeatherForecastController.cs    # Sample endpoint
 │
 ├── Middleware/                         # Request/Response Processing
-│   └── ErrorHandlingMiddleware.cs      # Global exception handler
+│   └── ErrorHandlingMiddleware.cs      # Global exception handler (enhanced with JWT errors)
 │
 ├── Models/                             # API Models
 │   └── HealthCheckResponse.cs          # Health check response DTO
 │
-├── Program.cs                          # Application startup & configuration
+├── Program.cs                          # Application startup & configuration (with JWT setup)
 ├── API_LAYER.http                      # HTTP client test file
-├── appsettings.json                    # Configuration file
+├── appsettings.json                    # Configuration file (includes JwtSettings)
 ├── appsettings.Development.json        # Development settings
-├── API_LAYER.csproj                    # Project file
+├── API_LAYER.csproj                    # Project file (with JWT NuGet packages)
 └── [bin/, obj/]                        # Build output
 ```
 
@@ -120,67 +156,90 @@ public class EntityController : ControllerBase
 ```
 POST /api/user/register
     Input: CreateUserDto { Name, Email, Username, Phone, Password }
-    Output: AuthResponseDto { Success, Message, User, Token }
+    Output: AuthResponseDto { Success, Message, User, Token (JwtTokenResponseDto) }
+    Token Response: { AccessToken, RefreshToken, TokenType, ExpiresIn, IssuedAt, ExpiresAt }
     Status: 200 OK | 400 Bad Request | 500 Internal Server Error
     Exception: InvalidOperationException (duplicate email/username)
 
 POST /api/user/login
     Input: LoginUserDto { Username, Password }
-    Output: AuthResponseDto { Success, Message, User, Token }
+    Output: AuthResponseDto { Success, Message, User, Token (JwtTokenResponseDto) }
+    Token Response: { AccessToken, RefreshToken, TokenType, ExpiresIn, IssuedAt, ExpiresAt }
     Status: 200 OK | 401 Unauthorized | 500 Internal Server Error
     Exception: InvalidOperationException (invalid credentials)
+
+POST /api/user/refresh-token
+    Input: RefreshTokenRequestDto { RefreshToken }
+    Output: JwtTokenResponseDto { AccessToken, RefreshToken, TokenType, ExpiresIn, IssuedAt, ExpiresAt }
+    Status: 200 OK | 401 Unauthorized | 500 Internal Server Error
+    Exception: InvalidOperationException (invalid/expired refresh token)
+
+POST /api/user/logout
+    Authorization: Bearer <JWT_TOKEN>
+    Output: { success, message }
+    Status: 200 OK | 401 Unauthorized | 404 Not Found | 500 Internal Server Error
+    Exception: InvalidOperationException (user not found)
 ```
 
 ### **User Management Endpoints**
 
 ```
 GET /api/user/{id}
+    Authorization: Bearer <JWT_TOKEN>
     Params: id (int)
     Output: UserResponseDto
-    Status: 200 OK | 404 Not Found | 500 Internal Server Error
+    Status: 200 OK | 401 Unauthorized | 404 Not Found | 500 Internal Server Error
 
 GET /api/user/email/{email}
+    Authorization: Bearer <JWT_TOKEN>
     Params: email (string)
     Output: UserResponseDto
-    Status: 200 OK | 404 Not Found | 500 Internal Server Error
+    Status: 200 OK | 401 Unauthorized | 404 Not Found | 500 Internal Server Error
 
 PUT /api/user/{id}
+    Authorization: Bearer <JWT_TOKEN>
     Params: id (int)
     Input: UpdateUserDto { Name, Phone }
     Output: UserResponseDto
-    Status: 200 OK | 400 Bad Request | 404 Not Found | 500 Internal Server Error
+    Status: 200 OK | 400 Bad Request | 401 Unauthorized | 403 Forbidden | 404 Not Found | 500 Internal Server Error
+    Note: Users can only update their own profile
 
 GET /api/user/all
+    Authorization: Bearer <JWT_TOKEN>
     Output: IEnumerable<UserResponseDto>
-    Status: 200 OK | 500 Internal Server Error
+    Status: 200 OK | 401 Unauthorized | 500 Internal Server Error
 
 GET /api/user/rating/{id}
     Params: id (int)
-    Output: double (average rating)
-    Status: 200 OK | 404 Not Found | 500 Internal Server Error
+    Output: { userId, rating }
+    Status: 200 OK | 500 Internal Server Error
 
-GET /api/user/verify-phone/{id}
+POST /api/user/{id}/verify-phone
+    Authorization: Bearer <JWT_TOKEN>
     Params: id (int)
-    Output: boolean
-    Status: 200 OK | 404 Not Found | 500 Internal Server Error
+    Output: { success, message }
+    Status: 200 OK | 401 Unauthorized | 404 Not Found | 500 Internal Server Error
 
-GET /api/user/verify-id/{id}
+POST /api/user/{id}/verify-id
+    Authorization: Bearer <JWT_TOKEN>
     Params: id (int)
-    Output: boolean
-    Status: 200 OK | 404 Not Found | 500 Internal Server Error
+    Output: { success, message }
+    Status: 200 OK | 401 Unauthorized | 404 Not Found | 500 Internal Server Error
 
-GET /api/user/email-exists/{email}
+GET /api/user/check-email/{email}
     Params: email (string)
-    Output: boolean
+    Output: { email, exists }
     Status: 200 OK | 500 Internal Server Error
+    Note: No authentication required (for registration form validation)
 
-GET /api/user/username-exists/{username}
+GET /api/user/check-username/{username}
     Params: username (string)
-    Output: boolean
+    Output: { username, exists }
     Status: 200 OK | 500 Internal Server Error
+    Note: No authentication required (for registration form validation)
 ```
 
-**Total Endpoints:** 11
+**Total Endpoints:** 13 (11 original + 2 new token endpoints)
 
 ---
 
@@ -190,14 +249,17 @@ GET /api/user/username-exists/{username}
 
 **Base Route:** `POST/GET /api/trip`
 
+**Authentication Note:** Most endpoints require JWT token. Provide `Authorization: Bearer <JWT_TOKEN>` header.
+
 ### **Trip Management Endpoints**
 
 ```
 POST /api/trip
-    Query: userId (int)
+    Authorization: Bearer <JWT_TOKEN>
     Input: CreateTripDto { Title, Description, Location, Budget, StartDate, EndDate, Seats, TravelType }
     Output: TripResponseDto
-    Status: 201 Created | 400 Bad Request | 500 Internal Server Error
+    Status: 201 Created | 400 Bad Request | 401 Unauthorized | 500 Internal Server Error
+    Note: userId extracted from JWT claims
 
 GET /api/trip/{id}
     Params: id (int)
@@ -218,7 +280,7 @@ GET /api/trip/upcoming
     Output: IEnumerable<TripResponseDto> (sorted by date)
     Status: 200 OK | 500 Internal Server Error
 
-GET /api/trip/location/{location}
+GET /api/trip/search/location/{location}
     Params: location (string)
     Output: IEnumerable<TripResponseDto>
     Status: 200 OK | 500 Internal Server Error
@@ -229,11 +291,12 @@ GET /api/trip/search
     Status: 200 OK | 500 Internal Server Error
 
 PUT /api/trip/{id}
+    Authorization: Bearer <JWT_TOKEN>
     Params: id (int)
-    Query: userId (int)
     Input: UpdateTripDto { Title, Description, Budget, Seats, TravelType }
     Output: TripResponseDto
-    Status: 200 OK | 400 Bad Request | 403 Forbidden | 404 Not Found | 500 Internal Server Error
+    Status: 200 OK | 400 Bad Request | 401 Unauthorized | 403 Forbidden | 404 Not Found | 500 Internal Server Error
+    Note: userId extracted from JWT claims, user must be trip creator
 
 GET /api/trip/created-by/{userId}
     Params: userId (int)
@@ -246,9 +309,10 @@ GET /api/trip/user-trips/{userId}
     Status: 200 OK | 500 Internal Server Error
 
 DELETE /api/trip/{id}
+    Authorization: Bearer <JWT_TOKEN>
     Params: id (int)
-    Query: userId (int)
-    Status: 204 No Content | 403 Forbidden | 404 Not Found | 500 Internal Server Error
+    Status: 204 No Content | 401 Unauthorized | 403 Forbidden | 404 Not Found | 500 Internal Server Error
+    Note: userId extracted from JWT claims, user must be trip creator
 ```
 
 **Total Endpoints:** 11
