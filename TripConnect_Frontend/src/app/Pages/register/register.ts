@@ -32,14 +32,25 @@ export class Register {
       .register(this.name(), this.username(), this.email(), this.phone(), this.password())
       .subscribe({
         next: (res) => {
+          console.log('📝 Register response received:', res);
           this.isLoading.set(false);
           if (res.success) {
-            this.router.navigate(['/login']);
+            console.log('✅ Registration successful');
+            console.log('🔐 Token in localStorage:', localStorage.getItem('tc_token') ? 'EXISTS' : 'MISSING');
+            if (localStorage.getItem('tc_token')) {
+              console.log('✅ Token was stored, navigating to /profile');
+              this.router.navigate(['/profile']);
+            } else {
+              console.log('⚠️ Token not stored after registration, navigating to /login');
+              this.router.navigate(['/login']);
+            }
           } else {
+            console.log('❌ Registration returned success=false');
             this.errorMessage.set(res.message || 'Registration failed. Please try again.');
           }
         },
-        error: () => {
+        error: (error) => {
+          console.log('❌ Registration error:', error);
           this.isLoading.set(false);
           this.errorMessage.set('Registration failed. Username or email may already be in use.');
         }

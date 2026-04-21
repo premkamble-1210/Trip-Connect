@@ -117,5 +117,13 @@ namespace INFRASTRUCTURE_LAYER.Repository
         {
             return await _dbSet.FirstOrDefaultAsync(u => u.Username == username);
         }
+
+        /// <summary>
+        /// Get user by refresh token
+        /// </summary>
+        public async Task<User> GetByRefreshTokenAsync(string refreshToken)
+        {
+            return await _dbSet.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
+        }
     }
 }

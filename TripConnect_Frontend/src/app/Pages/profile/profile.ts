@@ -82,8 +82,20 @@ export class Profile implements OnInit {
     this.isEditModalOpen = false;
   }
   logout(): void {
-    this.authService.logout();
-    window.location.reload();
+    this.authService.logout().subscribe({
+      next: () => {
+        console.log('🔓 Logout complete');
+        window.location.reload();
+      },
+      error: (error) => {
+        console.error('❌ Logout failed:', error);
+        // Still clear local storage and redirect even if backend call fails
+        localStorage.removeItem('tc_token');
+        localStorage.removeItem('tc_refresh_token');
+        localStorage.removeItem('tc_userId');
+        this.authService['router'].navigate(['/login']);
+      }
+    });
   }
 
   saveChanges(): void {

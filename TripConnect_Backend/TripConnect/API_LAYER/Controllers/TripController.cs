@@ -1,6 +1,8 @@
 using APPLICATION_LAYER.DTOs.Trip;
 using APPLICATION_LAYER.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace API_LAYER.Controllers
 {
@@ -21,15 +23,23 @@ namespace API_LAYER.Controllers
         }
 
         /// <summary>
-        /// Create a new trip
+        /// Create a new trip (authenticated users only)
         /// </summary>
         [HttpPost]
-        public async Task<IActionResult> CreateTrip([FromBody] CreateTripDto createTripDto, [FromQuery] int userId)
+        [Authorize]
+        public async Task<IActionResult> CreateTrip([FromBody] CreateTripDto createTripDto)
         {
             try
             {
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
+
+                // Extract userId from JWT claims
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (!int.TryParse(userIdClaim, out var userId))
+                {
+                    return Unauthorized(new { success = false, message = "Invalid user claim" });
+                }
 
                 var result = await _tripService.CreateTripAsync(createTripDto, userId);
                 return CreatedAtAction(nameof(GetTripById), new { id = result.Id }, result);
@@ -183,15 +193,23 @@ namespace API_LAYER.Controllers
         }
 
         /// <summary>
-        /// Update trip
+        /// Update trip (authenticated users only)
         /// </summary>
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTrip([FromRoute] int id, [FromBody] UpdateTripDto updateTripDto, [FromQuery] int userId)
+        [Authorize]
+        public async Task<IActionResult> UpdateTrip([FromRoute] int id, [FromBody] UpdateTripDto updateTripDto)
         {
             try
             {
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
+
+                // Extract userId from JWT claims
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (!int.TryParse(userIdClaim, out var userId))
+                {
+                    return Unauthorized(new { success = false, message = "Invalid user claim" });
+                }
 
                 var result = await _tripService.UpdateTripAsync(id, updateTripDto, userId);
                 return Ok(result);
@@ -209,13 +227,21 @@ namespace API_LAYER.Controllers
         }
 
         /// <summary>
-        /// Cancel trip
+        /// Cancel trip (authenticated users only)
         /// </summary>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> CancelTrip([FromRoute] int id, [FromQuery] int userId)
+        [Authorize]
+        public async Task<IActionResult> CancelTrip([FromRoute] int id)
         {
             try
             {
+                // Extract userId from JWT claims
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (!int.TryParse(userIdClaim, out var userId))
+                {
+                    return Unauthorized(new { success = false, message = "Invalid user claim" });
+                }
+
                 var result = await _tripService.CancelTripAsync(id, userId);
                 return Ok(new { success = result, message = result ? "Trip cancelled successfully" : "Trip cancellation failed" });
             }

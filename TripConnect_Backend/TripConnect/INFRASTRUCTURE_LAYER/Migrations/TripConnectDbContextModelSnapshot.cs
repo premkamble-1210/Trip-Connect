@@ -293,6 +293,12 @@ namespace INFRASTRUCTURE_LAYER.Migrations
                     b.Property<bool>("IdVerified")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsTokenBlacklisted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastLoginAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -314,6 +320,12 @@ namespace INFRASTRUCTURE_LAYER.Migrations
 
                     b.Property<double>("Rating")
                         .HasColumnType("float");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("RefreshTokenExpiryTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Username")
                         .IsRequired()

@@ -1,6 +1,9 @@
+using APPLICATION_LAYER.DTOs.Auth;
 using APPLICATION_LAYER.DTOs.User;
 using APPLICATION_LAYER.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace API_LAYER.Controllers
 {
@@ -12,11 +15,13 @@ namespace API_LAYER.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IRefreshTokenService _refreshTokenService;
         private readonly ILogger<UserController> _logger;
 
-        public UserController(IUserService userService, ILogger<UserController> logger)
+        public UserController(IUserService userService, IRefreshTokenService refreshTokenService, ILogger<UserController> logger)
         {
             _userService = userService;
+            _refreshTokenService = refreshTokenService;
             _logger = logger;
         }
 
@@ -24,7 +29,7 @@ namespace API_LAYER.Controllers
         /// Register a new user
         /// </summary>
         /// <param name="createUserDto">User registration details</param>
-        /// <returns>Auth response with user info</returns>
+        /// <returns>Auth response with JWT tokens and user info</returns>
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] CreateUserDto createUserDto)
         {
@@ -56,7 +61,7 @@ namespace API_LAYER.Controllers
         /// Login user
         /// </summary>
         /// <param name="loginUserDto">Username and password</param>
-        /// <returns>Auth response with user info</returns>
+        /// <returns>Auth response with JWT tokens and user info</returns>
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginUserDto loginUserDto)
         {
@@ -85,11 +90,71 @@ namespace API_LAYER.Controllers
         }
 
         /// <summary>
+        /// Refresh access token using refresh token
+        /// </summary>
+        /// <param name="refreshTokenRequest">Refresh token from user</param>
+        /// <returns>New JWT access token</returns>
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestDto refreshTokenRequest)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                var result = await _refreshTokenService.RefreshAccessTokenAsync(refreshTokenRequest.RefreshToken);
+                return Ok(result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return Unauthorized(new { success = false, message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Token refresh error");
+                return StatusCode(500, new { success = false, message = "An error occurred during token refresh" });
+            }
+        }
+
+        /// <summary>
+        /// Logout user and revoke refresh token
+        /// </summary>
+        /// <returns>Logout confirmation</returns>
+        [HttpPost("logout")]
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (!int.TryParse(userIdClaim, out var userId))
+                {
+                    return Unauthorized(new { success = false, message = "Invalid user claim" });
+                }
+
+                await _userService.LogoutAsync(userId);
+                return Ok(new { success = true, message = "Logged out successfully" });
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return NotFound(new { success = false, message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Logout error");
+                return StatusCode(500, new { success = false, message = "An error occurred during logout" });
+            }
+        }
+
+        /// <summary>
         /// Get user by ID
         /// </summary>
         /// <param name="id">User ID</param>
         /// <returns>User details</returns>
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<IActionResult> GetUserById([FromRoute] int id)
         {
             try
@@ -115,6 +180,7 @@ namespace API_LAYER.Controllers
         /// <param name="email">User email</param>
         /// <returns>User details</returns>
         [HttpGet("email/{email}")]
+        [Authorize]
         public async Task<IActionResult> GetUserByEmail([FromRoute] string email)
         {
             try
@@ -135,16 +201,24 @@ namespace API_LAYER.Controllers
         }
 
         /// <summary>
-        /// Update user profile
+        /// Update user profile (authenticated user only)
         /// </summary>
         /// <param name="id">User ID</param>
         /// <param name="updateUserDto">Updated user details</param>
         /// <returns>Updated user info</returns>
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> UpdateUser([FromRoute] int id, [FromBody] UpdateUserDto updateUserDto)
         {
             try
             {
+                // Verify user is updating their own profile
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (!int.TryParse(userIdClaim, out var claimUserId) || claimUserId != id)
+                {
+                    return Forbid();
+                }
+
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
@@ -188,6 +262,7 @@ namespace API_LAYER.Controllers
         /// </summary>
         /// <returns>List of all users</returns>
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAllUsers()
         {
             try
@@ -208,6 +283,7 @@ namespace API_LAYER.Controllers
         /// <param name="id">User ID</param>
         /// <returns>Verification result</returns>
         [HttpPost("{id}/verify-phone")]
+        [Authorize]
         public async Task<IActionResult> VerifyPhone([FromRoute] int id)
         {
             try
@@ -233,6 +309,7 @@ namespace API_LAYER.Controllers
         /// <param name="id">User ID</param>
         /// <returns>Verification result</returns>
         [HttpPost("{id}/verify-id")]
+        [Authorize]
         public async Task<IActionResult> VerifyId([FromRoute] int id)
         {
             try

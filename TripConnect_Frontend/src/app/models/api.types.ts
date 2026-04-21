@@ -15,11 +15,20 @@ export interface CreateUserDto {
   password: string;
 }
 
+export interface JwtTokenResponseDto {
+  accessToken: string;
+  refreshToken: string;
+  tokenType: string;
+  expiresIn: number;
+  issuedAt: string;
+  expiresAt: string;
+}
+
 export interface AuthResponseDto {
   success: boolean;
   message: string;
   user: UserResponseDto;
-  token: string;
+  token: JwtTokenResponseDto;
 }
 
 // ─── User ─────────────────────────────────────────────────────────────────────

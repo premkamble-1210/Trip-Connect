@@ -61,5 +61,10 @@ namespace APPLICATION_LAYER.Services.Interfaces
         /// Check if email exists
         /// </summary>
         Task<bool> EmailExistsAsync(string email);
+
+        /// <summary>
+        /// Logout user and revoke refresh token
+        /// </summary>
+        Task LogoutAsync(int userId);
     }
 }

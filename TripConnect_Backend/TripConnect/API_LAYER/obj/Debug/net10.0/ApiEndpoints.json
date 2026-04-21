@@ -748,11 +748,6 @@
         "Name": "createTripDto",
         "Type": "APPLICATION_LAYER.DTOs.Trip.CreateTripDto",
         "IsRequired": true
-      },
-      {
-        "Name": "userId",
-        "Type": "System.Int32",
-        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -811,11 +806,6 @@
         "Name": "updateTripDto",
         "Type": "APPLICATION_LAYER.DTOs.Trip.UpdateTripDto",
         "IsRequired": true
-      },
-      {
-        "Name": "userId",
-        "Type": "System.Int32",
-        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -832,11 +822,6 @@
         "Name": "id",
         "Type": "System.Int32",
         "IsRequired": true
-      },
-      {
-        "Name": "userId",
-        "Type": "System.Int32",
-        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -1116,6 +1101,32 @@
       {
         "Name": "loginUserDto",
         "Type": "APPLICATION_LAYER.DTOs.User.LoginUserDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API_LAYER.Controllers.UserController",
+    "Method": "Logout",
+    "RelativePath": "api/User/logout",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API_LAYER.Controllers.UserController",
+    "Method": "RefreshToken",
+    "RelativePath": "api/User/refresh-token",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "refreshTokenRequest",
+        "Type": "APPLICATION_LAYER.DTOs.Auth.RefreshTokenRequestDto",
         "IsRequired": true
       }
     ],

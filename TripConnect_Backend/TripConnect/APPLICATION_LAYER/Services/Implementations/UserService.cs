@@ -1,3 +1,4 @@
+using APPLICATION_LAYER.DTOs.Auth;
 using APPLICATION_LAYER.DTOs.User;
 using APPLICATION_LAYER.Services.Interfaces;
 using AutoMapper;
@@ -14,12 +15,14 @@ namespace APPLICATION_LAYER.Services.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
+        private readonly ITokenService _tokenService;
 
-        public UserService(IUnitOfWork unitOfWork, ILogger logger, IMapper mapper)
+        public UserService(IUnitOfWork unitOfWork, ILogger logger, IMapper mapper, ITokenService tokenService)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _mapper = mapper;
+            _tokenService = tokenService;
         }
 
         public async Task<AuthResponseDto> RegisterAsync(CreateUserDto createUserDto)
@@ -48,6 +51,9 @@ namespace APPLICATION_LAYER.Services.Implementations
                 var passwordSalt = GenerateSalt();
                 var passwordHash = HashPassword(createUserDto.Password, passwordSalt);
 
+                // Generate refresh token
+                var refreshToken = _tokenService.GenerateRefreshToken();
+
                 var newUser = new User
                 {
                     Name = createUserDto.Name,
@@ -59,7 +65,11 @@ namespace APPLICATION_LAYER.Services.Implementations
                     PhoneVerified = false,
                     IdVerified = false,
                     Rating = 0.0,
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.UtcNow,
+                    RefreshToken = refreshToken,
+                    RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7),
+                    LastLoginAt = DateTime.UtcNow,
+                    IsTokenBlacklisted = false
                 };
 
                 await _unitOfWork.Users.AddAsync(newUser);
@@ -67,11 +77,16 @@ namespace APPLICATION_LAYER.Services.Implementations
 
                 _logger.Information($"User registered successfully with ID: {newUser.Id}");
 
+                // Generate JWT token
+                var accessTokenDto = _tokenService.GenerateAccessToken(newUser);
+                accessTokenDto.RefreshToken = refreshToken;
+
                 var userDto = _mapper.Map<UserResponseDto>(newUser);
                 return new AuthResponseDto
                 {
                     Success = true,
                     Message = "Registration successful",
+                    Token = accessTokenDto,
                     User = userDto
                 };
             }
@@ -103,19 +118,63 @@ namespace APPLICATION_LAYER.Services.Implementations
                     throw new InvalidOperationException("Invalid credentials");
                 }
 
+                // Generate new refresh token
+                var refreshToken = _tokenService.GenerateRefreshToken();
+                user.RefreshToken = refreshToken;
+                user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+                user.LastLoginAt = DateTime.UtcNow;
+
+                await _unitOfWork.Users.UpdateAsync(user);
+                await _unitOfWork.SaveChangesAsync();
+
                 _logger.Information($"User logged in successfully: {user.Id}");
+
+                // Generate JWT token
+                var accessTokenDto = _tokenService.GenerateAccessToken(user);
+                accessTokenDto.RefreshToken = refreshToken;
 
                 var userDto = _mapper.Map<UserResponseDto>(user);
                 return new AuthResponseDto
                 {
                     Success = true,
                     Message = "Login successful",
+                    Token = accessTokenDto,
                     User = userDto
                 };
             }
             catch (Exception ex)
             {
                 _logger.Error($"Login error: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task LogoutAsync(int userId)
+        {
+            try
+            {
+                _logger.Information($"Logout request for user: {userId}");
+                var user = await _unitOfWork.Users.GetByIdAsync(userId);
+
+                if (user == null)
+                {
+                    _logger.Warning($"User not found for logout: {userId}");
+                    throw new InvalidOperationException("User not found");
+                }
+
+                // Clear refresh token
+                user.RefreshToken = null;
+                user.RefreshTokenExpiryTime = null;
+                user.IsTokenBlacklisted = true;
+
+                await _unitOfWork.Users.UpdateAsync(user);
+                await _unitOfWork.SaveChangesAsync();
+
+                _logger.Information($"User logged out successfully: {userId}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Logout error: {ex.Message}");
                 throw;
             }
         }
@@ -326,12 +385,12 @@ namespace APPLICATION_LAYER.Services.Implementations
 
         private string GenerateSalt()
         {
-            using (var rng = new RNGCryptoServiceProvider())
+            byte[] saltBytes = new byte[16];
+            using (var rng = System.Security.Cryptography.RandomNumberGenerator.Create())
             {
-                byte[] saltBytes = new byte[16];
                 rng.GetBytes(saltBytes);
-                return Convert.ToBase64String(saltBytes);
             }
+            return Convert.ToBase64String(saltBytes);
         }
 
         private bool VerifyPassword(string password, string storedHash, string salt)
