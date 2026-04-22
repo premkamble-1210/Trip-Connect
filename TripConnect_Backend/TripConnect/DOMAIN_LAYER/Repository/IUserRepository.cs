@@ -64,5 +64,10 @@ namespace DOMAIN_LAYER.Repository
         /// Get user by refresh token
         /// </summary>
         Task<Entity.User.User> GetByRefreshTokenAsync(string refreshToken);
+
+        /// <summary>
+        /// Get user by email verification token
+        /// </summary>
+        Task<Entity.User.User?> GetByEmailVerificationTokenAsync(string token);
     }
 }

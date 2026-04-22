@@ -1012,6 +1012,22 @@
   },
   {
     "ContainingType": "API_LAYER.Controllers.UserController",
+    "Method": "RequestEmailVerification",
+    "RelativePath": "api/User/{id}/request-email-verification",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API_LAYER.Controllers.UserController",
     "Method": "VerifyId",
     "RelativePath": "api/User/{id}/verify-id",
     "HttpMethod": "POST",
@@ -1144,6 +1160,22 @@
         "Name": "createUserDto",
         "Type": "APPLICATION_LAYER.DTOs.User.CreateUserDto",
         "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API_LAYER.Controllers.UserController",
+    "Method": "VerifyEmail",
+    "RelativePath": "api/User/verify-email",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "token",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []

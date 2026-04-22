@@ -66,5 +66,15 @@ namespace APPLICATION_LAYER.Services.Interfaces
         /// Logout user and revoke refresh token
         /// </summary>
         Task LogoutAsync(int userId);
+
+        /// <summary>
+        /// Generate and send an email verification token to the user's email address
+        /// </summary>
+        Task RequestEmailVerificationAsync(int userId);
+
+        /// <summary>
+        /// Validate email verification token and mark user as email-verified
+        /// </summary>
+        Task<bool> VerifyEmailAsync(string token);
     }
 }

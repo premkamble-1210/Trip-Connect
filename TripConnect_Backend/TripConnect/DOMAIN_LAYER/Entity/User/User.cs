@@ -77,6 +77,21 @@ namespace DOMAIN_LAYER.Entity.User
         /// </summary>
         public bool IsTokenBlacklisted { get; set; } = false;
 
+        /// <summary>
+        /// Flag indicating if the user's email address has been verified
+        /// </summary>
+        public bool EmailVerified { get; set; } = false;
+
+        /// <summary>
+        /// One-time token for email verification (nullable, cleared after use)
+        /// </summary>
+        public string? EmailVerificationToken { get; set; }
+
+        /// <summary>
+        /// Expiry time of the email verification token (24 hours from issue)
+        /// </summary>
+        public DateTime? EmailVerificationTokenExpiry { get; set; }
+
     /// <summary>
     /// Navigation property - Trips created by this user (1:M)
     /// </summary>

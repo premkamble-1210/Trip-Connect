@@ -21,6 +21,7 @@ namespace APPLICATION_LAYER.Mappers
                 .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.Rating))
                 .ForMember(dest => dest.PhoneVerified, opt => opt.MapFrom(src => src.PhoneVerified))
                 .ForMember(dest => dest.IdVerified, opt => opt.MapFrom(src => src.IdVerified))
+                .ForMember(dest => dest.EmailVerified, opt => opt.MapFrom(src => src.EmailVerified))
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt));
 
             // CreateUserDto → User

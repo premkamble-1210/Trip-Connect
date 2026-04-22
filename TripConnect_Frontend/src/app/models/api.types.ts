@@ -42,6 +42,7 @@ export interface UserResponseDto {
   rating: number;
   phoneVerified: boolean;
   idVerified: boolean;
+  emailVerified: boolean;
   createdAt: string;
 }
 

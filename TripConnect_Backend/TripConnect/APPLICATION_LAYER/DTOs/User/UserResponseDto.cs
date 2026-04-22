@@ -13,6 +13,7 @@ namespace APPLICATION_LAYER.DTOs.User
         public double Rating { get; set; }
         public bool PhoneVerified { get; set; }
         public bool IdVerified { get; set; }
+        public bool EmailVerified { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }

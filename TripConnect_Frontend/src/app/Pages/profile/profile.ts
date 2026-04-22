@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { ProfileTabs } from './profile-tabs';
 import { ProfileService } from './profile.service';
 import { AuthService } from '../../services/auth.service';
@@ -15,12 +16,16 @@ export class Profile implements OnInit {
   private readonly profileService = inject(ProfileService);
   private readonly authService = inject(AuthService);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly route = inject(ActivatedRoute);
 
   user: UserResponseDto | null = null;
   isEditModalOpen = false;
   isLoading = true;
   errorMessage: string | null = null;
   editForm = { name: '', phone: '' };
+  verificationMessage: string | null = null;
+  verificationError: string | null = null;
+  isRequestingVerification = false;
 
   ngOnInit(): void {
     console.log('Profile component initialized');
@@ -45,18 +50,34 @@ export class Profile implements OnInit {
 
     console.log('About to fetch profile...');
     this.profileService.getUserById(userId).subscribe({
-      next: (u) => { 
+      next: (u) => {
         console.log('Profile data received:', u);
-        this.user = u; 
+        this.user = u;
         this.isLoading = false;
         this.cdr.markForCheck();
         console.log('isLoading set to false, user:', this.user?.name);
       },
-      error: (err) => { 
+      error: (err) => {
         console.error('Failed to load profile:', err);
         this.errorMessage = 'Failed to load profile. Please try again.';
         this.isLoading = false;
         this.cdr.markForCheck();
+      }
+    });
+
+    // Handle redirect back from backend verify-email endpoint
+    this.route.queryParams.subscribe(params => {
+      if (params['emailVerified'] === 'true') {
+        this.verificationMessage = 'Your email has been verified successfully!';
+        this.profileService.getUserById(userId).subscribe({
+          next: (u) => { this.user = u; this.cdr.markForCheck(); },
+          error: () => {}
+        });
+      } else if (params['emailVerified'] === 'false') {
+        const reason = params['reason'] ?? 'unknown_error';
+        this.verificationError = reason === 'Verification token has expired'
+          ? 'Your verification link has expired. Please request a new one.'
+          : 'Email verification failed. Please try again.';
       }
     });
   }
@@ -94,6 +115,26 @@ export class Profile implements OnInit {
         localStorage.removeItem('tc_refresh_token');
         localStorage.removeItem('tc_userId');
         this.authService['router'].navigate(['/login']);
+      }
+    });
+  }
+
+  requestVerification(): void {
+    if (!this.user || this.isRequestingVerification) return;
+    this.isRequestingVerification = true;
+    this.verificationMessage = null;
+    this.verificationError = null;
+    const userId = this.authService.getCurrentUserId();
+    this.profileService.requestEmailVerification(userId).subscribe({
+      next: (res) => {
+        this.verificationMessage = res.message;
+        this.isRequestingVerification = false;
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        this.verificationError = err.error?.message ?? 'Failed to send verification email.';
+        this.isRequestingVerification = false;
+        this.cdr.markForCheck();
       }
     });
   }

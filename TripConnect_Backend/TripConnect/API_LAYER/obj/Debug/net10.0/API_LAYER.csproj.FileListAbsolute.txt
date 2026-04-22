@@ -169,4 +169,7 @@ C:\Users\PremGaneshKamble\Desktop\TripConnect\tripconnect\TripConnect_Backend\Tr
 C:\Users\PremGaneshKamble\Desktop\TripConnect\tripconnect\TripConnect_Backend\TripConnect\API_LAYER\obj\Debug\net10.0\API_LAYER.genruntimeconfig.cache
 C:\Users\PremGaneshKamble\Desktop\TripConnect\tripconnect\TripConnect_Backend\TripConnect\API_LAYER\obj\Debug\net10.0\ref\API_LAYER.dll
 C:\Users\PremGaneshKamble\Desktop\TripConnect\tripconnect\TripConnect_Backend\TripConnect\API_LAYER\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\PremGaneshKamble\Desktop\TripConnect\tripconnect\TripConnect_Backend\TripConnect\API_LAYER\bin\Debug\net10.0\BouncyCastle.Cryptography.dll
+C:\Users\PremGaneshKamble\Desktop\TripConnect\tripconnect\TripConnect_Backend\TripConnect\API_LAYER\bin\Debug\net10.0\MailKit.dll
+C:\Users\PremGaneshKamble\Desktop\TripConnect\tripconnect\TripConnect_Backend\TripConnect\API_LAYER\bin\Debug\net10.0\MimeKit.dll
 C:\Users\PremGaneshKamble\Desktop\TripConnect\tripconnect\TripConnect_Backend\TripConnect\API_LAYER\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt

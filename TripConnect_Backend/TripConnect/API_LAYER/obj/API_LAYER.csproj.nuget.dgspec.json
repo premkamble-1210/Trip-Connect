@@ -585,6 +585,14 @@
             "AutoMapper": {
               "target": "Package",
               "version": "[16.1.1, )"
+            },
+            "MailKit": {
+              "target": "Package",
+              "version": "[4.16.0, )"
+            },
+            "Microsoft.Extensions.Options.ConfigurationExtensions": {
+              "target": "Package",
+              "version": "[10.0.7, )"
             }
           },
           "imports": [

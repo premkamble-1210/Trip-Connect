@@ -368,5 +368,63 @@ namespace API_LAYER.Controllers
                 return StatusCode(500, new { success = false, message = "An error occurred" });
             }
         }
+
+        /// <summary>
+        /// Request email verification — generates token and sends verification email
+        /// </summary>
+        /// <param name="id">User ID (must match authenticated user)</param>
+        /// <returns>Success message</returns>
+        [HttpPost("{id}/request-email-verification")]
+        [Authorize]
+        public async Task<IActionResult> RequestEmailVerification([FromRoute] int id)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (!int.TryParse(userIdClaim, out var claimUserId) || claimUserId != id)
+                {
+                    return Forbid();
+                }
+
+                await _userService.RequestEmailVerificationAsync(id);
+                return Ok(new { success = true, message = "Verification email sent. Please check your inbox." });
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error sending verification email");
+                return StatusCode(500, new { success = false, message = "Failed to send verification email" });
+            }
+        }
+
+        /// <summary>
+        /// Verify email address using the token from the verification link
+        /// </summary>
+        /// <param name="token">Email verification token (from query string)</param>
+        /// <returns>Redirect to frontend profile page</returns>
+        [HttpGet("verify-email")]
+        [AllowAnonymous]
+        public async Task<IActionResult> VerifyEmail([FromQuery] string token)
+        {
+            try
+            {
+                await _userService.VerifyEmailAsync(token);
+                return Redirect("http://localhost:4200/profile?emailVerified=true");
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return Redirect($"http://localhost:4200/profile?emailVerified=false&reason={Uri.EscapeDataString(ex.Message)}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error verifying email");
+                return Redirect("http://localhost:4200/profile?emailVerified=false&reason=server_error");
+            }
+        }
     }
 }

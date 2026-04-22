@@ -38,4 +38,11 @@ export class ProfileService {
   getReviews(userId: number): Observable<RatingResponseDto[]> {
     return this.http.get<RatingResponseDto[]>(`${this.base}/api/rating/for-user/${userId}`);
   }
+
+  requestEmailVerification(userId: number): Observable<{ success: boolean; message: string }> {
+    return this.http.post<{ success: boolean; message: string }>(
+      `${this.base}/api/user/${userId}/request-email-verification`,
+      {}
+    );
+  }
 }

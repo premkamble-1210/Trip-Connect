@@ -16,13 +16,15 @@ namespace APPLICATION_LAYER.Services.Implementations
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
         private readonly ITokenService _tokenService;
+        private readonly IEmailService _emailService;
 
-        public UserService(IUnitOfWork unitOfWork, ILogger logger, IMapper mapper, ITokenService tokenService)
+        public UserService(IUnitOfWork unitOfWork, ILogger logger, IMapper mapper, ITokenService tokenService, IEmailService emailService)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _mapper = mapper;
             _tokenService = tokenService;
+            _emailService = emailService;
         }
 
         public async Task<AuthResponseDto> RegisterAsync(CreateUserDto createUserDto)
@@ -368,6 +370,91 @@ namespace APPLICATION_LAYER.Services.Implementations
             catch (Exception ex)
             {
                 _logger.Error($"Error checking username existence: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task RequestEmailVerificationAsync(int userId)
+        {
+            try
+            {
+                _logger.Information($"Email verification requested for user: {userId}");
+                var user = await _unitOfWork.Users.GetByIdAsync(userId);
+
+                if (user == null)
+                {
+                    _logger.Warning($"User not found for email verification: {userId}");
+                    throw new InvalidOperationException("User not found");
+                }
+
+                if (user.EmailVerified)
+                {
+                    _logger.Warning($"Email already verified for user: {userId}");
+                    throw new InvalidOperationException("Email is already verified");
+                }
+
+                // Generate 32-byte Base64 token — same pattern as refresh token
+                var tokenBytes = new byte[32];
+                using (var rng = System.Security.Cryptography.RandomNumberGenerator.Create())
+                {
+                    rng.GetBytes(tokenBytes);
+                }
+                var token = Convert.ToBase64String(tokenBytes);
+
+                user.EmailVerificationToken = token;
+                user.EmailVerificationTokenExpiry = DateTime.UtcNow.AddHours(24);
+
+                await _unitOfWork.Users.UpdateAsync(user);
+                await _unitOfWork.SaveChangesAsync();
+
+                // URL-encode because Base64 contains +, / and = characters
+                var encodedToken = Uri.EscapeDataString(token);
+                var verificationUrl = $"https://localhost:7142/api/user/verify-email?token={encodedToken}";
+
+                await _emailService.SendEmailVerificationAsync(user.Email, user.Name, verificationUrl);
+
+                _logger.Information($"Verification email dispatched for user: {userId}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Error requesting email verification for user {userId}: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<bool> VerifyEmailAsync(string token)
+        {
+            try
+            {
+                _logger.Information("Email verification attempt");
+
+                var user = await _unitOfWork.Users.GetByEmailVerificationTokenAsync(token);
+
+                if (user == null)
+                {
+                    _logger.Warning("Email verification failed — token not found");
+                    throw new InvalidOperationException("Invalid verification token");
+                }
+
+                if (user.EmailVerificationTokenExpiry == null || user.EmailVerificationTokenExpiry < DateTime.UtcNow)
+                {
+                    _logger.Warning($"Email verification token expired for user: {user.Id}");
+                    throw new InvalidOperationException("Verification token has expired");
+                }
+
+                user.EmailVerified = true;
+                user.EmailVerificationToken = null;
+                user.EmailVerificationTokenExpiry = null;
+
+                await _unitOfWork.Users.UpdateAsync(user);
+                await _unitOfWork.SaveChangesAsync();
+
+                _logger.Information($"Email verified successfully for user: {user.Id}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Error verifying email: {ex.Message}");
                 throw;
             }
         }

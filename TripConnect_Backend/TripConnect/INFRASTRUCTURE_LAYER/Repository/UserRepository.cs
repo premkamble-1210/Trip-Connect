@@ -125,5 +125,13 @@ namespace INFRASTRUCTURE_LAYER.Repository
         {
             return await _dbSet.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
         }
+
+        /// <summary>
+        /// Get user by email verification token
+        /// </summary>
+        public async Task<User?> GetByEmailVerificationTokenAsync(string token)
+        {
+            return await _dbSet.FirstOrDefaultAsync(u => u.EmailVerificationToken == token);
+        }
     }
 }
