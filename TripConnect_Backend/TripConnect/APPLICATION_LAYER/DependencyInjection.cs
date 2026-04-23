@@ -28,8 +28,14 @@ namespace APPLICATION_LAYER
             // Bind EmailSettings from configuration
             services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
 
+            // Bind TwilioSettings from configuration
+            services.Configure<TwilioSettings>(configuration.GetSection("TwilioSettings"));
+
             // Register Email Service
             services.AddScoped<IEmailService, EmailService>();
+
+            // Register SMS Service
+            services.AddScoped<ISmsService, SmsService>();
 
             // Register Services
             services.AddScoped<IUserService, UserService>();

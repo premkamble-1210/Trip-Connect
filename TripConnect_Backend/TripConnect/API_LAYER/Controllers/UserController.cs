@@ -426,5 +426,73 @@ namespace API_LAYER.Controllers
                 return Redirect("http://localhost:4200/profile?emailVerified=false&reason=server_error");
             }
         }
+
+        /// <summary>
+        /// Request phone OTP — generates a 6-digit OTP and sends it via SMS (max 3 per user)
+        /// </summary>
+        /// <param name="id">User ID (must match authenticated user)</param>
+        /// <returns>Success message</returns>
+        [HttpPost("{id}/request-phone-verification")]
+        [Authorize]
+        public async Task<IActionResult> RequestPhoneVerification([FromRoute] int id)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (!int.TryParse(userIdClaim, out var claimUserId) || claimUserId != id)
+                {
+                    return Forbid();
+                }
+
+                await _userService.RequestPhoneVerificationAsync(id);
+                return Ok(new { success = true, message = "OTP sent to your registered phone number." });
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error sending phone OTP");
+                return StatusCode(500, new { success = false, message = "Failed to send OTP" });
+            }
+        }
+
+        /// <summary>
+        /// Verify phone OTP submitted by user
+        /// </summary>
+        /// <param name="id">User ID (must match authenticated user)</param>
+        /// <param name="dto">OTP code submitted by user</param>
+        /// <returns>Verification result</returns>
+        [HttpPost("{id}/verify-phone-otp")]
+        [Authorize]
+        public async Task<IActionResult> VerifyPhoneOtp([FromRoute] int id, [FromBody] VerifyPhoneOtpDto dto)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (!int.TryParse(userIdClaim, out var claimUserId) || claimUserId != id)
+                {
+                    return Forbid();
+                }
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                var result = await _userService.VerifyPhoneOtpAsync(id, dto.Otp);
+                return Ok(new { success = result, message = "Phone verified successfully." });
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error verifying phone OTP");
+                return StatusCode(500, new { success = false, message = "An error occurred during verification" });
+            }
+        }
     }
 }

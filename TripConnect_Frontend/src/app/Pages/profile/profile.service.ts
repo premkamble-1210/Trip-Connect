@@ -45,4 +45,18 @@ export class ProfileService {
       {}
     );
   }
+
+  requestPhoneVerification(userId: number): Observable<{ success: boolean; message: string }> {
+    return this.http.post<{ success: boolean; message: string }>(
+      `${this.base}/api/user/${userId}/request-phone-verification`,
+      {}
+    );
+  }
+
+  verifyPhoneOtp(userId: number, otp: string): Observable<{ success: boolean; message: string }> {
+    return this.http.post<{ success: boolean; message: string }>(
+      `${this.base}/api/user/${userId}/verify-phone-otp`,
+      { otp }
+    );
+  }
 }

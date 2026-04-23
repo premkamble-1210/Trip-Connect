@@ -83,13 +83,68 @@
             <span class="text-xs" [ngClass]="user.emailVerified ? 'text-green-600 font-semibold' : 'text-orange-600 font-semibold'">{{ user.emailVerified ? 'Verified' : 'Not Verified' }}</span>
           </div>
         </div>
+        <!-- Unified Verification Button -->
         <button
-          class="w-full py-2 bg-white border border-gray-300 rounded-md text-gray-600 text-xs font-semibold transition-all hover:border-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-          [ngClass]="{'cursor-pointer': !user.emailVerified && !isRequestingVerification}"
-          (click)="requestVerification()"
-          [disabled]="user.emailVerified || isRequestingVerification">
-          {{ isRequestingVerification ? 'Sending...' : user.emailVerified ? 'Email Verified' : 'Request Verification' }}
+          class="w-full py-2 bg-white border border-gray-300 rounded-md text-gray-600 text-xs font-semibold transition-all hover:border-gray-600 hover:bg-gray-50 cursor-pointer"
+          (click)="openVerificationSelector()">
+          Request Verification
         </button>
+
+        <!-- Verification Type Selector Popup -->
+        <div *ngIf="isVerificationSelectorOpen"
+          class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+          (click)="closeVerificationSelector()">
+          <div class="bg-white rounded-lg shadow-2xl w-11/12 sm:w-80 p-5"
+            (click)="$event.stopPropagation()">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-sm font-semibold text-gray-900">What would you like to verify?</h3>
+              <button class="text-gray-400 hover:text-gray-900 text-xl leading-none w-8 h-8 flex items-center justify-center" (click)="closeVerificationSelector()">✕</button>
+            </div>
+            <div class="flex flex-col gap-2">
+              <!-- Phone option -->
+              <button
+                class="flex items-center gap-3 p-3 border rounded-md text-sm text-gray-700 transition-all hover:border-blue-500 hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                [disabled]="user.phoneVerified"
+                (click)="selectVerificationType('phone')">
+                <svg class="w-5 h-5 text-blue-500 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                </svg>
+                <div class="text-left">
+                  <p class="font-semibold">Phone</p>
+                  <p class="text-xs text-gray-500">{{ user.phoneVerified ? 'Already verified' : 'Verify via SMS OTP' }}</p>
+                </div>
+              </button>
+              <!-- ID option -->
+              <button
+                class="flex items-center gap-3 p-3 border rounded-md text-sm text-gray-700 transition-all hover:border-purple-500 hover:bg-purple-50"
+                (click)="selectVerificationType('id')">
+                <svg class="w-5 h-5 text-purple-500 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5.04 6.71l-2.75 3.54-2.16-2.66c-.44-.53-1.25-.58-1.78-.15-.53.44-.58 1.25-.15 1.78l3 3.68c.28.34.7.53 1.13.53.48 0 .9-.22 1.18-.58l3.96-4.88c.44-.53.39-1.34-.15-1.78-.53-.44-1.34-.39-1.78.15z"/>
+                </svg>
+                <div class="text-left">
+                  <p class="font-semibold">ID Document</p>
+                  <p class="text-xs text-gray-500">Government-issued ID</p>
+                </div>
+              </button>
+              <!-- Email option -->
+              <button
+                class="flex items-center gap-3 p-3 border rounded-md text-sm text-gray-700 transition-all hover:border-green-500 hover:bg-green-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                [disabled]="user.emailVerified || isRequestingVerification"
+                (click)="selectVerificationType('email')">
+                <svg class="w-5 h-5 text-green-500 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                </svg>
+                <div class="text-left">
+                  <p class="font-semibold">Email</p>
+                  <p class="text-xs text-gray-500">{{ user.emailVerified ? 'Already verified' : isRequestingVerification ? 'Sending...' : 'Verify via email link' }}</p>
+                </div>
+              </button>
+            </div>
+            <p *ngIf="showIdComingSoon" class="text-xs text-purple-600 font-semibold mt-3 text-center">ID verification — feature coming soon.</p>
+          </div>
+        </div>
+
+        <p *ngIf="phoneVerificationMessage" class="text-xs text-green-600 font-semibold mt-2 text-center">{{ phoneVerificationMessage }}</p>
         <p *ngIf="verificationMessage" class="text-xs text-green-600 font-semibold mt-2 text-center">{{ verificationMessage }}</p>
         <p *ngIf="verificationError" class="text-xs text-red-600 font-semibold mt-2 text-center">{{ verificationError }}</p>
       </div>
@@ -101,6 +156,66 @@
 
   <!-- Tabs Component -->
   <app-profile-tabs></app-profile-tabs>
+
+  <!-- OTP Verification Modal -->
+  <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+    *ngIf="isOtpModalOpen"
+    (click)="closeOtpModal()">
+    <div class="bg-white rounded-lg shadow-2xl w-11/12 sm:w-full max-w-sm"
+      (click)="$event.stopPropagation()">
+      <div class="flex justify-between items-center p-4 border-b border-gray-200">
+        <h3 class="text-base font-semibold text-gray-900">Verify Phone Number</h3>
+        <button class="text-gray-400 hover:text-gray-900 text-xl leading-none w-8 h-8 flex items-center justify-center" (click)="closeOtpModal()">✕</button>
+      </div>
+      <div class="p-5">
+        <p *ngIf="isRequestingPhoneOtp" class="text-sm text-gray-500 text-center mb-4">Sending OTP to your phone...</p>
+        <p *ngIf="!isRequestingPhoneOtp" class="text-sm text-gray-600 mb-4 text-center">
+          Enter the 6-digit code sent to <strong>{{ user.phone }}</strong>
+        </p>
+        <!-- 6-digit OTP input row -->
+        <div class="flex gap-2 justify-center mb-4" (paste)="onOtpPaste($event)">
+          <input id="otp-0" type="text" inputmode="numeric" maxlength="1"
+            (input)="onOtpInput($event, 0)" (keydown)="onOtpKeydown($event, 0)"
+            class="w-10 h-12 border-2 border-gray-300 rounded-md text-center text-lg font-bold focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all"
+            [disabled]="isRequestingPhoneOtp" autocomplete="off">
+          <input id="otp-1" type="text" inputmode="numeric" maxlength="1"
+            (input)="onOtpInput($event, 1)" (keydown)="onOtpKeydown($event, 1)"
+            class="w-10 h-12 border-2 border-gray-300 rounded-md text-center text-lg font-bold focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all"
+            [disabled]="isRequestingPhoneOtp" autocomplete="off">
+          <input id="otp-2" type="text" inputmode="numeric" maxlength="1"
+            (input)="onOtpInput($event, 2)" (keydown)="onOtpKeydown($event, 2)"
+            class="w-10 h-12 border-2 border-gray-300 rounded-md text-center text-lg font-bold focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all"
+            [disabled]="isRequestingPhoneOtp" autocomplete="off">
+          <input id="otp-3" type="text" inputmode="numeric" maxlength="1"
+            (input)="onOtpInput($event, 3)" (keydown)="onOtpKeydown($event, 3)"
+            class="w-10 h-12 border-2 border-gray-300 rounded-md text-center text-lg font-bold focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all"
+            [disabled]="isRequestingPhoneOtp" autocomplete="off">
+          <input id="otp-4" type="text" inputmode="numeric" maxlength="1"
+            (input)="onOtpInput($event, 4)" (keydown)="onOtpKeydown($event, 4)"
+            class="w-10 h-12 border-2 border-gray-300 rounded-md text-center text-lg font-bold focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all"
+            [disabled]="isRequestingPhoneOtp" autocomplete="off">
+          <input id="otp-5" type="text" inputmode="numeric" maxlength="1"
+            (input)="onOtpInput($event, 5)" (keydown)="onOtpKeydown($event, 5)"
+            class="w-10 h-12 border-2 border-gray-300 rounded-md text-center text-lg font-bold focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all"
+            [disabled]="isRequestingPhoneOtp" autocomplete="off">
+        </div>
+        <p *ngIf="otpError" class="text-xs text-red-600 font-semibold text-center mb-3">{{ otpError }}</p>
+        <div class="flex gap-2">
+          <button type="button"
+            class="flex-1 py-2 bg-gray-100 border border-gray-300 rounded-md text-gray-600 text-xs font-semibold cursor-pointer transition-all hover:bg-gray-200"
+            (click)="closeOtpModal()">
+            Cancel
+          </button>
+          <button type="button"
+            class="flex-1 py-2 bg-blue-600 text-white text-xs font-semibold cursor-pointer rounded-md transition-all hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            [disabled]="isVerifyingOtp || isRequestingPhoneOtp || !isOtpComplete()"
+            (click)="submitOtp()">
+            {{ isVerifyingOtp ? 'Verifying...' : 'Verify' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Edit Modal -->
   <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" *ngIf="isEditModalOpen" (click)="closeEditModal()">
