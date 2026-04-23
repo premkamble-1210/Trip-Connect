@@ -1028,6 +1028,22 @@
   },
   {
     "ContainingType": "API_LAYER.Controllers.UserController",
+    "Method": "RequestPhoneVerification",
+    "RelativePath": "api/User/{id}/request-phone-verification",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API_LAYER.Controllers.UserController",
     "Method": "VerifyId",
     "RelativePath": "api/User/{id}/verify-id",
     "HttpMethod": "POST",
@@ -1053,6 +1069,27 @@
       {
         "Name": "id",
         "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API_LAYER.Controllers.UserController",
+    "Method": "VerifyPhoneOtp",
+    "RelativePath": "api/User/{id}/verify-phone-otp",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "APPLICATION_LAYER.DTOs.User.VerifyPhoneOtpDto",
         "IsRequired": true
       }
     ],

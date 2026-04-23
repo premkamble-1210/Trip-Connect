@@ -324,6 +324,15 @@ namespace INFRASTRUCTURE_LAYER.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PhoneOtpCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("PhoneOtpExpiry")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PhoneOtpRequestCount")
+                        .HasColumnType("int");
+
                     b.Property<bool>("PhoneVerified")
                         .HasColumnType("bit");
 

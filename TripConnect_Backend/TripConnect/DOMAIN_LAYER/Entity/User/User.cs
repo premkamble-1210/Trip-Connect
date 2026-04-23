@@ -92,6 +92,21 @@ namespace DOMAIN_LAYER.Entity.User
         /// </summary>
         public DateTime? EmailVerificationTokenExpiry { get; set; }
 
+        /// <summary>
+        /// HMACSHA256-hashed phone OTP code (nullable, cleared after successful verification)
+        /// </summary>
+        public string? PhoneOtpCode { get; set; }
+
+        /// <summary>
+        /// Expiry time for the phone OTP (10 minutes from generation)
+        /// </summary>
+        public DateTime? PhoneOtpExpiry { get; set; }
+
+        /// <summary>
+        /// Number of OTP send requests made; resets on successful phone verification (max 3)
+        /// </summary>
+        public int PhoneOtpRequestCount { get; set; } = 0;
+
     /// <summary>
     /// Navigation property - Trips created by this user (1:M)
     /// </summary>

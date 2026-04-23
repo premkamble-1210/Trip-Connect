@@ -874,12 +874,26 @@
           }
         }
       },
+      "Twilio/7.6.0": {
+        "dependencies": {
+          "Microsoft.IdentityModel.Tokens": "8.14.0",
+          "Newtonsoft.Json": "13.0.3",
+          "System.IdentityModel.Tokens.Jwt": "8.0.1"
+        },
+        "runtime": {
+          "lib/net6.0/Twilio.dll": {
+            "assemblyVersion": "7.6.0.0",
+            "fileVersion": "7.6.0.0"
+          }
+        }
+      },
       "APPLICATION_LAYER/1.0.0": {
         "dependencies": {
           "AutoMapper": "16.1.1",
           "DOMAIN_LAYER": "1.0.0",
           "INFRASTRUCTURE_LAYER": "1.0.0",
-          "MailKit": "4.16.0"
+          "MailKit": "4.16.0",
+          "Twilio": "7.6.0"
         },
         "runtime": {
           "APPLICATION_LAYER.dll": {
@@ -1303,6 +1317,13 @@
       "sha512": "sha512-o94k2RKuAce3GeDMlUvIXlhVa1kWpJw95E6C9LwW0KlG0nj5+SgCiIxJ2Eroqb9sLtG1mEMbFttZIBZ13EJPvQ==",
       "path": "system.security.cryptography.protecteddata/9.0.4",
       "hashPath": "system.security.cryptography.protecteddata.9.0.4.nupkg.sha512"
+    },
+    "Twilio/7.6.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-OmPcH5NBlKALxHfQgQs8hYNjIW0d54Qxi4rLtSs9aBmIWGvb/1QrPz9LTjJUy+NDtXi49StDbS+bdokJCExAhQ==",
+      "path": "twilio/7.6.0",
+      "hashPath": "twilio.7.6.0.nupkg.sha512"
     },
     "APPLICATION_LAYER/1.0.0": {
       "type": "project",

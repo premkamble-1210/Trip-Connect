@@ -677,6 +677,19 @@
           }
         }
       },
+      "Newtonsoft.Json/13.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/Newtonsoft.Json.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/Newtonsoft.Json.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "Serilog/4.3.1": {
         "type": "package",
         "compile": {
@@ -841,6 +854,24 @@
         },
         "build": {
           "buildTransitive/net8.0/_._": {}
+        }
+      },
+      "Twilio/7.6.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.IdentityModel.Tokens": "6.34.0",
+          "Newtonsoft.Json": "13.0.1",
+          "System.IdentityModel.Tokens.Jwt": "6.34.0"
+        },
+        "compile": {
+          "lib/net6.0/Twilio.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/Twilio.dll": {
+            "related": ".xml"
+          }
         }
       },
       "DOMAIN_LAYER/1.0.0": {
@@ -1884,6 +1915,33 @@
         "mimekit.nuspec"
       ]
     },
+    "Newtonsoft.Json/13.0.1": {
+      "sha512": "ppPFpBcvxdsfUonNcvITKqLl3bqxWbDCZIzDWHzjpdAHRFfZe0Dw9HmA0+za13IdyrgJwpkDTDA9fHaxOrt20A==",
+      "type": "package",
+      "path": "newtonsoft.json/13.0.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.md",
+        "lib/net20/Newtonsoft.Json.dll",
+        "lib/net20/Newtonsoft.Json.xml",
+        "lib/net35/Newtonsoft.Json.dll",
+        "lib/net35/Newtonsoft.Json.xml",
+        "lib/net40/Newtonsoft.Json.dll",
+        "lib/net40/Newtonsoft.Json.xml",
+        "lib/net45/Newtonsoft.Json.dll",
+        "lib/net45/Newtonsoft.Json.xml",
+        "lib/netstandard1.0/Newtonsoft.Json.dll",
+        "lib/netstandard1.0/Newtonsoft.Json.xml",
+        "lib/netstandard1.3/Newtonsoft.Json.dll",
+        "lib/netstandard1.3/Newtonsoft.Json.xml",
+        "lib/netstandard2.0/Newtonsoft.Json.dll",
+        "lib/netstandard2.0/Newtonsoft.Json.xml",
+        "newtonsoft.json.13.0.1.nupkg.sha512",
+        "newtonsoft.json.nuspec",
+        "packageIcon.png"
+      ]
+    },
     "Serilog/4.3.1": {
       "sha512": "savYe7h5yRlkqBVOwP8cIRDOdqKiPmYCU4W87JH38sBmcKD5EBoXvQIw6bNEvZ/pTe1gsiye3VFCzBsoppGkXQ==",
       "type": "package",
@@ -2142,6 +2200,26 @@
         "useSharedDesignerContext.txt"
       ]
     },
+    "Twilio/7.6.0": {
+      "sha512": "OmPcH5NBlKALxHfQgQs8hYNjIW0d54Qxi4rLtSs9aBmIWGvb/1QrPz9LTjJUy+NDtXi49StDbS+bdokJCExAhQ==",
+      "type": "package",
+      "path": "twilio/7.6.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "lib/net35/Twilio.dll",
+        "lib/net35/Twilio.xml",
+        "lib/net462/Twilio.dll",
+        "lib/net462/Twilio.xml",
+        "lib/net6.0/Twilio.dll",
+        "lib/net6.0/Twilio.xml",
+        "lib/netstandard2.1/Twilio.dll",
+        "lib/netstandard2.1/Twilio.xml",
+        "twilio.7.6.0.nupkg.sha512",
+        "twilio.nuspec"
+      ]
+    },
     "DOMAIN_LAYER/1.0.0": {
       "type": "project",
       "path": "../DOMAIN_LAYER/DOMAIN_LAYER.csproj",
@@ -2159,7 +2237,8 @@
       "DOMAIN_LAYER >= 1.0.0",
       "INFRASTRUCTURE_LAYER >= 1.0.0",
       "MailKit >= 4.16.0",
-      "Microsoft.Extensions.Options.ConfigurationExtensions >= 10.0.7"
+      "Microsoft.Extensions.Options.ConfigurationExtensions >= 10.0.7",
+      "Twilio >= 7.6.0"
     ]
   },
   "packageFolders": {
@@ -2230,6 +2309,10 @@
           "Microsoft.Extensions.Options.ConfigurationExtensions": {
             "target": "Package",
             "version": "[10.0.7, )"
+          },
+          "Twilio": {
+            "target": "Package",
+            "version": "[7.6.0, )"
           }
         },
         "imports": [
