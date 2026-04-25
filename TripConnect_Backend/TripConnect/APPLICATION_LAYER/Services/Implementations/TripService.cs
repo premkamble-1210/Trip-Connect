@@ -33,6 +33,9 @@ namespace APPLICATION_LAYER.Services.Implementations
                 newTrip.Status = TripStatus.Planned;
                 newTrip.CreatedAt = DateTime.UtcNow;
 
+                if (createTripDto.TripDays?.Any() == true)
+                    newTrip.TripDays = _mapper.Map<List<TripDay>>(createTripDto.TripDays);
+
                 await _unitOfWork.Trips.AddAsync(newTrip);
                 await _unitOfWork.SaveChangesAsync();
 
@@ -194,6 +197,18 @@ namespace APPLICATION_LAYER.Services.Implementations
 
                 // Map DTO to trip entity
                 _mapper.Map(updateTripDto, trip);
+
+                // Replace TripDays if provided
+                if (updateTripDto.TripDays != null)
+                {
+                    trip.TripDays.Clear();
+                    foreach (var dayDto in updateTripDto.TripDays)
+                    {
+                        var day = _mapper.Map<TripDay>(dayDto);
+                        day.TripId = trip.Id;
+                        trip.TripDays.Add(day);
+                    }
+                }
 
                 await _unitOfWork.Trips.UpdateAsync(trip);
                 await _unitOfWork.SaveChangesAsync();

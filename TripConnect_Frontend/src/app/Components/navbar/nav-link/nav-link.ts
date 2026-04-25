@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-nav-link',
@@ -12,6 +12,11 @@ import { RouterModule } from '@angular/router';
   }
 })
 export class NavLink {
+  constructor(private router: Router) {}
   @Input() label: string = '';
   @Input() route: string = '';
+
+  isRouteActive(): boolean {
+    return this.router.isActive(this.route, { paths: 'exact', queryParams: 'exact', fragment: 'ignored', matrixParams: 'ignored' });
+  }
 }

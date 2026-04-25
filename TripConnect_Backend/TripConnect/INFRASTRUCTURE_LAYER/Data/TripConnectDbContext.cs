@@ -64,6 +64,11 @@ namespace INFRASTRUCTURE_LAYER.Data
         /// </summary>
         public DbSet<TripRating> TripRatings { get; set; }
 
+        /// <summary>
+        /// Trip Days (Itinerary) table
+        /// </summary>
+        public DbSet<TripDay> TripDays { get; set; }
+
         #endregion
 
         /// <summary>
@@ -165,6 +170,12 @@ namespace INFRASTRUCTURE_LAYER.Data
                 .HasMany(t => t.Ratings)
                 .WithOne(r => r.Trip)
                 .HasForeignKey(r => r.TripId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Trip>()
+                .HasMany(t => t.TripDays)
+                .WithOne(td => td.Trip)
+                .HasForeignKey(td => td.TripId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // Configure TripRequest entity

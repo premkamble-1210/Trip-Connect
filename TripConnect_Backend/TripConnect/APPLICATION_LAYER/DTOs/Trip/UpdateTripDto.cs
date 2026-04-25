@@ -14,5 +14,6 @@ namespace APPLICATION_LAYER.DTOs.Trip
         public int Seats { get; set; }
         public string TravelType { get; set; }
         public string? ImgUrl { get; set; }
+        public List<TripDayDto>? TripDays { get; set; }
     }
 }

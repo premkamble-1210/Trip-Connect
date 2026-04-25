@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, computed, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, computed, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TripMemberList } from '../../Components/trip-member-list/trip-member-list';
@@ -7,6 +7,7 @@ import { TripService } from '../../services/trip.service';
 import { JoinRequestService } from '../../services/join-request.service';
 import { AuthService } from '../../services/auth.service';
 import { TripResponseDto, TripMemberResponseDto } from '../../models/api.types';
+import type { ItineraryDay } from '../../Components/trip-itinerary/trip-itinerary';
 
 @Component({
   selector: 'app-trip',
@@ -14,7 +15,7 @@ import { TripResponseDto, TripMemberResponseDto } from '../../models/api.types';
   templateUrl: './trip.html',
   styleUrl: './trip.css'
 })
-export class Trip implements OnInit {
+export class Trip implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly tripService = inject(TripService);
@@ -34,9 +35,13 @@ export class Trip implements OnInit {
     return trip ? trip.hostId === this.authService.getCurrentUserId() : false;
   });
 
-  // Placeholder arrays until itinerary/members endpoints are available
-  itinerary: { day: string; dateString: string; image: string }[] = [];
+  itinerary: ItineraryDay[] = [];
   members: { userId: number; name: string; role: string; avatar: string }[] = [];
+
+  // Slider state
+  sliderImages: string[] = [];
+  currentSlide = signal(0);
+  private sliderInterval: ReturnType<typeof setInterval> | null = null;
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -46,7 +51,8 @@ export class Trip implements OnInit {
       next: (trip) => {
         this.tripData.set(trip);
         this.isLoading.set(false);
-        this.buildItinerary(trip);
+        this.itinerary = this.mapTripDaysToItinerary(trip);
+        this.buildSliderImages(trip);
       },
       error: () => {
         this.isLoading.set(false);
@@ -76,22 +82,63 @@ export class Trip implements OnInit {
     });
   }
 
-  buildItinerary(trip: TripResponseDto): void {
-    const start = new Date(trip.startDate);
-    const end = new Date(trip.endDate);
-    const days: typeof this.itinerary = [];
-    let current = new Date(start);
-    let dayNum = 1;
-    while (current <= end && dayNum <= 10) {
-      days.push({
-        day: `Day ${dayNum}`,
-        dateString: current.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
-        image: trip.imgUrl || 'https://via.placeholder.com/400x200?text=Itinerary+Image'
-      });
-      current.setDate(current.getDate() + 1);
-      dayNum++;
+  buildSliderImages(trip: TripResponseDto): void {
+    const images: string[] = [];
+    if (trip.imgUrl) images.push(trip.imgUrl);
+    for (const day of (trip.tripDays ?? [])) {
+      if (day.imgUrl && !images.includes(day.imgUrl)) images.push(day.imgUrl);
     }
-    this.itinerary = days;
+    this.sliderImages = images;
+    this.currentSlide.set(0);
+    if (images.length > 1) {
+      this.sliderInterval = setInterval(() => {
+        this.currentSlide.update(i => (i + 1) % this.sliderImages.length);
+      }, 4000);
+    }
+  }
+
+  prevSlide(): void {
+    this.currentSlide.update(i => (i - 1 + this.sliderImages.length) % this.sliderImages.length);
+    this.resetInterval();
+  }
+
+  nextSlide(): void {
+    this.currentSlide.update(i => (i + 1) % this.sliderImages.length);
+    this.resetInterval();
+  }
+
+  goToSlide(index: number): void {
+    this.currentSlide.set(index);
+    this.resetInterval();
+  }
+
+  private resetInterval(): void {
+    if (this.sliderInterval) clearInterval(this.sliderInterval);
+    if (this.sliderImages.length > 1) {
+      this.sliderInterval = setInterval(() => {
+        this.currentSlide.update(i => (i + 1) % this.sliderImages.length);
+      }, 4000);
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.sliderInterval) clearInterval(this.sliderInterval);
+  }
+
+  mapTripDaysToItinerary(trip: TripResponseDto): ItineraryDay[] {
+    if (!trip.tripDays?.length) return [];
+    return trip.tripDays
+      .slice()
+      .sort((a, b) => a.day - b.day)
+      .map(td => ({
+        day: `Day ${td.day}`,
+        location: td.location,
+        dateString: td.date
+          ? new Date(td.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
+          : '',
+        description: td.description,
+        image: td.imgUrl ?? trip.imgUrl
+      }));
   }
 
   requestToJoin(): void {

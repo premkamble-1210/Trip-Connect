@@ -1,12 +1,14 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TripService } from '../../services/trip.service';
 import { AuthService } from '../../services/auth.service';
+import { TripDayDto } from '../../models/api.types';
 
 @Component({
   selector: 'app-edit-trip',
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './edit-trip.html',
   styleUrl: './edit-trip.css',
 })
@@ -32,6 +34,7 @@ export class EditTrip implements OnInit {
   imageUrl = signal('');
   travelType = signal('');
 
+  tripDays = signal<TripDayDto[]>([]);
   errors = signal<Record<string, string>>({});
   isLoading = signal(false);
   isFetching = signal(true);
@@ -57,6 +60,18 @@ export class EditTrip implements OnInit {
         this.seats.set(trip.seats);
         this.travelType.set(trip.travelType);
         this.imageUrl.set(trip.imgUrl || '');
+        this.tripDays.set(
+          (trip.tripDays ?? [])
+            .slice()
+            .sort((a, b) => a.day - b.day)
+            .map(td => ({
+              day: td.day,
+              location: td.location ?? '',
+              date: td.date ?? '',
+              description: td.description ?? '',
+              imgUrl: td.imgUrl ?? ''
+            }))
+        );
         this.isFetching.set(false);
       },
       error: () => {
@@ -64,6 +79,22 @@ export class EditTrip implements OnInit {
         this.errors.set({ general: 'Failed to load trip data.' });
       }
     });
+  }
+
+  addTripDay(): void {
+    const existing = this.tripDays();
+    this.tripDays.set([...existing, { day: existing.length + 1, location: '', date: '', description: '', imgUrl: '' }]);
+  }
+
+  removeTripDay(index: number): void {
+    const updated = this.tripDays().filter((_, i) => i !== index);
+    this.tripDays.set(updated.map((d, i) => ({ ...d, day: i + 1 })));
+  }
+
+  updateTripDay(index: number, field: keyof TripDayDto, value: string | number): void {
+    const days = [...this.tripDays()];
+    days[index] = { ...days[index], [field]: value };
+    this.tripDays.set(days);
   }
 
   updateTrip(): void {
@@ -100,7 +131,8 @@ export class EditTrip implements OnInit {
       endDate: this.endDate(),
       seats: this.seats()!,
       travelType: this.travelType(),
-      ImgUrl: this.imageUrl() || undefined
+      ImgUrl: this.imageUrl() || undefined,
+      tripDays: this.tripDays().length > 0 ? this.tripDays() : undefined
     }).subscribe({
       next: (trip) => {
         this.isLoading.set(false);

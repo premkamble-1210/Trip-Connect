@@ -14,9 +14,44 @@
     <!-- Left Column (Main Content) -->
     <div class="flex-1 w-full flex flex-col gap-8">
 
-      <!-- Big Hero Image -->
-      <div class="w-full h-[360px] md:h-[450px] rounded-2xl overflow-hidden shadow-sm">
-        <img src="{{ tripData()!.imgUrl }}" alt="Cover Image" class="w-full h-full object-cover">
+      <!-- Big Hero Image Slider -->
+      <div class="relative w-full h-[360px] md:h-[450px] rounded-2xl overflow-hidden shadow-sm group">
+
+        <!-- Slides -->
+        @for (img of sliderImages; track img; let i = $index) {
+          <img [src]="img" alt="Trip image {{ i + 1 }}"
+            class="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
+            [class.opacity-100]="currentSlide() === i"
+            [class.opacity-0]="currentSlide() !== i" />
+        }
+
+        <!-- Prev / Next arrows (visible on hover) -->
+        @if (sliderImages.length > 1) {
+          <button (click)="prevSlide()"
+            class="absolute left-3 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white rounded-full w-9 h-9 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+          </button>
+          <button (click)="nextSlide()"
+            class="absolute right-3 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white rounded-full w-9 h-9 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+          </button>
+
+          <!-- Dot indicators -->
+          <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+            @for (img of sliderImages; track img; let i = $index) {
+              <button (click)="goToSlide(i)"
+                class="rounded-full transition-all duration-300"
+                [class]="currentSlide() === i ? 'w-5 h-2 bg-white' : 'w-2 h-2 bg-white/50 hover:bg-white/80'">
+              </button>
+            }
+          </div>
+
+          <!-- Slide counter -->
+          <div class="absolute top-3 right-3 bg-black/40 text-white text-xs font-medium px-2.5 py-1 rounded-full z-10">
+            {{ currentSlide() + 1 }} / {{ sliderImages.length }}
+          </div>
+        }
+
       </div>
 
       <!-- Expanded Description -->

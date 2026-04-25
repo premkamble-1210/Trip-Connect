@@ -1914,6 +1914,13 @@
           "imgUrl": {
             "type": "string",
             "nullable": true
+          },
+          "tripDays": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TripDayDto"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -2006,6 +2013,32 @@
         },
         "additionalProperties": false
       },
+      "TripDayDto": {
+        "type": "object",
+        "properties": {
+          "day": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "location": {
+            "type": "string",
+            "nullable": true
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "imgUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "UpdateTripDto": {
         "type": "object",
         "properties": {
@@ -2043,6 +2076,13 @@
           },
           "imgUrl": {
             "type": "string",
+            "nullable": true
+          },
+          "tripDays": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TripDayDto"
+            },
             "nullable": true
           }
         },

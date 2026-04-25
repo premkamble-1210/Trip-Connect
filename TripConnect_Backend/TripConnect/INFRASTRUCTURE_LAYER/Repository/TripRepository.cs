@@ -15,6 +15,16 @@ namespace INFRASTRUCTURE_LAYER.Repository
         }
 
         /// <summary>
+        /// Get trip by ID with TripDays eagerly loaded
+        /// </summary>
+        public override async Task<Trip> GetByIdAsync(int id)
+        {
+            return await _dbSet
+                .Include(t => t.TripDays)
+                .FirstOrDefaultAsync(t => t.Id == id);
+        }
+
+        /// <summary>
         /// Get trips by status
         /// </summary>
         public async Task<IEnumerable<Trip>> GetTripsByStatusAsync(TripStatus status)
@@ -95,6 +105,7 @@ namespace INFRASTRUCTURE_LAYER.Repository
                                .Include(t => t.TripRequests)
                                .Include(t => t.Expenses)
                                .Include(t => t.Ratings)
+                               .Include(t => t.TripDays)
                                .FirstOrDefaultAsync(t => t.Id == tripId);
         }
     }

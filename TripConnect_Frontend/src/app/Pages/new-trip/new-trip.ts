@@ -1,12 +1,14 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TripService } from '../../services/trip.service';
 import { AuthService } from '../../services/auth.service';
+import { TripDayDto } from '../../models/api.types';
 
 @Component({
   selector: 'app-new-trip',
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './new-trip.html',
   styleUrl: './new-trip.css',
 })
@@ -30,6 +32,7 @@ export class NewTrip {
   imageUrl = signal('');
   travelType = signal('');
 
+  tripDays = signal<TripDayDto[]>([]);
   errors = signal<Record<string, string>>({});
   isLoading = signal(false);
 
@@ -40,6 +43,22 @@ export class NewTrip {
     { value: 'Cultural', label: 'Cultural' },
     { value: 'Wellness', label: 'Wellness' }
   ]);
+
+  addTripDay(): void {
+    const existing = this.tripDays();
+    this.tripDays.set([...existing, { day: existing.length + 1, location: '', date: '', description: '', imgUrl: '' }]);
+  }
+
+  removeTripDay(index: number): void {
+    const updated = this.tripDays().filter((_, i) => i !== index);
+    this.tripDays.set(updated.map((d, i) => ({ ...d, day: i + 1 })));
+  }
+
+  updateTripDay(index: number, field: keyof TripDayDto, value: string | number): void {
+    const days = [...this.tripDays()];
+    days[index] = { ...days[index], [field]: value };
+    this.tripDays.set(days);
+  }
 
   createTrip(): void {
     const errs: Record<string, string> = {};
@@ -75,7 +94,8 @@ export class NewTrip {
       endDate: this.endDate(),
       seats: this.seats()!,
       travelType: this.travelType(),
-      ImgUrl: this.imageUrl()
+      ImgUrl: this.imageUrl(),
+      tripDays: this.tripDays().length > 0 ? this.tripDays() : undefined
     }).subscribe({
       next: (trip) => {
         this.isLoading.set(false);

@@ -46,26 +46,18 @@ builder.Services.AddAuthentication(options =>
     // Custom JWT Bearer events for error handling
     options.Events = new JwtBearerEvents
     {
-        OnAuthenticationFailed = context =>
+        OnChallenge = async context =>
         {
-            if (context.Exception is SecurityTokenExpiredException)
-            {
-                context.Response.StatusCode = 401;
-                context.Response.ContentType = "application/json";
-                return context.Response.WriteAsJsonAsync(new 
-                { 
-                    success = false, 
-                    message = "Token has expired",
-                    errorCode = "TOKEN_EXPIRED"
-                });
-            }
+            context.HandleResponse(); // prevents default 401 WWW-Authenticate challenge
             context.Response.StatusCode = 401;
             context.Response.ContentType = "application/json";
-            return context.Response.WriteAsJsonAsync(new 
-            { 
-                success = false, 
-                message = "Authentication failed",
-                errorCode = "AUTH_FAILED"
+
+            var isExpired = context.AuthenticateFailure is SecurityTokenExpiredException;
+            await context.Response.WriteAsJsonAsync(new
+            {
+                success = false,
+                message = isExpired ? "Token has expired" : "Authentication failed",
+                errorCode = isExpired ? "TOKEN_EXPIRED" : "AUTH_FAILED"
             });
         },
         OnForbidden = context =>

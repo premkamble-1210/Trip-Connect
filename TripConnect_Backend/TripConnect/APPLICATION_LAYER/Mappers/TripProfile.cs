@@ -23,6 +23,15 @@ namespace APPLICATION_LAYER.Mappers
             // UpdateTripDto → Trip
             CreateMap<UpdateTripDto, Trip>()
                 .ForMember(dest => dest.ImgUrl, opt => opt.Condition(src => !string.IsNullOrEmpty(src.ImgUrl)));
+
+            // TripDay → TripDayResponseDto
+            CreateMap<TripDay, TripDayResponseDto>();
+
+            // TripDayDto → TripDay
+            CreateMap<TripDayDto, TripDay>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.TripId, opt => opt.Ignore())
+                .ForMember(dest => dest.Trip, opt => opt.Ignore());
         }
     }
 }

@@ -19,5 +19,6 @@ namespace APPLICATION_LAYER.DTOs.Trip
         public int HostId { get; set; }
         public string HostName { get; set; }
         public DateTime CreatedAt { get; set; }
+        public List<TripDayResponseDto> TripDays { get; set; } = new();
     }
 }

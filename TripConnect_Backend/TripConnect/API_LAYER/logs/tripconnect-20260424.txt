@@ -1,0 +1,102 @@
+2026-04-24 21:10:17.555 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-24 21:10:45.937 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-24 21:10:48.374 +05:30 [INF] Fetching trip: 1
+2026-04-24 21:10:48.374 +05:30 [INF] Fetching trips for user: 3
+2026-04-24 21:10:48.376 +05:30 [INF] Fetching members for trip: 1
+2026-04-24 21:12:13.699 +05:30 [INF] Login attempt for username: premkamble2
+2026-04-24 21:12:13.735 +05:30 [INF] Refresh token generated
+2026-04-24 21:12:14.076 +05:30 [INF] User logged in successfully: 3
+2026-04-24 21:12:14.099 +05:30 [INF] Access token generated for user: 3
+2026-04-24 21:12:14.163 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-24 21:12:16.094 +05:30 [INF] Fetching user: 3
+2026-04-24 21:12:16.158 +05:30 [INF] Fetching trips created by user: 3
+2026-04-24 21:12:24.704 +05:30 [INF] Fetching trip: 1
+2026-04-24 21:12:24.752 +05:30 [INF] Fetching all requests for trip: 1
+2026-04-24 21:12:28.726 +05:30 [INF] Fetching user: 5
+2026-04-24 21:12:28.744 +05:30 [INF] Fetching trips created by user: 5
+2026-04-24 21:12:30.905 +05:30 [INF] Fetching trips for user: 5
+2026-04-24 21:12:46.655 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-24 21:12:49.586 +05:30 [INF] Fetching user: 3
+2026-04-24 21:12:49.602 +05:30 [INF] Fetching trips created by user: 3
+2026-04-24 21:13:03.304 +05:30 [INF] Fetching user: 3
+2026-04-24 21:13:03.317 +05:30 [INF] Fetching trips created by user: 3
+2026-04-24 21:13:05.791 +05:30 [INF] Fetching trip: 1
+2026-04-24 21:13:05.792 +05:30 [INF] Fetching all requests for trip: 1
+2026-04-24 21:13:07.803 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-24 21:13:08.749 +05:30 [INF] Fetching trip: 1
+2026-04-24 21:13:08.781 +05:30 [INF] Fetching trips for user: 3
+2026-04-24 21:13:08.781 +05:30 [INF] Fetching members for trip: 1
+2026-04-24 21:19:52.686 +05:30 [INF] Fetching trip: 1
+2026-04-24 21:19:52.688 +05:30 [INF] Fetching all requests for trip: 1
+2026-04-24 21:20:03.803 +05:30 [INF] Fetching user: 3
+2026-04-24 21:20:03.815 +05:30 [INF] Fetching trips created by user: 3
+2026-04-24 21:20:09.089 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-24 21:20:10.388 +05:30 [INF] Fetching trip: 1
+2026-04-24 21:20:10.388 +05:30 [INF] Fetching trips for user: 3
+2026-04-24 21:20:10.388 +05:30 [INF] Fetching members for trip: 1
+2026-04-24 21:25:27.750 +05:30 [INF] Fetching user: 3
+2026-04-24 21:25:27.764 +05:30 [INF] Fetching trips created by user: 3
+2026-04-24 21:25:31.186 +05:30 [INF] Fetching trip: 2
+2026-04-24 21:25:37.524 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-24 21:25:41.605 +05:30 [INF] Fetching user: 3
+2026-04-24 21:25:41.618 +05:30 [INF] Fetching trips created by user: 3
+2026-04-24 21:25:48.055 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-24 21:26:53.609 +05:30 [INF] Fetching trip: 1
+2026-04-24 21:26:53.609 +05:30 [INF] Fetching trips for user: 3
+2026-04-24 21:26:53.609 +05:30 [INF] Fetching members for trip: 1
+2026-04-24 21:30:03.427 +05:30 [INF] Fetching trip: 1
+2026-04-24 21:30:03.460 +05:30 [INF] Fetching trips for user: 3
+2026-04-24 21:30:03.471 +05:30 [INF] Fetching members for trip: 1
+2026-04-24 21:33:02.448 +05:30 [INF] Fetching trip: 1
+2026-04-24 21:33:02.448 +05:30 [INF] Fetching trips for user: 3
+2026-04-24 21:33:02.497 +05:30 [INF] Fetching members for trip: 1
+2026-04-24 21:35:47.340 +05:30 [INF] Fetching trip: 1
+2026-04-24 21:35:47.356 +05:30 [INF] Fetching trips for user: 3
+2026-04-24 21:35:47.393 +05:30 [INF] Fetching members for trip: 1
+2026-04-24 21:38:59.352 +05:30 [INF] Fetching trips for user: 3
+2026-04-24 21:38:59.365 +05:30 [INF] Fetching trip: 1
+2026-04-24 21:38:59.365 +05:30 [INF] Fetching members for trip: 1
+2026-04-24 21:41:16.788 +05:30 [INF] Fetching trips for user: 3
+2026-04-24 21:41:16.788 +05:30 [INF] Fetching trip: 1
+2026-04-24 21:41:16.792 +05:30 [INF] Fetching members for trip: 1
+2026-04-24 21:45:15.906 +05:30 [INF] Fetching trip: 1
+2026-04-24 21:45:15.911 +05:30 [INF] Fetching trips for user: 3
+2026-04-24 21:45:15.911 +05:30 [INF] Fetching members for trip: 1
+2026-04-24 21:47:01.508 +05:30 [INF] Fetching trip: 1
+2026-04-24 21:47:01.508 +05:30 [INF] Fetching members for trip: 1
+2026-04-24 21:47:01.511 +05:30 [INF] Fetching trips for user: 3
+2026-04-24 21:47:09.228 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-24 21:47:10.736 +05:30 [INF] Fetching trips for user: 3
+2026-04-24 21:47:10.736 +05:30 [INF] Fetching trip: 1
+2026-04-24 21:47:10.736 +05:30 [INF] Fetching members for trip: 1
+2026-04-24 21:50:39.385 +05:30 [INF] Fetching trips for user: 3
+2026-04-24 21:50:39.385 +05:30 [INF] Fetching trip: 1
+2026-04-24 21:50:39.385 +05:30 [INF] Fetching members for trip: 1
+2026-04-24 21:53:49.387 +05:30 [INF] Fetching trip: 1
+2026-04-24 21:53:49.394 +05:30 [INF] Fetching trips for user: 3
+2026-04-24 21:53:49.394 +05:30 [INF] Fetching members for trip: 1
+2026-04-24 21:55:31.355 +05:30 [INF] Fetching trip: 1
+2026-04-24 21:55:31.359 +05:30 [INF] Fetching trips for user: 3
+2026-04-24 21:55:31.364 +05:30 [INF] Fetching members for trip: 1
+2026-04-24 21:58:41.348 +05:30 [INF] Fetching trip: 1
+2026-04-24 21:58:41.354 +05:30 [INF] Fetching trips for user: 3
+2026-04-24 21:58:41.354 +05:30 [INF] Fetching members for trip: 1
+2026-04-24 21:58:51.318 +05:30 [INF] Fetching trip: 1
+2026-04-24 21:58:51.326 +05:30 [INF] Fetching trips for user: 3
+2026-04-24 21:58:51.343 +05:30 [INF] Fetching members for trip: 1
+2026-04-24 22:01:13.836 +05:30 [INF] Fetching members for trip: 1
+2026-04-24 22:01:13.838 +05:30 [INF] Fetching trip: 1
+2026-04-24 22:01:13.838 +05:30 [INF] Fetching trips for user: 3
+2026-04-24 22:02:38.705 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-24 22:02:39.849 +05:30 [INF] Fetching trip: 1
+2026-04-24 22:02:39.851 +05:30 [INF] Fetching members for trip: 1
+2026-04-24 22:02:39.851 +05:30 [INF] Fetching trips for user: 3
+2026-04-24 22:02:41.792 +05:30 [INF] Fetching trip: 1
+2026-04-24 22:02:41.796 +05:30 [INF] Fetching all requests for trip: 1
+2026-04-24 22:02:44.539 +05:30 [INF] Fetching user: 4
+2026-04-24 22:02:44.577 +05:30 [INF] Fetching trips created by user: 4
+2026-04-24 22:02:45.785 +05:30 [INF] Fetching trips for user: 4
+2026-04-24 22:02:48.124 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-24 22:02:49.263 +05:30 [INF] Fetching trip: 1
+2026-04-24 22:02:49.264 +05:30 [INF] Fetching trips for user: 3
+2026-04-24 22:02:49.264 +05:30 [INF] Fetching members for trip: 1

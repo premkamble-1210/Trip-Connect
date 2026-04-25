@@ -59,6 +59,24 @@ export interface UpdateUserDto {
 
 // ─── Trip ─────────────────────────────────────────────────────────────────────
 
+export interface TripDayDto {
+  day: number;
+  location?: string;
+  date: string;        // "YYYY-MM-DD"
+  description?: string;
+  imgUrl?: string;
+}
+
+export interface TripDayResponseDto {
+  id: number;
+  tripId: number;
+  day: number;
+  location?: string;
+  date: string;        // "YYYY-MM-DD"
+  description?: string;
+  imgUrl?: string;
+}
+
 export interface TripResponseDto {
   id: number;
   title: string;
@@ -74,6 +92,7 @@ export interface TripResponseDto {
   hostName: string | null;
   imgUrl: string;
   createdAt: string;
+  tripDays: TripDayResponseDto[];
 }
 
 export interface CreateTripDto {
@@ -86,6 +105,7 @@ export interface CreateTripDto {
   seats: number;
   travelType: string;
   ImgUrl: string;
+  tripDays?: TripDayDto[];
 }
 
 export interface UpdateTripDto {
@@ -98,6 +118,7 @@ export interface UpdateTripDto {
   seats: number;
   travelType: string;
   ImgUrl?: string;
+  tripDays?: TripDayDto[];
 }
 
 export interface TripSearchFilters {

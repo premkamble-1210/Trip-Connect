@@ -1,5 +1,6 @@
 using DOMAIN_LAYER.Enum;
 
+
 namespace DOMAIN_LAYER.Entity.Trip
 {
     /// <summary>
@@ -73,6 +74,10 @@ namespace DOMAIN_LAYER.Entity.Trip
         public DateTime CreatedAt { get; set; }
 
         /// <summary>
+        /// Navigation property - Trip day itinerary entries (1:M)
+        /// </summary>
+        public ICollection<TripDay> TripDays { get; set; } = new List<TripDay>();
+
         /// Navigation property - Trip host/organizer (1:1 relationship)
         /// </summary>
         public DOMAIN_LAYER.Entity.User.User Host { get; set; }
