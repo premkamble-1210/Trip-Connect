@@ -27,6 +27,19 @@ export class Profile implements OnInit {
   verificationError: string | null = null;
   isRequestingVerification = false;
 
+  // Verification type selector
+  isVerificationSelectorOpen = false;
+
+  // Phone OTP modal
+  isOtpModalOpen = false;
+  otpError: string | null = null;
+  isVerifyingOtp = false;
+  isRequestingPhoneOtp = false;
+  phoneVerificationMessage: string | null = null;
+
+  // ID coming-soon flag
+  showIdComingSoon = false;
+
   ngOnInit(): void {
     console.log('Profile component initialized');
     if (!this.authService.isAuthenticated()) {
@@ -119,7 +132,33 @@ export class Profile implements OnInit {
     });
   }
 
-  requestVerification(): void {
+  // ── Verification Type Selector ────────────────────────────────────────────
+
+  openVerificationSelector(): void {
+    if (!this.user) return;
+    this.isVerificationSelectorOpen = true;
+    this.showIdComingSoon = false;
+  }
+
+  closeVerificationSelector(): void {
+    this.isVerificationSelectorOpen = false;
+    this.showIdComingSoon = false;
+  }
+
+  selectVerificationType(type: 'phone' | 'id' | 'email'): void {
+    this.isVerificationSelectorOpen = false;
+    if (type === 'email') {
+      this.requestEmailVerification();
+    } else if (type === 'phone') {
+      this.openOtpModal();
+    } else if (type === 'id') {
+      this.showIdComingSoon = true;
+    }
+  }
+
+  // ── Email Verification ─────────────────────────────────────────────────────
+
+  requestEmailVerification(): void {
     if (!this.user || this.isRequestingVerification) return;
     this.isRequestingVerification = true;
     this.verificationMessage = null;
@@ -134,6 +173,123 @@ export class Profile implements OnInit {
       error: (err) => {
         this.verificationError = err.error?.message ?? 'Failed to send verification email.';
         this.isRequestingVerification = false;
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  // ── Phone OTP Flow ────────────────────────────────────────────────────────
+
+  openOtpModal(): void {
+    this.otpError = null;
+    this.phoneVerificationMessage = null;
+    this.isRequestingPhoneOtp = true;
+    this.isOtpModalOpen = true;
+
+    const userId = this.authService.getCurrentUserId();
+    this.profileService.requestPhoneVerification(userId).subscribe({
+      next: () => {
+        this.isRequestingPhoneOtp = false;
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        this.otpError = err.error?.message ?? 'Failed to send OTP.';
+        this.isRequestingPhoneOtp = false;
+        this.isOtpModalOpen = false;
+        this.verificationError = this.otpError;
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  closeOtpModal(): void {
+    this.isOtpModalOpen = false;
+    this.otpError = null;
+    this.clearOtpInputs();
+  }
+
+  private clearOtpInputs(): void {
+    setTimeout(() => {
+      for (let i = 0; i < 6; i++) {
+        const el = document.getElementById(`otp-${i}`) as HTMLInputElement;
+        if (el) el.value = '';
+      }
+    }, 0);
+  }
+
+  private getOtpValue(): string {
+    return Array.from({ length: 6 }, (_, i) =>
+      (document.getElementById(`otp-${i}`) as HTMLInputElement)?.value ?? ''
+    ).join('');
+  }
+
+  isOtpComplete(): boolean {
+    return this.getOtpValue().length === 6;
+  }
+
+  onOtpInput(event: Event, index: number): void {
+    const input = event.target as HTMLInputElement;
+    // Keep only the last digit typed (handles paste into single box too)
+    const val = input.value.replace(/\D/g, '').slice(-1);
+    input.value = val;
+    if (val && index < 5) {
+      setTimeout(() => {
+        (document.getElementById(`otp-${index + 1}`) as HTMLInputElement)?.focus();
+      }, 0);
+    }
+  }
+
+  onOtpKeydown(event: KeyboardEvent, index: number): void {
+    const input = event.target as HTMLInputElement;
+    if (event.key === 'Backspace') {
+      if (!input.value && index > 0) {
+        event.preventDefault();
+        (document.getElementById(`otp-${index - 1}`) as HTMLInputElement)?.focus();
+      }
+    } else if (event.key === 'ArrowLeft' && index > 0) {
+      (document.getElementById(`otp-${index - 1}`) as HTMLInputElement)?.focus();
+    } else if (event.key === 'ArrowRight' && index < 5) {
+      (document.getElementById(`otp-${index + 1}`) as HTMLInputElement)?.focus();
+    }
+  }
+
+  onOtpPaste(event: ClipboardEvent): void {
+    const pasted = event.clipboardData?.getData('text').replace(/\D/g, '').slice(0, 6) ?? '';
+    if (pasted.length > 0) {
+      event.preventDefault();
+      pasted.split('').forEach((char, i) => {
+        const el = document.getElementById(`otp-${i}`) as HTMLInputElement;
+        if (el) el.value = char;
+      });
+      const focusIndex = Math.min(pasted.length, 5);
+      (document.getElementById(`otp-${focusIndex}`) as HTMLInputElement)?.focus();
+      this.cdr.markForCheck();
+    }
+  }
+
+  submitOtp(): void {
+    const otp = this.getOtpValue();
+    if (otp.length < 6) {
+      this.otpError = 'Please enter all 6 digits.';
+      return;
+    }
+    this.isVerifyingOtp = true;
+    this.otpError = null;
+    const userId = this.authService.getCurrentUserId();
+    this.profileService.verifyPhoneOtp(userId, otp).subscribe({
+      next: () => {
+        this.isVerifyingOtp = false;
+        this.isOtpModalOpen = false;
+        this.phoneVerificationMessage = 'Phone verified successfully!';
+        this.profileService.getUserById(userId).subscribe({
+          next: (u) => { this.user = u; this.cdr.markForCheck(); },
+          error: () => {}
+        });
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        this.otpError = err.error?.message ?? 'Invalid OTP. Please try again.';
+        this.isVerifyingOtp = false;
         this.cdr.markForCheck();
       }
     });

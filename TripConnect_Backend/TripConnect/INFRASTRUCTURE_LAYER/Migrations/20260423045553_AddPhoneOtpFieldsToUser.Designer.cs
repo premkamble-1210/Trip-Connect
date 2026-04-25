@@ -4,6 +4,7 @@ using INFRASTRUCTURE_LAYER.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace INFRASTRUCTURE_LAYER.Migrations
 {
     [DbContext(typeof(TripConnectDbContext))]
-    partial class TripConnectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260423045553_AddPhoneOtpFieldsToUser")]
+    partial class AddPhoneOtpFieldsToUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -168,39 +171,6 @@ namespace INFRASTRUCTURE_LAYER.Migrations
                     b.HasIndex("HostId");
 
                     b.ToTable("Trips");
-                });
-
-            modelBuilder.Entity("DOMAIN_LAYER.Entity.Trip.TripDay", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("date");
-
-                    b.Property<int>("Day")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImgUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Location")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TripId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TripId");
-
-                    b.ToTable("TripDays");
                 });
 
             modelBuilder.Entity("DOMAIN_LAYER.Entity.TripMember.TripMember", b =>
@@ -461,17 +431,6 @@ namespace INFRASTRUCTURE_LAYER.Migrations
                     b.Navigation("Host");
                 });
 
-            modelBuilder.Entity("DOMAIN_LAYER.Entity.Trip.TripDay", b =>
-                {
-                    b.HasOne("DOMAIN_LAYER.Entity.Trip.Trip", "Trip")
-                        .WithMany("TripDays")
-                        .HasForeignKey("TripId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Trip");
-                });
-
             modelBuilder.Entity("DOMAIN_LAYER.Entity.TripMember.TripMember", b =>
                 {
                     b.HasOne("DOMAIN_LAYER.Entity.Trip.Trip", "Trip")
@@ -549,8 +508,6 @@ namespace INFRASTRUCTURE_LAYER.Migrations
                     b.Navigation("Expenses");
 
                     b.Navigation("Ratings");
-
-                    b.Navigation("TripDays");
 
                     b.Navigation("TripMembers");
 

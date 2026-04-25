@@ -76,5 +76,17 @@ namespace APPLICATION_LAYER.Services.Interfaces
         /// Validate email verification token and mark user as email-verified
         /// </summary>
         Task<bool> VerifyEmailAsync(string token);
+
+        /// <summary>
+        /// Generate a 6-digit OTP, hash it, store it on the user, and send it via SMS.
+        /// Enforces max 3 requests and requires phone to be set.
+        /// </summary>
+        Task RequestPhoneVerificationAsync(int userId);
+
+        /// <summary>
+        /// Verify submitted OTP against stored hash. On success sets PhoneVerified = true
+        /// and resets OTP fields and request count.
+        /// </summary>
+        Task<bool> VerifyPhoneOtpAsync(int userId, string otp);
     }
 }

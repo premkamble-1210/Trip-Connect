@@ -17,14 +17,16 @@ namespace APPLICATION_LAYER.Services.Implementations
         private readonly IMapper _mapper;
         private readonly ITokenService _tokenService;
         private readonly IEmailService _emailService;
+        private readonly ISmsService _smsService;
 
-        public UserService(IUnitOfWork unitOfWork, ILogger logger, IMapper mapper, ITokenService tokenService, IEmailService emailService)
+        public UserService(IUnitOfWork unitOfWork, ILogger logger, IMapper mapper, ITokenService tokenService, IEmailService emailService, ISmsService smsService)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _mapper = mapper;
             _tokenService = tokenService;
             _emailService = emailService;
+            _smsService = smsService;
         }
 
         public async Task<AuthResponseDto> RegisterAsync(CreateUserDto createUserDto)
@@ -459,6 +461,89 @@ namespace APPLICATION_LAYER.Services.Implementations
             }
         }
 
+        public async Task RequestPhoneVerificationAsync(int userId)
+        {
+            try
+            {
+                _logger.Information($"Phone OTP requested for user: {userId}");
+                var user = await _unitOfWork.Users.GetByIdAsync(userId);
+
+                if (user == null)
+                {
+                    _logger.Warning($"User not found for phone OTP: {userId}");
+                    throw new InvalidOperationException("User not found");
+                }
+
+                if (string.IsNullOrWhiteSpace(user.Phone))
+                {
+                    _logger.Warning($"Phone not set for user: {userId}");
+                    throw new InvalidOperationException("No phone number on account. Please add a phone number first.");
+                }
+
+                if (user.PhoneVerified)
+                {
+                    _logger.Warning($"Phone already verified for user: {userId}");
+                    throw new InvalidOperationException("Phone is already verified");
+                }
+
+                if (user.PhoneOtpRequestCount >= 3)
+                {
+                    _logger.Warning($"OTP request limit reached for user: {userId}");
+                    throw new InvalidOperationException("Maximum OTP request limit (3) reached. Please contact support.");
+                }
+
+                user.PhoneOtpRequestCount += 1;
+
+                await _unitOfWork.Users.UpdateAsync(user);
+                await _unitOfWork.SaveChangesAsync();
+
+                await _smsService.SendVerificationAsync(user.Phone);
+
+                _logger.Information($"Phone OTP sent successfully for user: {userId}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Error requesting phone OTP for user {userId}: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<bool> VerifyPhoneOtpAsync(int userId, string otp)
+        {
+            try
+            {
+                _logger.Information($"Phone OTP verification attempt for user: {userId}");
+                var user = await _unitOfWork.Users.GetByIdAsync(userId);
+
+                if (user == null)
+                {
+                    _logger.Warning($"User not found for phone OTP verification: {userId}");
+                    throw new InvalidOperationException("User not found");
+                }
+
+                var isValid = await _smsService.CheckVerificationAsync(user.Phone, otp);
+                if (!isValid)
+                {
+                    _logger.Warning($"OTP invalid or expired for user: {userId}");
+                    throw new InvalidOperationException("Invalid or expired OTP code. Please try again.");
+                }
+
+                user.PhoneVerified = true;
+                user.PhoneOtpRequestCount = 0;
+
+                await _unitOfWork.Users.UpdateAsync(user);
+                await _unitOfWork.SaveChangesAsync();
+
+                _logger.Information($"Phone verified successfully for user: {userId}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Error verifying phone OTP for user {userId}: {ex.Message}");
+                throw;
+            }
+        }
+
         // Helper Methods
         private string HashPassword(string password, string salt)
         {
@@ -485,5 +570,6 @@ namespace APPLICATION_LAYER.Services.Implementations
             var hashOfInput = HashPassword(password, salt);
             return hashOfInput == storedHash;
         }
+
     }
 }
