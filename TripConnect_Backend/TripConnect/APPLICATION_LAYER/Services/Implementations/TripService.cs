@@ -5,6 +5,7 @@ using AutoMapper;
 using DOMAIN_LAYER.Entity.Trip;
 using DOMAIN_LAYER.Enum;
 using DOMAIN_LAYER.Repository;
+using INFRASTRUCTURE_LAYER.Cache;
 using Serilog;
 
 namespace APPLICATION_LAYER.Services.Implementations
@@ -14,12 +15,14 @@ namespace APPLICATION_LAYER.Services.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
+        private readonly ICacheService _cacheService;
 
-        public TripService(IUnitOfWork unitOfWork, ILogger logger, IMapper mapper)
+        public TripService(IUnitOfWork unitOfWork, ILogger logger, IMapper mapper, ICacheService cacheService)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _mapper = mapper;
+            _cacheService = cacheService;
         }
 
         public async Task<TripResponseDto> CreateTripAsync(CreateTripDto createTripDto, int userId)
@@ -39,6 +42,10 @@ namespace APPLICATION_LAYER.Services.Implementations
                 await _unitOfWork.Trips.AddAsync(newTrip);
                 await _unitOfWork.SaveChangesAsync();
 
+                // Invalidate trip list caches
+                await _cacheService.InvalidateByTagAsync("trip:all");
+                await _cacheService.InvalidateByTagAsync($"trip:user:{userId}");
+
                 _logger.Information($"Trip created successfully with ID: {newTrip.Id}");
 
                 return _mapper.Map<TripResponseDto>(newTrip);
@@ -55,13 +62,23 @@ namespace APPLICATION_LAYER.Services.Implementations
             try
             {
                 _logger.Information($"Fetching trip: {tripId}");
-                var trip = await _unitOfWork.Trips.GetByIdAsync(tripId);
+                
+                // Try to get from cache first
+                var cacheKey = string.Format(CacheKeyConstants.TRIP_BY_ID, tripId);
+                var trip = await _cacheService.GetOrSetAsync(
+                    cacheKey,
+                    async () => await _unitOfWork.Trips.GetByIdAsync(tripId),
+                    TimeSpan.FromHours(1)
+                );
 
                 if (trip == null)
                 {
                     _logger.Warning($"Trip not found: {tripId}");
                     throw new InvalidOperationException("Trip not found");
                 }
+
+                // Add tags to the cache entry
+                await _cacheService.SetAsync(cacheKey, trip, TimeSpan.FromHours(1), new[] { $"trip:{tripId}", "trip:all" });
 
                 return _mapper.Map<TripResponseDto>(trip);
             }
@@ -77,14 +94,37 @@ namespace APPLICATION_LAYER.Services.Implementations
             try
             {
                 _logger.Information($"Fetching all trips - Page: {pageNumber}, Size: {pageSize}");
+                
+                // Create cache key that includes pagination parameters
+                var cacheKey = $"trip:all:page:{pageNumber}:size:{pageSize}";
+                
+                var cachedTrips = await _cacheService.GetAsync<IEnumerable<TripResponseDto>>(cacheKey);
+                if (cachedTrips != null)
+                {
+                    _logger.Information($"Trips cache hit - Page: {pageNumber}, Size: {pageSize}");
+                    return cachedTrips;
+                }
+
+                // Cache miss - fetch from database
                 var trips = await _unitOfWork.Trips.GetAllAsync();
 
                 // Apply pagination
                 var paginatedTrips = trips
                     .Skip((pageNumber - 1) * pageSize)
-                    .Take(pageSize);
+                    .Take(pageSize)
+                    .ToList();
 
-                return _mapper.Map<IEnumerable<TripResponseDto>>(paginatedTrips);
+                var tripDtos = _mapper.Map<IEnumerable<TripResponseDto>>(paginatedTrips);
+
+                // Cache the paginated result with 1 hour TTL
+                await _cacheService.SetAsync(
+                    cacheKey,
+                    tripDtos,
+                    TimeSpan.FromHours(1),
+                    new[] { "trip:all", "trip:list" }
+                );
+
+                return tripDtos;
             }
             catch (Exception ex)
             {
@@ -104,8 +144,28 @@ namespace APPLICATION_LAYER.Services.Implementations
                     throw new InvalidOperationException($"Invalid status: {status}");
                 }
 
+                // Create cache key that includes status parameter
+                var cacheKey = $"trip:status:{status.ToLower()}";
+                
+                var cachedTrips = await _cacheService.GetAsync<IEnumerable<TripResponseDto>>(cacheKey);
+                if (cachedTrips != null)
+                {
+                    _logger.Information($"Trips status cache hit: {status}");
+                    return cachedTrips;
+                }
+
                 var trips = await _unitOfWork.Trips.GetTripsByStatusAsync(tripStatus);
-                return _mapper.Map<IEnumerable<TripResponseDto>>(trips);
+                var tripDtos = _mapper.Map<IEnumerable<TripResponseDto>>(trips);
+
+                // Cache the result with 1 hour TTL
+                await _cacheService.SetAsync(
+                    cacheKey,
+                    tripDtos,
+                    TimeSpan.FromHours(1),
+                    new[] { "trip:all", "trip:list" }
+                );
+
+                return tripDtos;
             }
             catch (Exception ex)
             {
@@ -119,8 +179,28 @@ namespace APPLICATION_LAYER.Services.Implementations
             try
             {
                 _logger.Information("Fetching upcoming trips");
+                
+                var cacheKey = "trip:upcoming";
+                
+                var cachedTrips = await _cacheService.GetAsync<IEnumerable<TripResponseDto>>(cacheKey);
+                if (cachedTrips != null)
+                {
+                    _logger.Information("Upcoming trips cache hit");
+                    return cachedTrips;
+                }
+
                 var trips = await _unitOfWork.Trips.GetUpcomingTripsAsync();
-                return _mapper.Map<IEnumerable<TripResponseDto>>(trips);
+                var tripDtos = _mapper.Map<IEnumerable<TripResponseDto>>(trips);
+
+                // Cache the result with 30 minutes TTL (upcoming trips change frequently)
+                await _cacheService.SetAsync(
+                    cacheKey,
+                    tripDtos,
+                    TimeSpan.FromMinutes(30),
+                    new[] { "trip:all", "trip:upcoming" }
+                );
+
+                return tripDtos;
             }
             catch (Exception ex)
             {
@@ -134,8 +214,29 @@ namespace APPLICATION_LAYER.Services.Implementations
             try
             {
                 _logger.Information($"Searching trips by location: {location}");
+                
+                // Create cache key that includes location parameter
+                var cacheKey = $"trip:location:{location.ToLower()}";
+                
+                var cachedTrips = await _cacheService.GetAsync<IEnumerable<TripResponseDto>>(cacheKey);
+                if (cachedTrips != null)
+                {
+                    _logger.Information($"Trips location cache hit: {location}");
+                    return cachedTrips;
+                }
+
                 var trips = await _unitOfWork.Trips.GetTripsByLocationAsync(location);
-                return _mapper.Map<IEnumerable<TripResponseDto>>(trips);
+                var tripDtos = _mapper.Map<IEnumerable<TripResponseDto>>(trips);
+
+                // Cache the result with 2 hours TTL
+                await _cacheService.SetAsync(
+                    cacheKey,
+                    tripDtos,
+                    TimeSpan.FromHours(2),
+                    new[] { "trip:all", "trip:search", $"trip:location:{location.ToLower()}" }
+                );
+
+                return tripDtos;
             }
             catch (Exception ex)
             {
@@ -150,8 +251,28 @@ namespace APPLICATION_LAYER.Services.Implementations
             {
                 _logger.Information($"Searching trips with criteria - Location: {location}, StartDate: {startDate}, MaxBudget: {maxBudget}, TravelType: {travelType}");
 
+                // Create cache key that includes all search parameters
+                var cacheKey = $"trip:search:{location?.ToLower()}:{startDate?.Date}:{maxBudget}:{travelType?.ToLower()}";
+                
+                var cachedTrips = await _cacheService.GetAsync<IEnumerable<TripResponseDto>>(cacheKey);
+                if (cachedTrips != null)
+                {
+                    _logger.Information($"Trips search cache hit");
+                    return cachedTrips;
+                }
+
                 var trips = await _unitOfWork.Trips.SearchTripsAsync(location, startDate, maxBudget, travelType);
-                return _mapper.Map<IEnumerable<TripResponseDto>>(trips);
+                var tripDtos = _mapper.Map<IEnumerable<TripResponseDto>>(trips);
+
+                // Cache the result with 2 hours TTL
+                await _cacheService.SetAsync(
+                    cacheKey,
+                    tripDtos,
+                    TimeSpan.FromHours(2),
+                    new[] { "trip:all", "trip:search" }
+                );
+
+                return tripDtos;
             }
             catch (Exception ex)
             {
@@ -165,8 +286,29 @@ namespace APPLICATION_LAYER.Services.Implementations
             try
             {
                 _logger.Information($"Fetching trips created by user: {userId}");
+                
+                // Create cache key that includes userId
+                var cacheKey = $"trip:user:{userId}:created";
+                
+                var cachedTrips = await _cacheService.GetAsync<IEnumerable<TripResponseDto>>(cacheKey);
+                if (cachedTrips != null)
+                {
+                    _logger.Information($"User trips cache hit: {userId}");
+                    return cachedTrips;
+                }
+
                 var trips = await _unitOfWork.Trips.GetTripsByHostAsync(userId);
-                return _mapper.Map<IEnumerable<TripResponseDto>>(trips);
+                var tripDtos = _mapper.Map<IEnumerable<TripResponseDto>>(trips);
+
+                // Cache the result with 1 hour TTL
+                await _cacheService.SetAsync(
+                    cacheKey,
+                    tripDtos,
+                    TimeSpan.FromHours(1),
+                    new[] { $"trip:user:{userId}", "trip:all" }
+                );
+
+                return tripDtos;
             }
             catch (Exception ex)
             {
@@ -213,7 +355,13 @@ namespace APPLICATION_LAYER.Services.Implementations
                 await _unitOfWork.Trips.UpdateAsync(trip);
                 await _unitOfWork.SaveChangesAsync();
 
-                _logger.Information($"Trip updated successfully: {tripId}");
+                // Invalidate cache
+                var cacheKey = string.Format(CacheKeyConstants.TRIP_BY_ID, tripId);
+                await _cacheService.InvalidateByTagAsync($"trip:{tripId}");
+                await _cacheService.InvalidateByTagAsync("trip:all");
+                await _cacheService.RemoveAsync(cacheKey);
+
+                _logger.Information($"Trip updated successfully and cache invalidated: {tripId}");
                 return _mapper.Map<TripResponseDto>(trip);
             }
             catch (Exception ex)
@@ -248,7 +396,11 @@ namespace APPLICATION_LAYER.Services.Implementations
                 await _unitOfWork.Trips.UpdateAsync(trip);
                 await _unitOfWork.SaveChangesAsync();
 
-                _logger.Information($"Trip cancelled successfully: {tripId}");
+                // Invalidate cache
+                await _cacheService.InvalidateByTagAsync($"trip:{tripId}");
+                await _cacheService.InvalidateByTagAsync("trip:all");
+
+                _logger.Information($"Trip cancelled successfully and cache invalidated: {tripId}");
                 return true;
             }
             catch (Exception ex)
@@ -264,13 +416,31 @@ namespace APPLICATION_LAYER.Services.Implementations
             {
                 _logger.Information($"Fetching trips for user: {userId}");
 
+                // Create cache key that includes userId
+                var cacheKey = $"trip:user:{userId}:member";
+                
+                var cachedTrips = await _cacheService.GetAsync<IEnumerable<TripResponseDto>>(cacheKey);
+                if (cachedTrips != null)
+                {
+                    _logger.Information($"User member trips cache hit: {userId}");
+                    return cachedTrips;
+                }
+
                 // Get trips where user is a member
                 var tripMembers = await _unitOfWork.TripMembers.GetMembershipsByUserAsync(userId);
                 var tripIds = tripMembers.Select(tm => tm.TripId).ToList();
 
                 if (!tripIds.Any())
                 {
-                    return new List<TripResponseDto>();
+                    // Cache empty result too
+                    var emptyTrips = new List<TripResponseDto>();
+                    await _cacheService.SetAsync(
+                        cacheKey,
+                        emptyTrips,
+                        TimeSpan.FromHours(1),
+                        new[] { $"trip:user:{userId}" }
+                    );
+                    return emptyTrips;
                 }
 
                 var trips = new List<Trip>();
@@ -283,7 +453,17 @@ namespace APPLICATION_LAYER.Services.Implementations
                     }
                 }
 
-                return _mapper.Map<IEnumerable<TripResponseDto>>(trips);
+                var tripDtos = _mapper.Map<IEnumerable<TripResponseDto>>(trips);
+
+                // Cache the result with 1 hour TTL
+                await _cacheService.SetAsync(
+                    cacheKey,
+                    tripDtos,
+                    TimeSpan.FromHours(1),
+                    new[] { $"trip:user:{userId}", "trip:all" }
+                );
+
+                return tripDtos;
             }
             catch (Exception ex)
             {

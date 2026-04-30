@@ -102,3 +102,17 @@
 2026-04-25 10:56:17.165 +05:30 [INF] Fetching trips created by user: 3
 2026-04-25 10:56:20.748 +05:30 [INF] Fetching trip: 3
 2026-04-25 10:56:25.696 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-25 11:29:47.157 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-25 11:29:51.905 +05:30 [INF] Fetching members for trip: 3
+2026-04-25 11:29:51.905 +05:30 [INF] Fetching trips for user: 3
+2026-04-25 11:29:51.910 +05:30 [INF] Fetching trip: 3
+2026-04-25 11:30:00.211 +05:30 [INF] Fetching user: 3
+2026-04-25 11:30:00.322 +05:30 [INF] Fetching trips created by user: 3
+2026-04-25 11:30:30.809 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-25 11:31:27.336 +05:30 [INF] Fetching user: 3
+2026-04-25 11:31:27.353 +05:30 [INF] Fetching trips created by user: 3
+2026-04-25 11:31:29.614 +05:30 [INF] Fetching trip: 3
+2026-04-25 11:31:37.973 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-25 11:31:40.381 +05:30 [INF] Fetching trip: 3
+2026-04-25 11:31:40.382 +05:30 [INF] Fetching members for trip: 3
+2026-04-25 11:31:40.382 +05:30 [INF] Fetching trips for user: 3

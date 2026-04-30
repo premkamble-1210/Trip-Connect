@@ -4,6 +4,8 @@ using APPLICATION_LAYER.Services.Interfaces;
 using AutoMapper;
 using DOMAIN_LAYER.Entity.User;
 using DOMAIN_LAYER.Repository;
+using DOMAIN_LAYER.Enum;
+using INFRASTRUCTURE_LAYER.Cache;
 using Serilog;
 using System.Security.Cryptography;
 using System.Text;
@@ -18,8 +20,9 @@ namespace APPLICATION_LAYER.Services.Implementations
         private readonly ITokenService _tokenService;
         private readonly IEmailService _emailService;
         private readonly ISmsService _smsService;
+        private readonly ICacheService _cacheService;
 
-        public UserService(IUnitOfWork unitOfWork, ILogger logger, IMapper mapper, ITokenService tokenService, IEmailService emailService, ISmsService smsService)
+        public UserService(IUnitOfWork unitOfWork, ILogger logger, IMapper mapper, ITokenService tokenService, IEmailService emailService, ISmsService smsService, ICacheService cacheService)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
@@ -27,6 +30,7 @@ namespace APPLICATION_LAYER.Services.Implementations
             _tokenService = tokenService;
             _emailService = emailService;
             _smsService = smsService;
+            _cacheService = cacheService;
         }
 
         public async Task<AuthResponseDto> RegisterAsync(CreateUserDto createUserDto)
@@ -174,7 +178,10 @@ namespace APPLICATION_LAYER.Services.Implementations
                 await _unitOfWork.Users.UpdateAsync(user);
                 await _unitOfWork.SaveChangesAsync();
 
-                _logger.Information($"User logged out successfully: {userId}");
+                // Invalidate cache
+                await _cacheService.InvalidateByTagAsync($"user:{userId}");
+
+                _logger.Information($"User logged out successfully and cache invalidated: {userId}");
             }
             catch (Exception ex)
             {
@@ -188,13 +195,32 @@ namespace APPLICATION_LAYER.Services.Implementations
             try
             {
                 _logger.Information($"Fetching user: {userId}");
-                var user = await _unitOfWork.Users.GetByIdAsync(userId);
+                
+                // Try to get from cache first
+                var cacheKey = string.Format(CacheKeyConstants.USER_BY_ID, userId);
+                var cachedUser = await _cacheService.GetAsync<User>(cacheKey);
+                
+                if (cachedUser != null)
+                {
+                    _logger.Information($"User cache hit: {userId}");
+                    return _mapper.Map<UserResponseDto>(cachedUser);
+                }
+
+                // Cache miss - fetch from database
+                var user = await _cacheService.GetOrSetAsync(
+                    cacheKey,
+                    async () => await _unitOfWork.Users.GetByIdAsync(userId),
+                    TimeSpan.FromHours(2)
+                );
 
                 if (user == null)
                 {
                     _logger.Warning($"User not found: {userId}");
                     throw new InvalidOperationException("User not found");
                 }
+
+                // Add tags to the cache entry
+                await _cacheService.SetAsync(cacheKey, user, TimeSpan.FromHours(2), new[] { $"user:{userId}", "user:all" });
 
                 return _mapper.Map<UserResponseDto>(user);
             }
@@ -210,13 +236,32 @@ namespace APPLICATION_LAYER.Services.Implementations
             try
             {
                 _logger.Information($"Fetching user by email: {email}");
-                var user = await _unitOfWork.Users.GetByEmailAsync(email);
+                
+                // Try to get from cache first
+                var cacheKey = string.Format(CacheKeyConstants.USER_BY_EMAIL, email);
+                var cachedUser = await _cacheService.GetAsync<User>(cacheKey);
+                
+                if (cachedUser != null)
+                {
+                    _logger.Information($"User email cache hit: {email}");
+                    return _mapper.Map<UserResponseDto>(cachedUser);
+                }
+
+                // Cache miss - fetch from database
+                var user = await _cacheService.GetOrSetAsync(
+                    cacheKey,
+                    async () => await _unitOfWork.Users.GetByEmailAsync(email),
+                    TimeSpan.FromHours(2)
+                );
 
                 if (user == null)
                 {
                     _logger.Warning($"User not found with email: {email}");
                     throw new InvalidOperationException("User not found");
                 }
+
+                // Add tags to the cache entry
+                await _cacheService.SetAsync(cacheKey, user, TimeSpan.FromHours(2), new[] { $"user:email:{email}", "user:all" });
 
                 return _mapper.Map<UserResponseDto>(user);
             }
@@ -246,7 +291,12 @@ namespace APPLICATION_LAYER.Services.Implementations
                 await _unitOfWork.Users.UpdateAsync(user);
                 await _unitOfWork.SaveChangesAsync();
 
-                _logger.Information($"User updated successfully: {userId}");
+                // Invalidate cache
+                var cacheKey = string.Format(CacheKeyConstants.USER_BY_ID, userId);
+                await _cacheService.InvalidateByTagAsync($"user:{userId}");
+                await _cacheService.RemoveAsync(cacheKey);
+
+                _logger.Information($"User updated successfully and cache invalidated: {userId}");
                 return _mapper.Map<UserResponseDto>(user);
             }
             catch (Exception ex)
