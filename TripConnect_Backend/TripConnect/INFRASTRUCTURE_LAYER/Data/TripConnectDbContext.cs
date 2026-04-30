@@ -6,6 +6,7 @@ using DOMAIN_LAYER.Entity.Expense;
 using DOMAIN_LAYER.Entity.ExpenseSplit;
 using DOMAIN_LAYER.Entity.ChatMessage;
 using DOMAIN_LAYER.Entity.TripRating;
+using DOMAIN_LAYER.Entity.Cache;
 using Microsoft.EntityFrameworkCore;
 
 namespace INFRASTRUCTURE_LAYER.Data
@@ -68,6 +69,16 @@ namespace INFRASTRUCTURE_LAYER.Data
         /// Trip Days (Itinerary) table
         /// </summary>
         public DbSet<TripDay> TripDays { get; set; }
+
+        /// <summary>
+        /// Cache Policies table
+        /// </summary>
+        public DbSet<CachePolicy> CachePolicies { get; set; }
+
+        /// <summary>
+        /// Cache Entries table
+        /// </summary>
+        public DbSet<CacheEntry> CacheEntries { get; set; }
 
         #endregion
 
@@ -219,6 +230,42 @@ namespace INFRASTRUCTURE_LAYER.Data
             modelBuilder.Entity<TripRating>()
                 .HasIndex(r => new { r.TripId, r.RatedBy, r.RatedUserId })
                 .IsUnique();
+
+            // Configure CachePolicy entity
+            modelBuilder.Entity<CachePolicy>()
+                .HasKey(cp => cp.Id);
+
+            modelBuilder.Entity<CachePolicy>()
+                .HasIndex(cp => cp.PolicyName)
+                .IsUnique();
+
+            modelBuilder.Entity<CachePolicy>()
+                .Property(cp => cp.CreatedAt)
+                .HasDefaultValueSql("GETUTCDATE()");
+
+            // Configure CacheEntry entity
+            modelBuilder.Entity<CacheEntry>()
+                .HasKey(ce => ce.Id);
+
+            modelBuilder.Entity<CacheEntry>()
+                .HasIndex(ce => ce.CacheKey)
+                .IsUnique();
+
+            modelBuilder.Entity<CacheEntry>()
+                .HasIndex(ce => ce.ExpiresAt);
+
+            modelBuilder.Entity<CacheEntry>()
+                .HasIndex(ce => ce.DataType);
+
+            modelBuilder.Entity<CacheEntry>()
+                .Property(ce => ce.CachedAt)
+                .HasDefaultValueSql("GETUTCDATE()");
+
+            modelBuilder.Entity<CacheEntry>()
+                .HasOne(ce => ce.CachePolicy)
+                .WithMany()
+                .HasForeignKey(ce => ce.CachePolicyId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

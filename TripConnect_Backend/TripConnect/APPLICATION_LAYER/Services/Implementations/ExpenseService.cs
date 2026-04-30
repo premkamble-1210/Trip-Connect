@@ -3,6 +3,8 @@ using APPLICATION_LAYER.Services.Interfaces;
 using AutoMapper;
 using DOMAIN_LAYER.Entity.ExpenseSplit;
 using DOMAIN_LAYER.Repository;
+using DOMAIN_LAYER.Enum;
+using INFRASTRUCTURE_LAYER.Cache;
 using Serilog;
 
 namespace APPLICATION_LAYER.Services.Implementations
@@ -12,12 +14,14 @@ namespace APPLICATION_LAYER.Services.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
+        private readonly ICacheService _cacheService;
 
-        public ExpenseService(IUnitOfWork unitOfWork, ILogger logger, IMapper mapper)
+        public ExpenseService(IUnitOfWork unitOfWork, ILogger logger, IMapper mapper, ICacheService cacheService)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _mapper = mapper;
+            _cacheService = cacheService;
         }
 
         public async Task<ExpenseResponseDto> CreateExpenseAsync(CreateExpenseDto dto, int userId)
@@ -56,6 +60,10 @@ namespace APPLICATION_LAYER.Services.Implementations
                 await _unitOfWork.Expenses.AddAsync(expense);
                 await _unitOfWork.SaveChangesAsync();
 
+                // Invalidate trip expense caches
+                await _cacheService.InvalidateByTagAsync($"trip:{dto.TripId}:expenses");
+                await _cacheService.InvalidateByTagAsync($"user:{userId}:expenses");
+
                 _logger.Information($"Expense created successfully with ID: {expense.Id}");
 
                 // Map to response DTO
@@ -77,13 +85,22 @@ namespace APPLICATION_LAYER.Services.Implementations
             try
             {
                 _logger.Information($"Fetching expense: {expenseId}");
-                var expense = await _unitOfWork.Expenses.GetExpenseWithSplitsAsync(expenseId);
+                
+                var cacheKey = string.Format(CacheKeyConstants.EXPENSE_BY_ID, expenseId);
+                var expense = await _cacheService.GetOrSetAsync(
+                    cacheKey,
+                    async () => await _unitOfWork.Expenses.GetExpenseWithSplitsAsync(expenseId),
+                    TimeSpan.FromHours(1)
+                );
 
                 if (expense == null)
                 {
                     _logger.Warning($"Expense not found: {expenseId}");
                     throw new InvalidOperationException("Expense not found");
                 }
+
+                // Add tags to the cache entry
+                await _cacheService.SetAsync(cacheKey, expense, TimeSpan.FromHours(1), new[] { $"expense:{expenseId}" });
 
                 var paidByUser = await _unitOfWork.Users.GetByIdAsync(expense.PaidBy);
                 var responseDto = _mapper.Map<ExpenseResponseDto>(expense);
@@ -234,7 +251,10 @@ namespace APPLICATION_LAYER.Services.Implementations
                 await _unitOfWork.ExpenseSplits.MarkAsSettledAsync(splitId);
                 await _unitOfWork.SaveChangesAsync();
 
-                _logger.Information($"Expense split settled successfully: {splitId}");
+                // Invalidate cache
+                await _cacheService.InvalidateByTagAsync($"expense:{split.ExpenseId}");
+
+                _logger.Information($"Expense split settled successfully and cache invalidated: {splitId}");
                 return true;
             }
             catch (Exception ex)
@@ -267,7 +287,13 @@ namespace APPLICATION_LAYER.Services.Implementations
                 await _unitOfWork.Expenses.DeleteExpenseWithSplitsAsync(expenseId);
                 await _unitOfWork.SaveChangesAsync();
 
-                _logger.Information($"Expense deleted successfully: {expenseId}");
+                // Invalidate cache
+                var cacheKey = string.Format(CacheKeyConstants.EXPENSE_BY_ID, expenseId);
+                await _cacheService.InvalidateByTagAsync($"expense:{expenseId}");
+                await _cacheService.InvalidateByTagAsync($"trip:{expense.TripId}:expenses");
+                await _cacheService.RemoveAsync(cacheKey);
+
+                _logger.Information($"Expense deleted successfully and cache invalidated: {expenseId}");
                 return true;
             }
             catch (Exception ex)

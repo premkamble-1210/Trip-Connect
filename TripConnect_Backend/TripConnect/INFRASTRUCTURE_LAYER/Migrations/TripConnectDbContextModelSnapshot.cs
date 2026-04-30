@@ -17,10 +17,101 @@ namespace INFRASTRUCTURE_LAYER.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.5")
+                .HasAnnotation("ProductVersion", "10.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("DOMAIN_LAYER.Entity.Cache.CacheEntry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<long>("AccessCount")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("CacheKey")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("CachePolicyId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CachedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("CachedData")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DataType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("ExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("LastAccessedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CacheKey")
+                        .IsUnique();
+
+                    b.HasIndex("CachePolicyId");
+
+                    b.HasIndex("DataType");
+
+                    b.HasIndex("ExpiresAt");
+
+                    b.ToTable("CacheEntries");
+                });
+
+            modelBuilder.Entity("DOMAIN_LAYER.Entity.Cache.CachePolicy", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AbsoluteExpirationSeconds")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PolicyName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("PolicyType")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SlidingExpirationSeconds")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PolicyName")
+                        .IsUnique();
+
+                    b.ToTable("CachePolicies");
+                });
 
             modelBuilder.Entity("DOMAIN_LAYER.Entity.ChatMessage.ChatMessage", b =>
                 {
@@ -391,6 +482,16 @@ namespace INFRASTRUCTURE_LAYER.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("DOMAIN_LAYER.Entity.Cache.CacheEntry", b =>
+                {
+                    b.HasOne("DOMAIN_LAYER.Entity.Cache.CachePolicy", "CachePolicy")
+                        .WithMany()
+                        .HasForeignKey("CachePolicyId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("CachePolicy");
                 });
 
             modelBuilder.Entity("DOMAIN_LAYER.Entity.ChatMessage.ChatMessage", b =>

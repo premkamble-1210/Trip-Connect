@@ -1,0 +1,108 @@
+2026-04-30 09:51:02.968 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-30 09:51:08.629 +05:30 [ERR] Error fetching all trips: The message timed out in the backlog attempting to send because no connection became available (5000ms) - Last Connection Exception: It was not possible to connect to the redis server(s) localhost:6379/Interactive. ConnectTimeout, command=GET, timeout: 5000, inst: 0, qu: 0, qs: 0, aw: False, bw: CheckingForTimeout, rs: NotStarted, ws: Idle, in: 0, last-in: 0, cur-in: 0, sync-ops: 0, async-ops: 1, serverEndpoint: localhost:6379, conn-sec: n/a, aoc: 0, mc: 1/1/0, mgr: 10 of 10 available, clientName: EPINHYDW1754(SE.Redis-v2.12.14.58429), IOCP: (Busy=0,Free=1000,Min=1,Max=1000), WORKER: (Busy=0,Free=32767,Min=14,Max=32767), POOL: (Threads=7,QueuedItems=0,CompletedItems=525,Timers=6), v: 2.12.14.58429 (Please take a look at this article for some common client-side issues that can cause timeouts: https://stackexchange.github.io/StackExchange.Redis/Timeouts)
+2026-04-30 09:53:24.355 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-30 09:53:30.089 +05:30 [ERR] Error fetching all trips: The message timed out in the backlog attempting to send because no connection became available (5000ms) - Last Connection Exception: It was not possible to connect to the redis server(s) redis-15777.crce286.ap-south-1-1.ec2.cloud.redislabs.com:15777/Interactive. There was an authentication failure; check that passwords (or client certificates) are configured correctly: (RedisServerException) Error: WRONGPASS invalid username-password pair ConnectTimeout, command=GET, timeout: 5000, inst: 0, qu: 0, qs: 0, aw: False, bw: CheckingForTimeout, last-in: 0, cur-in: 0, sync-ops: 0, async-ops: 1, serverEndpoint: redis-15777.crce286.ap-south-1-1.ec2.cloud.redislabs.com:15777, conn-sec: n/a, aoc: 0, mc: 1/1/0, mgr: 10 of 10 available, clientName: EPINHYDW1754(SE.Redis-v2.12.14.58429), IOCP: (Busy=0,Free=1000,Min=1,Max=1000), WORKER: (Busy=0,Free=32767,Min=14,Max=32767), POOL: (Threads=6,QueuedItems=0,CompletedItems=383,Timers=2), v: 2.12.14.58429 (Please take a look at this article for some common client-side issues that can cause timeouts: https://stackexchange.github.io/StackExchange.Redis/Timeouts)
+2026-04-30 09:57:52.975 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-30 09:59:43.660 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-30 09:59:43.780 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-04-30 10:00:20.339 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-30 10:00:20.466 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-04-30 10:01:27.380 +05:30 [INF] Fetching members for trip: 3
+2026-04-30 10:01:27.380 +05:30 [INF] Fetching trip: 3
+2026-04-30 10:01:27.380 +05:30 [INF] Fetching trips for user: 3
+2026-04-30 10:01:28.103 +05:30 [ERR] Error fetching trip 3: A possible object cycle was detected. This can either be due to a cycle or if the object depth is larger than the maximum allowed depth of 64. Consider using ReferenceHandler.Preserve on JsonSerializerOptions to support cycles. Path: $.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.Id.
+2026-04-30 10:06:21.592 +05:30 [INF] Fetching trip: 3
+2026-04-30 10:06:21.592 +05:30 [INF] Fetching members for trip: 3
+2026-04-30 10:06:21.592 +05:30 [INF] Fetching trips for user: 3
+2026-04-30 10:06:21.685 +05:30 [INF] User member trips cache hit: 3
+2026-04-30 10:06:58.003 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-30 10:06:58.135 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-04-30 10:07:11.783 +05:30 [INF] Fetching trips for user: 3
+2026-04-30 10:07:11.783 +05:30 [INF] Fetching trip: 3
+2026-04-30 10:07:11.783 +05:30 [INF] Fetching members for trip: 3
+2026-04-30 10:07:11.824 +05:30 [INF] User member trips cache hit: 3
+2026-04-30 10:08:47.308 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-30 10:08:47.442 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-04-30 10:08:56.485 +05:30 [INF] Login attempt for username: premkamble2
+2026-04-30 10:08:56.533 +05:30 [INF] Refresh token generated
+2026-04-30 10:08:56.633 +05:30 [INF] User logged in successfully: 3
+2026-04-30 10:08:56.638 +05:30 [INF] Access token generated for user: 3
+2026-04-30 10:08:56.671 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-30 10:08:56.787 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-04-30 10:15:12.248 +05:30 [INF] Fetching user: 3
+2026-04-30 10:15:12.851 +05:30 [INF] Fetching trips created by user: 3
+2026-04-30 10:23:29.830 +05:30 [INF] Fetching trip: 3
+2026-04-30 10:23:29.838 +05:30 [INF] Fetching all requests for trip: 3
+2026-04-30 10:23:46.051 +05:30 [INF] Fetching user: 3
+2026-04-30 10:23:46.108 +05:30 [INF] User cache hit: 3
+2026-04-30 10:23:46.115 +05:30 [INF] Fetching trips created by user: 3
+2026-04-30 10:23:46.248 +05:30 [INF] User trips cache hit: 3
+2026-04-30 10:24:44.419 +05:30 [INF] Updating user: 3
+2026-04-30 10:24:44.605 +05:30 [INF] User updated successfully and cache invalidated: 3
+2026-04-30 10:24:51.157 +05:30 [INF] Updating user: 3
+2026-04-30 10:24:51.281 +05:30 [INF] User updated successfully and cache invalidated: 3
+2026-04-30 10:30:09.134 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-30 10:30:09.255 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-04-30 10:30:10.591 +05:30 [INF] Fetching user: 3
+2026-04-30 10:30:11.140 +05:30 [INF] Fetching trips created by user: 3
+2026-04-30 10:30:11.257 +05:30 [INF] User trips cache hit: 3
+2026-04-30 10:34:25.038 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-30 10:34:25.297 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-04-30 10:34:26.684 +05:30 [INF] Fetching user: 3
+2026-04-30 10:34:26.767 +05:30 [INF] User cache hit: 3
+2026-04-30 10:34:26.776 +05:30 [INF] Fetching trips created by user: 3
+2026-04-30 10:34:27.027 +05:30 [INF] User trips cache hit: 3
+2026-04-30 10:34:48.487 +05:30 [INF] Fetching trips for user: 3
+2026-04-30 10:34:48.594 +05:30 [INF] User member trips cache hit: 3
+2026-04-30 10:34:51.657 +05:30 [INF] Fetching trips created by user: 3
+2026-04-30 10:34:51.919 +05:30 [INF] User trips cache hit: 3
+2026-04-30 10:34:53.351 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-30 10:34:53.607 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-04-30 10:37:58.130 +05:30 [INF] Fetching user: 3
+2026-04-30 10:37:58.219 +05:30 [INF] User cache hit: 3
+2026-04-30 10:37:58.224 +05:30 [INF] Fetching trips created by user: 3
+2026-04-30 10:37:58.489 +05:30 [INF] User trips cache hit: 3
+2026-04-30 10:38:05.918 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-30 10:38:06.178 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-04-30 10:38:07.644 +05:30 [INF] Fetching members for trip: 1
+2026-04-30 10:38:07.644 +05:30 [INF] Fetching trips for user: 3
+2026-04-30 10:38:07.647 +05:30 [INF] Fetching trip: 1
+2026-04-30 10:38:07.730 +05:30 [INF] User member trips cache hit: 3
+2026-04-30 10:38:10.999 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-30 10:38:11.271 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-04-30 10:38:12.130 +05:30 [INF] Fetching trip: 1
+2026-04-30 10:38:12.130 +05:30 [INF] Fetching trips for user: 3
+2026-04-30 10:38:12.130 +05:30 [INF] Fetching members for trip: 1
+2026-04-30 10:38:12.218 +05:30 [INF] User member trips cache hit: 3
+2026-04-30 10:38:44.372 +05:30 [INF] Fetching members for trip: 1
+2026-04-30 10:38:44.372 +05:30 [INF] Fetching trip: 1
+2026-04-30 10:38:44.378 +05:30 [INF] Fetching trips for user: 3
+2026-04-30 10:38:44.463 +05:30 [INF] User member trips cache hit: 3
+2026-04-30 10:39:09.372 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-30 10:39:09.823 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-04-30 10:50:32.472 +05:30 [INF] Fetching trips for user: 3
+2026-04-30 10:50:32.472 +05:30 [INF] Fetching trip: 1
+2026-04-30 10:50:32.478 +05:30 [INF] Fetching members for trip: 1
+2026-04-30 10:50:32.557 +05:30 [INF] User member trips cache hit: 3
+2026-04-30 10:50:36.852 +05:30 [INF] Fetching user: 4
+2026-04-30 10:50:37.890 +05:30 [INF] Fetching trips created by user: 4
+2026-04-30 10:50:41.122 +05:30 [INF] Fetching trips for user: 4
+2026-04-30 10:50:44.408 +05:30 [INF] Fetching members for trip: 1
+2026-04-30 10:50:44.408 +05:30 [INF] Fetching trips for user: 3
+2026-04-30 10:50:44.408 +05:30 [INF] Fetching trip: 1
+2026-04-30 10:50:44.494 +05:30 [INF] User member trips cache hit: 3
+2026-04-30 10:50:59.032 +05:30 [INF] Fetching user: 4
+2026-04-30 10:50:59.119 +05:30 [INF] User cache hit: 4
+2026-04-30 10:50:59.126 +05:30 [INF] Fetching trips created by user: 4
+2026-04-30 10:50:59.213 +05:30 [INF] User trips cache hit: 4
+2026-04-30 10:51:03.118 +05:30 [INF] Fetching trip: 1
+2026-04-30 10:51:03.118 +05:30 [INF] Fetching members for trip: 1
+2026-04-30 10:51:03.118 +05:30 [INF] Fetching trips for user: 3
+2026-04-30 10:51:03.201 +05:30 [INF] User member trips cache hit: 3
+2026-04-30 10:51:07.121 +05:30 [INF] Fetching trip: 1
+2026-04-30 10:51:07.122 +05:30 [INF] Fetching all requests for trip: 1
+2026-04-30 10:52:41.866 +05:30 [INF] Fetching user: 5
+2026-04-30 10:52:42.910 +05:30 [INF] Fetching trips created by user: 5
+2026-04-30 10:52:44.657 +05:30 [INF] Fetching trips for user: 5
+2026-04-30 10:52:48.810 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-30 10:52:49.065 +05:30 [INF] Trips cache hit - Page: 1, Size: 20

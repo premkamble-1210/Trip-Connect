@@ -5,6 +5,7 @@ using APPLICATION_LAYER.Mappers;
 using APPLICATION_LAYER.Models;
 using APPLICATION_LAYER.Services.Interfaces;
 using APPLICATION_LAYER.Services.Implementations;
+using INFRASTRUCTURE_LAYER.Cache;
 using Serilog;
 using INFRASTRUCTURE_LAYER.Logging;
 
@@ -16,7 +17,7 @@ namespace APPLICATION_LAYER
     public static class DependencyInjection
     {
         /// <summary>
-        /// Register Application Layer services including AutoMapper profiles
+        /// Register Application Layer services including AutoMapper profiles and cache services
         /// </summary>
         public static IServiceCollection AddApplicationLayer(this IServiceCollection services, IConfiguration configuration)
         {
@@ -37,7 +38,7 @@ namespace APPLICATION_LAYER
             // Register SMS Service
             services.AddScoped<ISmsService, SmsService>();
 
-            // Register Services
+            // Register Services with Cache Injection
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITripService, TripService>();
             services.AddScoped<IJoinRequestService, JoinRequestService>();

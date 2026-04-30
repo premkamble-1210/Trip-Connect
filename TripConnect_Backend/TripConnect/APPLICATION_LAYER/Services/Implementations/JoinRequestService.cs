@@ -5,6 +5,7 @@ using DOMAIN_LAYER.Entity.TripMember;
 using DOMAIN_LAYER.Entity.TripRequest;
 using DOMAIN_LAYER.Enum;
 using DOMAIN_LAYER.Repository;
+using INFRASTRUCTURE_LAYER.Cache;
 using Serilog;
 
 namespace APPLICATION_LAYER.Services.Implementations
@@ -14,12 +15,14 @@ namespace APPLICATION_LAYER.Services.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
+        private readonly ICacheService _cacheService;
 
-        public JoinRequestService(IUnitOfWork unitOfWork, ILogger logger, IMapper mapper)
+        public JoinRequestService(IUnitOfWork unitOfWork, ILogger logger, IMapper mapper, ICacheService cacheService)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _mapper = mapper;
+            _cacheService = cacheService;
         }
 
         public async Task<JoinRequestResponseDto> SendJoinRequestAsync(SendJoinRequestDto sendJoinRequestDto, int userId)
@@ -61,6 +64,10 @@ namespace APPLICATION_LAYER.Services.Implementations
 
                 _logger.Information($"Join request sent successfully with ID: {newRequest.Id}");
 
+                // Invalidate caches for trip's requests and pending requests
+                await _cacheService.InvalidateByTagAsync($"trip:{sendJoinRequestDto.TripId}:requests");
+                await _cacheService.InvalidateByTagAsync($"trip:{sendJoinRequestDto.TripId}:pending");
+
                 // Map to response DTO with user name from database
                 var user = await _unitOfWork.Users.GetByIdAsync(userId);
                 var responseDto = _mapper.Map<JoinRequestResponseDto>(newRequest);
@@ -80,19 +87,28 @@ namespace APPLICATION_LAYER.Services.Implementations
             try
             {
                 _logger.Information($"Fetching join request: {requestId}");
-                var request = await _unitOfWork.TripRequests.GetByIdAsync(requestId);
+                
+                var cacheKey = $"joinrequest:id:{requestId}";
+                var cachedRequest = await _cacheService.GetOrSetAsync(
+                    cacheKey,
+                    async () =>
+                    {
+                        var request = await _unitOfWork.TripRequests.GetByIdAsync(requestId);
+                        if (request == null)
+                            throw new InvalidOperationException("Join request not found");
+                        
+                        var user = await _unitOfWork.Users.GetByIdAsync(request.UserId);
+                        var responseDto = _mapper.Map<JoinRequestResponseDto>(request);
+                        responseDto.UserName = user?.Name ?? "";
+                        return responseDto;
+                    },
+                    TimeSpan.FromMinutes(30)
+                );
 
-                if (request == null)
-                {
-                    _logger.Warning($"Join request not found: {requestId}");
-                    throw new InvalidOperationException("Join request not found");
-                }
+                await _cacheService.SetAsync(cacheKey, cachedRequest, TimeSpan.FromMinutes(30),
+                    new[] { $"joinrequest:{requestId}", "joinrequest:all" });
 
-                var user = await _unitOfWork.Users.GetByIdAsync(request.UserId);
-                var responseDto = _mapper.Map<JoinRequestResponseDto>(request);
-                responseDto.UserName = user?.Name ?? "";
-
-                return responseDto;
+                return cachedRequest;
             }
             catch (Exception ex)
             {
@@ -106,18 +122,30 @@ namespace APPLICATION_LAYER.Services.Implementations
             try
             {
                 _logger.Information($"Fetching pending requests for trip: {tripId}");
-                var requests = await _unitOfWork.TripRequests.GetPendingRequestsByTripAsync(tripId);
+                
+                var cacheKey = $"trip:{tripId}:pending";
+                var cachedRequests = await _cacheService.GetOrSetAsync(
+                    cacheKey,
+                    async () =>
+                    {
+                        var requests = await _unitOfWork.TripRequests.GetPendingRequestsByTripAsync(tripId);
+                        var responseDtos = new List<JoinRequestResponseDto>();
+                        foreach (var request in requests)
+                        {
+                            var user = await _unitOfWork.Users.GetByIdAsync(request.UserId);
+                            var responseDto = _mapper.Map<JoinRequestResponseDto>(request);
+                            responseDto.UserName = user?.Name ?? "";
+                            responseDtos.Add(responseDto);
+                        }
+                        return responseDtos;
+                    },
+                    TimeSpan.FromMinutes(20)
+                );
 
-                var responseDtos = new List<JoinRequestResponseDto>();
-                foreach (var request in requests)
-                {
-                    var user = await _unitOfWork.Users.GetByIdAsync(request.UserId);
-                    var responseDto = _mapper.Map<JoinRequestResponseDto>(request);
-                    responseDto.UserName = user?.Name ?? "";
-                    responseDtos.Add(responseDto);
-                }
+                await _cacheService.SetAsync(cacheKey, cachedRequests, TimeSpan.FromMinutes(20),
+                    new[] { $"trip:{tripId}:requests", $"trip:{tripId}:pending", "joinrequest:all" });
 
-                return responseDtos;
+                return cachedRequests;
             }
             catch (Exception ex)
             {
@@ -131,18 +159,30 @@ namespace APPLICATION_LAYER.Services.Implementations
             try
             {
                 _logger.Information($"Fetching requests sent by user: {userId}");
-                var requests = await _unitOfWork.TripRequests.GetRequestsByUserAsync(userId);
+                
+                var cacheKey = $"user:{userId}:requests";
+                var cachedRequests = await _cacheService.GetOrSetAsync(
+                    cacheKey,
+                    async () =>
+                    {
+                        var requests = await _unitOfWork.TripRequests.GetRequestsByUserAsync(userId);
+                        var responseDtos = new List<JoinRequestResponseDto>();
+                        foreach (var request in requests)
+                        {
+                            var user = await _unitOfWork.Users.GetByIdAsync(request.UserId);
+                            var responseDto = _mapper.Map<JoinRequestResponseDto>(request);
+                            responseDto.UserName = user?.Name ?? "";
+                            responseDtos.Add(responseDto);
+                        }
+                        return responseDtos;
+                    },
+                    TimeSpan.FromHours(1)
+                );
 
-                var responseDtos = new List<JoinRequestResponseDto>();
-                foreach (var request in requests)
-                {
-                    var user = await _unitOfWork.Users.GetByIdAsync(request.UserId);
-                    var responseDto = _mapper.Map<JoinRequestResponseDto>(request);
-                    responseDto.UserName = user?.Name ?? "";
-                    responseDtos.Add(responseDto);
-                }
+                await _cacheService.SetAsync(cacheKey, cachedRequests, TimeSpan.FromHours(1),
+                    new[] { $"user:{userId}:requests", "joinrequest:all" });
 
-                return responseDtos;
+                return cachedRequests;
             }
             catch (Exception ex)
             {
@@ -189,6 +229,13 @@ namespace APPLICATION_LAYER.Services.Implementations
                 await _unitOfWork.SaveChangesAsync();
 
                 _logger.Information($"Join request accepted successfully: {requestId}");
+
+                // Invalidate caches
+                await _cacheService.InvalidateByTagAsync($"joinrequest:{requestId}");
+                await _cacheService.InvalidateByTagAsync($"trip:{request.TripId}:requests");
+                await _cacheService.InvalidateByTagAsync($"trip:{request.TripId}:pending");
+                await _cacheService.InvalidateByTagAsync($"user:{request.UserId}:requests");
+                
                 return true;
             }
             catch (Exception ex)
@@ -224,6 +271,13 @@ namespace APPLICATION_LAYER.Services.Implementations
                 await _unitOfWork.SaveChangesAsync();
 
                 _logger.Information($"Join request rejected successfully: {requestId}");
+
+                // Invalidate caches
+                await _cacheService.InvalidateByTagAsync($"joinrequest:{requestId}");
+                await _cacheService.InvalidateByTagAsync($"trip:{request.TripId}:requests");
+                await _cacheService.InvalidateByTagAsync($"trip:{request.TripId}:pending");
+                await _cacheService.InvalidateByTagAsync($"user:{request.UserId}:requests");
+                
                 return true;
             }
             catch (Exception ex)
@@ -258,6 +312,13 @@ namespace APPLICATION_LAYER.Services.Implementations
                 await _unitOfWork.SaveChangesAsync();
 
                 _logger.Information($"Join request cancelled successfully: {requestId}");
+
+                // Invalidate caches
+                await _cacheService.InvalidateByTagAsync($"joinrequest:{requestId}");
+                await _cacheService.InvalidateByTagAsync($"trip:{request.TripId}:requests");
+                await _cacheService.InvalidateByTagAsync($"trip:{request.TripId}:pending");
+                await _cacheService.InvalidateByTagAsync($"user:{request.UserId}:requests");
+                
                 return true;
             }
             catch (Exception ex)
@@ -287,26 +348,34 @@ namespace APPLICATION_LAYER.Services.Implementations
             {
                 _logger.Information($"Fetching all requests for trip: {tripId}");
 
-                // Verify trip exists
-                var trip = await _unitOfWork.Trips.GetByIdAsync(tripId);
-                if (trip == null)
-                {
-                    _logger.Warning($"Trip not found: {tripId}");
-                    throw new InvalidOperationException("Trip not found");
-                }
+                var cacheKey = $"trip:{tripId}:requests:all";
+                var cachedRequests = await _cacheService.GetOrSetAsync(
+                    cacheKey,
+                    async () =>
+                    {
+                        // Verify trip exists
+                        var trip = await _unitOfWork.Trips.GetByIdAsync(tripId);
+                        if (trip == null)
+                            throw new InvalidOperationException("Trip not found");
 
-                var requests = await _unitOfWork.TripRequests.GetRequestsByTripAsync(tripId);
+                        var requests = await _unitOfWork.TripRequests.GetRequestsByTripAsync(tripId);
+                        var responseDtos = new List<JoinRequestResponseDto>();
+                        foreach (var request in requests)
+                        {
+                            var user = await _unitOfWork.Users.GetByIdAsync(request.UserId);
+                            var responseDto = _mapper.Map<JoinRequestResponseDto>(request);
+                            responseDto.UserName = user?.Name ?? "";
+                            responseDtos.Add(responseDto);
+                        }
+                        return responseDtos;
+                    },
+                    TimeSpan.FromMinutes(30)
+                );
 
-                var responseDtos = new List<JoinRequestResponseDto>();
-                foreach (var request in requests)
-                {
-                    var user = await _unitOfWork.Users.GetByIdAsync(request.UserId);
-                    var responseDto = _mapper.Map<JoinRequestResponseDto>(request);
-                    responseDto.UserName = user?.Name ?? "";
-                    responseDtos.Add(responseDto);
-                }
+                await _cacheService.SetAsync(cacheKey, cachedRequests, TimeSpan.FromMinutes(30),
+                    new[] { $"trip:{tripId}:requests", "joinrequest:all" });
 
-                return responseDtos;
+                return cachedRequests;
             }
             catch (Exception ex)
             {
