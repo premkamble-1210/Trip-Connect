@@ -57,6 +57,10 @@ namespace INFRASTRUCTURE_LAYER
             // Configure and Register Redis Cache Services
             AddRedisCacheServices(services, configuration);
 
+            // Register HttpClient factory and ImageKit Service
+            services.AddSingleton<HttpClient>();
+            services.AddScoped<IImageKitService, ImageKitService>();
+
             return services;
         }
 

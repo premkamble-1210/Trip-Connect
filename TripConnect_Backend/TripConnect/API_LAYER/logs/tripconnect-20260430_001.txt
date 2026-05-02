@@ -4,3 +4,15 @@
 2026-04-30 10:07:12.635 +05:30 [WRN] Failed to set cache for key 'trip:id:3': A possible object cycle was detected. This can either be due to a cycle or if the object depth is larger than the maximum allowed depth of 64. Consider using ReferenceHandler.Preserve on JsonSerializerOptions to support cycles. Path: $.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.Id.
 2026-04-30 10:23:30.647 +05:30 [WRN] Failed to set cache for key 'trip:id:3': A possible object cycle was detected. This can either be due to a cycle or if the object depth is larger than the maximum allowed depth of 64. Consider using ReferenceHandler.Preserve on JsonSerializerOptions to support cycles. Path: $.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.Id.
 2026-04-30 10:23:31.198 +05:30 [WRN] Failed to set cache for key 'trip:id:3': A possible object cycle was detected. This can either be due to a cycle or if the object depth is larger than the maximum allowed depth of 64. Consider using ReferenceHandler.Preserve on JsonSerializerOptions to support cycles. Path: $.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.TripDays.Trip.Id.
+2026-04-30 11:40:26.607 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-30 11:40:32.487 +05:30 [INF] Fetching user: 3
+2026-04-30 11:40:32.572 +05:30 [INF] User cache hit: 3
+2026-04-30 11:40:32.609 +05:30 [INF] Fetching trips created by user: 3
+2026-04-30 11:40:40.876 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-30 11:40:40.976 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-04-30 11:40:47.761 +05:30 [INF] Fetching user: 3
+2026-04-30 11:40:47.793 +05:30 [INF] User cache hit: 3
+2026-04-30 11:40:47.800 +05:30 [INF] Fetching trips created by user: 3
+2026-04-30 11:40:47.904 +05:30 [INF] User trips cache hit: 3
+2026-04-30 11:40:53.717 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-04-30 11:40:53.824 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
