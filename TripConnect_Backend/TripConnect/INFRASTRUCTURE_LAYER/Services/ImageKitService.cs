@@ -27,7 +27,7 @@ namespace INFRASTRUCTURE_LAYER.Services
         private readonly int _maxFileSizeMB;
         private readonly List<string> _allowedFormats;
         
-        private const string UPLOAD_API_ENDPOINT = "https://upload.imagekit.io/api/v1/files";
+        private const string UPLOAD_API_ENDPOINT = "https://upload.imagekit.io/api/v1/files/upload";
         private const string DELETE_API_ENDPOINT = "https://api.imagekit.io/v1/files";
 
         // Allowed image formats
@@ -182,16 +182,19 @@ namespace INFRASTRUCTURE_LAYER.Services
                 }
 
                 // ===== ImageKit REST API Integration =====
-                // POST https://upload.imagekit.io/api/v1/files
+                // POST https://upload.imagekit.io/api/v1/files/upload
                 // Requires Basic Auth with private key
                 
                 // Create multipart form data for file upload
                 using (var content = new MultipartFormDataContent())
                 {
-                    // Add file content
-                    var fileContent = new StreamContent(imageStream);
+                    // Add file content - use ByteArrayContent with already-read bytes to avoid Content-Length issues
+                    var fileContent = new ByteArrayContent(fileBytes, 0, bytesRead);
                     fileContent.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/octet-stream");
                     content.Add(fileContent, "file", fileName);
+
+                    // Add fileName (required by ImageKit API)
+                    content.Add(new StringContent(fileName), "fileName");
 
                     // Add folder parameter
                     content.Add(new StringContent(folder), "folder");
@@ -199,12 +202,6 @@ namespace INFRASTRUCTURE_LAYER.Services
                     // Add optional metadata
                     content.Add(new StringContent("true"), "useUniqueFileName");
                     content.Add(new StringContent("tripconnect,auto-uploaded"), "tags");
-
-                    // Reset stream position if needed
-                    if (imageStream.CanSeek)
-                    {
-                        imageStream.Seek(0, SeekOrigin.Begin);
-                    }
 
                     _logger.LogDebug("Sending file to ImageKit: {FileName} ({Bytes} bytes) to folder: {Folder}",
                         fileName, bytesRead, folder);
@@ -214,6 +211,9 @@ namespace INFRASTRUCTURE_LAYER.Services
                     {
                         Content = content
                     };
+                    
+                    // Add Accept header
+                    request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
                     // Add Basic Authentication (privateKey:)
                     var authHeader = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{_privateKey}:"));

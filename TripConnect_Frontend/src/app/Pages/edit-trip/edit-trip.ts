@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TripService } from '../../services/trip.service';
 import { AuthService } from '../../services/auth.service';
+import { ImageService } from '../../services/image.service';
 import { TripDayDto } from '../../models/api.types';
 
 @Component({
@@ -15,6 +16,7 @@ import { TripDayDto } from '../../models/api.types';
 export class EditTrip implements OnInit {
   private readonly tripService = inject(TripService);
   private readonly authService = inject(AuthService);
+  private readonly imageService = inject(ImageService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
@@ -37,6 +39,7 @@ export class EditTrip implements OnInit {
   tripDays = signal<TripDayDto[]>([]);
   errors = signal<Record<string, string>>({});
   isLoading = signal(false);
+  isUploadingImage = signal(false);
   isFetching = signal(true);
 
   travelTypes = signal([
@@ -162,6 +165,127 @@ export class EditTrip implements OnInit {
       error: () => {
         this.isLoading.set(false);
         this.errors.set({ general: 'Failed to delete trip. Please try again.' });
+      }
+    });
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+
+    if (!file) return;
+
+    // Validate file type - only allow images
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/bmp', 'image/svg+xml'];
+    const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg'];
+    
+    const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
+    
+    if (!allowedTypes.includes(file.type) || !allowedExtensions.includes(fileExtension)) {
+      // Clear the file input
+      input.value = '';
+      
+      // Set error message
+      const currentErrors = this.errors();
+      this.errors.set({
+        ...currentErrors,
+        imageUrl: 'Please select a valid image file (JPG, PNG, GIF, WebP, BMP, SVG)'
+      });
+      return;
+    }
+
+    // Clear any previous error
+    const currentErrors = this.errors();
+    if (currentErrors['imageUrl']) {
+      const { imageUrl, ...restErrors } = currentErrors;
+      this.errors.set(restErrors);
+    }
+
+    // Check file size (limit to 5MB)
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+      input.value = '';
+      const currentErrors = this.errors();
+      this.errors.set({
+        ...currentErrors,
+        imageUrl: 'Image file size must be less than 5MB'
+      });
+      return;
+    }
+
+    // Upload to server
+    this.isUploadingImage.set(true);
+    this.imageService.uploadTripImage(this.tripId, file).subscribe({
+      next: (response) => {
+        this.isUploadingImage.set(false);
+        if (response.success) {
+          this.imageUrl.set(response.imageUrl);
+          // Clear any previous error
+          const currentErrors = this.errors();
+          if (currentErrors['imageUrl']) {
+            const { imageUrl, ...restErrors } = currentErrors;
+            this.errors.set(restErrors);
+          }
+        } else {
+          const currentErrors = this.errors();
+          this.errors.set({
+            ...currentErrors,
+            imageUrl: response.message || 'Failed to upload image'
+          });
+        }
+      },
+      error: (error) => {
+        this.isUploadingImage.set(false);
+        input.value = '';
+        const currentErrors = this.errors();
+        this.errors.set({
+          ...currentErrors,
+          imageUrl: 'Failed to upload image. Please try again.'
+        });
+      }
+    });
+  }
+
+  onDayFileSelected(event: Event, dayIndex: number): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+
+    if (!file) return;
+
+    // Validate file type - only allow images
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/bmp', 'image/svg+xml'];
+    const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg'];
+    
+    const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
+    
+    if (!allowedTypes.includes(file.type) || !allowedExtensions.includes(fileExtension)) {
+      // Clear the file input
+      input.value = '';
+      alert('Please select a valid image file (JPG, PNG, GIF, WebP, BMP, SVG)');
+      return;
+    }
+
+    // Check file size (limit to 5MB)
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+      input.value = '';
+      alert('Image file size must be less than 5MB');
+      return;
+    }
+
+    // Upload to server and update the day's imgUrl
+    this.imageService.uploadTripImage(this.tripId, file).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.updateTripDay(dayIndex, 'imgUrl', response.imageUrl);
+        } else {
+          input.value = '';
+          alert(response.message || 'Failed to upload image. Please try again.');
+        }
+      },
+      error: (error) => {
+        input.value = '';
+        alert('Failed to upload image. Please try again.');
       }
     });
   }

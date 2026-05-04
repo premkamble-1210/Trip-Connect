@@ -94,9 +94,13 @@ namespace API_LAYER.Controllers
 
                 _logger.LogInformation("Uploading trip image for trip {TripId}, file: {FileName}", tripId, imageFile.FileName);
 
-                // Convert IFormFile to Stream
-                await using var stream = imageFile.OpenReadStream();
-                var response = await _imageService.UploadTripImageAsync(stream, imageFile.FileName, tripId);
+                // Convert IFormFile to MemoryStream to avoid position issues
+                await using var originalStream = imageFile.OpenReadStream();
+                await using var memoryStream = new MemoryStream();
+                await originalStream.CopyToAsync(memoryStream);
+                memoryStream.Position = 0; // Ensure clean start
+                
+                var response = await _imageService.UploadTripImageAsync(memoryStream, imageFile.FileName, tripId);
 
                 if (!response.Success)
                 {

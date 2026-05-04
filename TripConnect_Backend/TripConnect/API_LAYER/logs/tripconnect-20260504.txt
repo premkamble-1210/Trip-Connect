@@ -1,0 +1,65 @@
+2026-05-04 09:03:52.813 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-05-04 09:03:59.978 +05:30 [INF] Fetching trip: 3
+2026-05-04 09:03:59.978 +05:30 [INF] Fetching trips for user: 3
+2026-05-04 09:03:59.978 +05:30 [INF] Fetching members for trip: 3
+2026-05-04 09:04:22.141 +05:30 [INF] Fetching trip: 3
+2026-05-04 09:04:22.142 +05:30 [INF] Fetching all requests for trip: 3
+2026-05-04 09:04:35.249 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-05-04 09:04:35.341 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-05-04 09:05:40.225 +05:30 [INF] Fetching trips for user: 3
+2026-05-04 09:05:40.225 +05:30 [INF] Fetching trip: 1
+2026-05-04 09:05:40.226 +05:30 [INF] Fetching members for trip: 1
+2026-05-04 09:05:40.260 +05:30 [INF] User member trips cache hit: 3
+2026-05-04 09:05:44.080 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-05-04 09:05:44.165 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-05-04 09:06:10.650 +05:30 [INF] Fetching members for trip: 3
+2026-05-04 09:06:10.707 +05:30 [INF] Fetching trip: 3
+2026-05-04 09:06:10.707 +05:30 [INF] Fetching trips for user: 3
+2026-05-04 09:06:10.736 +05:30 [INF] User member trips cache hit: 3
+2026-05-04 09:06:45.011 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-05-04 09:06:45.099 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-05-04 09:07:22.353 +05:30 [INF] Login attempt for username: premkamble2
+2026-05-04 09:07:22.369 +05:30 [INF] Refresh token generated
+2026-05-04 09:07:22.508 +05:30 [INF] User logged in successfully: 3
+2026-05-04 09:07:22.521 +05:30 [INF] Access token generated for user: 3
+2026-05-04 09:07:22.554 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-05-04 09:07:22.649 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-05-04 09:07:29.962 +05:30 [INF] Fetching user: 3
+2026-05-04 09:07:30.326 +05:30 [INF] Fetching trips created by user: 3
+2026-05-04 09:07:47.591 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-05-04 09:07:47.680 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-05-04 09:07:49.541 +05:30 [INF] Fetching user: 3
+2026-05-04 09:07:49.574 +05:30 [INF] User cache hit: 3
+2026-05-04 09:07:49.580 +05:30 [INF] Fetching trips created by user: 3
+2026-05-04 09:07:49.664 +05:30 [INF] User trips cache hit: 3
+2026-05-04 09:08:26.571 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-05-04 09:08:26.657 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-05-04 09:08:40.930 +05:30 [INF] Fetching user: 3
+2026-05-04 09:08:40.959 +05:30 [INF] User cache hit: 3
+2026-05-04 09:08:40.965 +05:30 [INF] Fetching trips created by user: 3
+2026-05-04 09:08:41.051 +05:30 [INF] User trips cache hit: 3
+2026-05-04 09:08:46.469 +05:30 [INF] Fetching trip: 1
+2026-05-04 09:08:54.110 +05:30 [INF] Cancelling trip: 1
+2026-05-04 09:08:54.499 +05:30 [INF] Trip cancelled successfully and cache invalidated: 1
+2026-05-04 09:08:54.511 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-05-04 09:09:17.038 +05:30 [INF] Fetching user: 3
+2026-05-04 09:09:17.067 +05:30 [INF] User cache hit: 3
+2026-05-04 09:09:17.072 +05:30 [INF] Fetching trips created by user: 3
+2026-05-04 09:09:58.738 +05:30 [INF] Fetching trip: 3
+2026-05-04 09:15:23.143 +05:30 [INF] Fetching trip: 3
+2026-05-04 09:15:59.258 +05:30 [INF] Fetching trip: 3
+2026-05-04 09:17:13.330 +05:30 [INF] Fetching trip: 3
+2026-05-04 09:19:47.641 +05:30 [INF] Fetching user: 3
+2026-05-04 09:19:47.669 +05:30 [INF] User cache hit: 3
+2026-05-04 09:19:47.678 +05:30 [INF] Fetching trips created by user: 3
+2026-05-04 09:19:47.763 +05:30 [INF] User trips cache hit: 3
+2026-05-04 09:19:49.670 +05:30 [INF] Fetching trip: 3
+2026-05-04 09:21:37.415 +05:30 [INF] Fetching trip: 3
+2026-05-04 09:37:53.783 +05:30 [INF] Fetching trip: 3
+2026-05-04 09:38:04.481 +05:30 [INF] Fetching trip: 3
+2026-05-04 09:41:22.173 +05:30 [INF] Fetching trip: 3
+2026-05-04 10:06:21.659 +05:30 [INF] Fetching trip: 3
+2026-05-04 10:08:43.310 +05:30 [INF] Fetching trip: 3
+2026-05-04 10:12:12.161 +05:30 [INF] Fetching trip: 3
+2026-05-04 10:12:37.124 +05:30 [INF] Fetching trip: 3
+2026-05-04 10:12:55.141 +05:30 [INF] Fetching trip: 3
