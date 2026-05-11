@@ -1,712 +1,1434 @@
-# TripConnect Frontend — Developer Reference
+# FRONTEND DOCUMENTATION
 
-## Table of Contents
+## 1. Overview
 
-1. [Project Overview](#1-project-overview)
-2. [Tech Stack](#2-tech-stack)
-3. [Folder Structure](#3-folder-structure)
-4. [Entry Points](#4-entry-points)
-5. [Routing](#5-routing)
-6. [Components](#6-components)
-   - [Shared Components](#61-shared-components)
-   - [Page Components](#62-page-components)
-7. [Services](#7-services)
-8. [State Management](#8-state-management)
-9. [Type Definitions / Interfaces](#9-type-definitions--interfaces)
-10. [Styling Approach](#10-styling-approach)
-11. [Configuration Files](#11-configuration-files)
-12. [Known Gaps & TODOs](#12-known-gaps--todos)
+The **Frontend** is a standalone Angular 21 application built with standalone components, reactive patterns (signals), and Tailwind CSS for styling. It communicates with the TripConnect backend API over HTTP using HttpClient with JWT Bearer authentication.
 
----
+**Purpose:**
+- Provide user interface for trip planning, searching, expense sharing, and community interaction
+- Handle user authentication (login/register) with JWT token management
+- Display trip listings, details, and management workflows
+- Manage user profiles, ratings, and join requests
+- Enable trip chat, expense splitting, and image uploads
+- Redirect unauthenticated users to login page via route guards
 
-## 1. Project Overview
-
-TripConnect is a social travel platform where users can create group trips, discover existing ones, and manage join requests. The frontend is an **Angular 21 standalone application** that currently serves as a fully styled UI prototype. All data is mocked — no backend integration exists yet.
-
-The app allows users to:
-- Browse and filter available trips (`/explore`)
-- Create a new trip (`/create`)
-- View trip details (`/trip/:id`)
-- Manage incoming join requests as a host (`/request/:id`)
-- View and edit their own profile (`/profile`)
+**Key Principles:**
+- Standalone component-based architecture (no NgModules)
+- Reactive signals for state management (`signal()`, `computed()`)
+- HTTP interceptors for automatic JWT token injection
+- Route guards for authentication enforcement
+- Tailwind CSS for responsive styling
+- Environment-based API configuration
+- Type-safe API communication via TypeScript interfaces
 
 ---
 
-## 2. Tech Stack
-
-| Technology | Version | Role |
-|---|---|---|
-| Angular | ^21.2.0 | Framework — standalone components, signals |
-| TypeScript | ~5.9.2 | Language (strict mode) |
-| Tailwind CSS | ^4.1.12 | Utility-first styling (v4 PostCSS setup) |
-| RxJS | ~7.8.0 | Reactive utilities (pulled in by Angular, not used directly yet) |
-| Angular CLI | ^21.2.3 | Build tooling (`@angular/build:application`) |
-| Vitest | ^4.0.8 | Unit test runner |
-| Prettier | ^3.8.1 | Code formatter |
-
-> Angular 21 uses the modern **standalone component API** — there are no `NgModule` declarations anywhere in this project.
-
----
-
-## 3. Folder Structure
+## 2. Project Structure
 
 ```
 TripConnect_Frontend/
-├── angular.json                         # Angular CLI workspace config
-├── package.json                         # npm dependencies
-├── tsconfig.json                        # Root TS config
-├── tsconfig.app.json                    # App-specific TS config
-├── tsconfig.spec.json                   # Test-specific TS config
-├── .postcssrc.json                      # PostCSS config (wires in Tailwind v4)
-├── .prettierrc                          # Prettier formatting rules
-├── public/
-│   └── favicon.ico
-└── src/
-    ├── index.html                       # HTML shell — mounts <app-root>
-    ├── main.ts                          # Bootstrap entry point
-    ├── styles.css                       # Global CSS — only: @import 'tailwindcss'
-    └── app/
-        ├── app.ts                       # Root component (selector: app-root)
-        ├── app.html                     # Root template: <app-navbar> + <router-outlet>
-        ├── app.css                      # Empty
-        ├── app.config.ts                # Application providers
-        ├── app.routes.ts                # Route definitions
-        ├── app.spec.ts                  # Root component spec
-        │
-        ├── Components/                  # Reusable shared components
-        │   ├── navbar/
-        │   │   ├── navbar.ts / .html / .css / .spec.ts
-        │   │   ├── nav-link/
-        │   │   │   └── nav-link.ts / .html / .css / .spec.ts
-        │   │   └── navbar-profile/
-        │   │       └── navbar-profile.ts / .html / .css / .spec.ts
-        │   ├── trip-card/
-        │   │   └── trip-card.ts / .html / .css / .spec.ts
-        │   ├── trip-itinerary/
-        │   │   └── trip-itinerary.ts / .html / .css / .spec.ts
-        │   └── trip-member-list/
-        │       └── trip-member-list.ts / .html / .css / .spec.ts
-        │
-        └── Pages/                       # Routed page components
-            ├── login/
-            │   └── login.ts / .html / .css / .spec.ts
-            ├── register/
-            │   └── register.ts / .html / .css / .spec.ts
-            ├── expore-trips/            # ← note: typo in folder name (missing 'l')
-            │   └── expore-trips.ts / .html / .css / .spec.ts
-            ├── new-trip/
-            │   └── new-trip.ts / .html / .css / .spec.ts
-            ├── trip/
-            │   └── trip.ts / .html / .css / .spec.ts
-            ├── join-request/
-            │   └── join-request.ts / .html / .css / .spec.ts
-            ├── profile/
-            │   ├── profile.ts / .html / .spec.ts
-            │   ├── profile-tabs.ts / .html
-            │   ├── profile.service.ts   # Only service in the app
-            │   └── components/
-            │       ├── hosted-trips/
-            │       │   └── hosted-trips.ts / .html
-            │       ├── joined-trips/
-            │       │   └── joined-trips.ts / .html
-            │       └── reviews/
-            │           └── reviews.ts / .html
-            └── view-profile/
-                ├── view-profile.ts / .html / .spec.ts
-                ├── view-profile-tabs.ts / .html
-                ├── view-hosted-trips.ts / .html
+├── angular.json                       # Angular CLI configuration
+├── tsconfig.json                      # TypeScript configuration
+├── tsconfig.app.json                  # App-specific TypeScript config
+├── package.json                       # Dependencies (Angular 21, Tailwind, RxJS)
+├── .postcssrc.json                    # PostCSS/Tailwind configuration
+├── .prettierrc                        # Code formatting rules
+├── src/
+│   ├── index.html                     # Bootstrap HTML
+│   ├── main.ts                        # Bootstrap application
+│   ├── styles.css                     # Global styles + Tailwind imports
+│   ├── app/
+│   │   ├── app.ts                     # Root component
+│   │   ├── app.html                   # Root template
+│   │   ├── app.css                    # Root styles
+│   │   ├── app.config.ts              # Dependency injection config
+│   │   ├── app.routes.ts              # Route definitions
+│   │   ├── Services/                  # HTTP client services (4)
+│   │   │   ├── auth.service.ts        # Login, register, token management
+│   │   │   ├── trip.service.ts        # Trip CRUD and search
+│   │   │   ├── image.service.ts       # Image uploads to ImageKit
+│   │   │   └── join-request.service.ts# Join request operations
+│   │   ├── Interceptors/
+│   │   │   └── auth.interceptor.ts    # JWT token injection
+│   │   ├── Guards/
+│   │   │   └── auth.guard.ts          # Route protection for authenticated users
+│   │   ├── Models/
+│   │   │   └── api.types.ts           # TypeScript DTOs (single source of truth)
+│   │   ├── Components/                # Reusable UI components (4)
+│   │   │   ├── navbar/                # Navigation bar with profile menu
+│   │   │   ├── trip-card/             # Trip card component for listings
+│   │   │   ├── trip-itinerary/        # Trip day/itinerary display
+│   │   │   └── trip-member-list/      # Display trip members
+│   │   └── Pages/                     # Page-level components (9)
+│   │       ├── login/                 # Login form and flow
+│   │       ├── register/              # Registration form and flow
+│   │       ├── expore-trips/          # Trip discovery with filters
+│   │       ├── trip/                  # Trip details and management
+│   │       ├── new-trip/              # Create new trip
+│   │       ├── edit-trip/             # Edit trip details
+│   │       ├── join-request/          # Join request management (for hosts)
+│   │       ├── profile/               # User profile and settings
+│   │       └── view-profile/          # View other user profiles
+│   └── environments/
+│       └── environment.ts             # API base URL configuration
+├── public/                            # Static assets
+└── dist/                              # Production build output
 ```
 
 ---
 
-## 4. Entry Points
+## 3. Technologies & Dependencies
 
-### `src/index.html`
-The HTML shell. Contains `<base href="/">` for the Angular router and renders `<app-root>`. Page title: `TripConnectFrontend`.
+**Core Framework:**
+- **Angular 21.2.0** — Standalone components, signals, dependency injection, routing
+- **TypeScript 5.9.2** — Type-safe JavaScript with interfaces and generics
+- **RxJS 7.8.0** — Observable streams for async operations
 
-### `src/main.ts`
-Application bootstrap:
+**Styling:**
+- **Tailwind CSS 4.1.12** — Utility-first CSS framework
+- **PostCSS 8.5.3** — CSS processing
+- **@tailwindcss/postcss 4.1.12** — Tailwind integration
+
+**HTTP & Networking:**
+- **@angular/common/http** — HttpClient for REST API calls
+- **Functional HTTP Interceptors** — JWT token injection
+
+**Development Tools:**
+- **@angular/cli 21.2.3** — Build and serve tools
+- **Vitest 4.0.8** — Unit test runner
+- **jsdom 28.0.0** — DOM simulation for testing
+- **Prettier 3.8.1** — Code formatting
+
+---
+
+## 4. Configuration & Startup
+
+**Bootstrap Flow (main.ts):**
 ```typescript
-bootstrapApplication(App, appConfig).catch(err => console.error(err));
+bootstrapApplication(App, appConfig)
+  .catch((err) => console.error(err));
 ```
-Uses the modern **standalone bootstrap API** — no `NgModule`.
 
-### `src/app/app.config.ts`
-Configures application-level providers:
+**Dependency Injection (app.config.ts):**
 ```typescript
-export const appConfig: ApplicationConfig = {
-  providers: [
-    provideBrowserGlobalErrorListeners(),
-    provideRouter(routes)
-  ]
+providers: [
+  provideBrowserGlobalErrorListeners(),  // Global error handling
+  provideRouter(routes),                 // Routing
+  provideHttpClient(
+    withInterceptors([authInterceptor])  // HTTP + JWT injection
+  )
+]
+```
+
+**Root Component (app.ts):**
+- Imports Navbar and RouterOutlet
+- Signals for state management
+- Template: `<app-navbar></app-navbar><router-outlet></router-outlet>`
+
+**Environment Configuration:**
+```typescript
+// environment.ts
+export const environment = {
+  apiBaseUrl: 'https://localhost:7142'
 };
-```
-> **Note:** `provideHttpClient()` is NOT present — HTTP calls are not yet wired up.
-
-### `src/app/app.ts`
-Root component (`app-root`). Imports all page and component classes directly via the standalone `imports` array. The template renders only:
-```html
-<app-navbar />
-<router-outlet />
-```
-
-### `src/styles.css`
-The only global stylesheet — a single line:
-```css
-@import 'tailwindcss';
 ```
 
 ---
 
 ## 5. Routing
 
-Defined in `src/app/app.routes.ts`. Uses Angular's standalone `provideRouter(routes)`.
+**File:** `app.routes.ts`
 
-| Path | Component | Notes |
-|---|---|---|
-| `/` | — | Redirects to `/explore` |
-| `/explore` | `ExporeTrips` | Main browse/discovery page |
-| `/create` | `NewTrip` | Trip creation form |
-| `/profile` | `Profile` | Logged-in user's profile |
-| `/trip/:id` | `Trip` | Trip detail view |
-| `/request/:id` | `JoinRequest` | Host's join request management |
+**Route Structure:**
 
-### Unrouted Components (exist but have no route)
+| Path | Component | Auth | Purpose |
+|------|-----------|------|---------|
+| `/login` | Login | ❌ | User login |
+| `/register` | Register | ❌ | User registration |
+| `/` | (redirect) | — | Redirect to `/explore` |
+| `/explore` | ExporeTrips | ❌ | Browse/search trips |
+| `/create` | NewTrip | ✅ | Create new trip |
+| `/profile` | Profile | ✅ | View/edit own profile |
+| `/trip/:id` | Trip | ✅ | View trip details |
+| `/edit/:id` | EditTrip | ✅ | Edit trip details |
+| `/request/:id` | JoinRequest | ✅ | Manage join requests (host) |
+| `/user/:id` | ViewProfile | ✅ | View other user's profile |
 
-| Component | Reason |
-|---|---|
-| `Login` | Imported in `app.ts` but no route registered; form logic is empty |
-| `Register` | Same — styled HTML only, no logic, no route |
-| `ViewProfile` | Built and imported in `app.ts` but no `/profile/:id` route exists |
-
----
-
-## 6. Components
-
-### 6.1 Shared Components
-
-Located in `src/app/Components/`.
+**Protected Routes:**
+Routes with `canActivate: [authGuard]` require valid JWT token in localStorage. If token missing, user redirected to `/login`.
 
 ---
 
-#### `Navbar` — `Components/navbar/navbar.ts`
-**Selector:** `app-navbar`
+## 6. Authentication Flow
 
-The persistent top navigation bar rendered on every page. Contains:
-- App logo / brand name
-- A search input field
-- Three `NavLink` children: Explore (`/explore`), Create (`/create`), Profile (`/profile`)
-- A `NavbarProfile` avatar button
+### 6.1 Login
 
----
+**Component:** Login (`Pages/login/`)
 
-#### `NavLink` — `Components/navbar/nav-link/nav-link.ts`
-**Selector:** `app-nav-link`
+**Flow:**
+1. User enters username and password
+2. Calls `authService.login(username, password)`
+3. Service POSTs to `/api/user/login`
+4. On success:
+   - Access token stored in `localStorage['tc_token']`
+   - Refresh token stored in `localStorage['tc_refresh_token']`
+   - User ID stored in `localStorage['tc_userId']`
+   - Navigate to `/explore`
+5. On error: Display error message
 
-| Input | Type | Description |
-|---|---|---|
-| `label` | `string` | Display text for the link |
-| `route` | `string` | Angular `routerLink` path |
+**Form Fields:**
+- Username (text input)
+- Password (password input)
+- Error message display
+- Loading state indicator
 
-Renders a single navigation link. Uses `routerLinkActive` to apply an active style class when the current route matches.
+### 6.2 Registration
 
----
+**Component:** Register (`Pages/register/`)
 
-#### `NavbarProfile` — `Components/navbar/navbar-profile/navbar-profile.ts`
-**Selector:** `app-navbar-profile`
+**Flow:**
+1. User enters name, username, email, phone, password
+2. Calls `authService.register(...)`
+3. Service POSTs to `/api/user/register`
+4. On success:
+   - Tokens stored automatically (same as login)
+   - Navigate to `/profile` (or `/login` if token not stored)
+5. On error: Display error message (e.g., "Username already exists")
 
-Displays the user's avatar in the navbar alongside a notification bell icon. The avatar URL is currently hardcoded as a signal:
+**Form Fields:**
+- Name (text input)
+- Username (text input)
+- Email (email input)
+- Phone (tel input)
+- Password (password input)
+- Error message display
+- Loading state indicator
+
+### 6.3 Token Management
+
+**AuthService Methods:**
+
 ```typescript
-userAvatar = signal("https://images.unsplash.com/...")
+login(username, password): Observable<AuthResponseDto>
+register(name, username, email, phone, password): Observable<AuthResponseDto>
+logout(): Observable<any>
+getToken(): string | null
+getRefreshToken(): string | null
+refreshToken(): Observable<any>
+getCurrentUserId(): number
+isAuthenticated(): boolean
 ```
-No inputs. Will need to be wired to auth state when authentication is implemented.
 
----
+**Token Storage:**
+- `tc_token` — Access token (60 min expiry)
+- `tc_refresh_token` — Refresh token (7 day expiry)
+- `tc_userId` — Current user ID (numeric string)
 
-#### `TripCard` — `Components/trip-card/trip-card.ts`
-**Selector:** `app-trip-card`
-
-| Input | Type | Description |
-|---|---|---|
-| `trip` | `Trip` | Trip data object (required) |
-
-Renders a card UI for a single trip in the explore grid. Displays:
-- Cover image
-- Trip title
-- Date range
-- Status badge (`Upcoming`, `Live`, `Completed`)
-- Price per person
-- Member avatar stack
-- Optional "New" badge (`trip.isNew`)
-
-The `Trip` interface used here (defined locally in `trip-card.ts`) is:
+**Token Injection (authInterceptor):**
 ```typescript
-interface Trip {
-  id: number; title: string; image: string; dates: string;
-  status: string; price: number; isNew?: boolean; avatars: string[];
+const token = localStorage.getItem('tc_token');
+if (token) {
+  req = req.clone({
+    setHeaders: { Authorization: `Bearer ${token}` }
+  });
 }
+return next(req);
 ```
 
----
-
-#### `TripItinerary` — `Components/trip-itinerary/trip-itinerary.ts`
-**Selector:** `app-trip-itinerary`
-
-| Input | Type | Description |
-|---|---|---|
-| `itinerary` | `any[]` | Array of itinerary day objects |
-
-Renders a vertical timeline of itinerary days. Each item shows a day label, title, description, and optional image. Uses `any[]` — not yet typed.
-
----
-
-#### `TripMemberList` — `Components/trip-member-list/trip-member-list.ts`
-**Selector:** `app-trip-member-list`
-
-| Input | Type | Description |
-|---|---|---|
-| `members` | `any[]` | Array of member objects |
-
-Renders a list of trip members with avatar, name, and role badge. Uses `any[]` — not yet typed.
-
----
-
-### 6.2 Page Components
-
-Located in `src/app/Pages/`.
-
----
-
-#### `Login` — `Pages/login/login.ts`
-**Route:** None (not registered)
-
-Styled HTML login form with username and password fields. The component class is empty — no form binding, no submit logic, no navigation. Authentication is not implemented.
-
----
-
-#### `Register` — `Pages/register/register.ts`
-**Route:** None (not registered)
-
-Styled HTML registration form with name, username, email, phone, and password fields. The component class is empty — same state as Login.
-
----
-
-#### `ExporeTrips` — `Pages/expore-trips/expore-trips.ts`
-**Route:** `/explore`
-
-Main trip discovery page. Layout: left sidebar with filters + right grid of `TripCard` components.
-
-**Filter state (via Angular signals):**
-| Signal | Type | Default |
-|---|---|---|
-| `location` | `signal<string>` | `'Location'` |
-| `budgetMin` | `signal<number>` | `30` |
-| `budgetMax` | `signal<number>` | `1400` |
-| `tripType` | `signal<string>` | `'Tours None'` |
-
-**Trips data:** Hardcoded array of 6 trip objects directly in the component class.  
-**Filter interaction:** Budget uses a dual-range slider with `[&::-webkit-slider-thumb]` Tailwind overrides.  
-**No API call** — filtering logic is not yet implemented (signals are set but not used to filter the hardcoded array).
-
----
-
-#### `Trip` — `Pages/trip/trip.ts`
-**Route:** `/trip/:id`
-
-Detail page for a single trip. Shows:
-- Hero banner image
-- Trip title, location, description
-- `TripItinerary` component (itinerary days)
-- `TripMemberList` component (members)
-- Sticky sidebar card with host info, price, dates, seats, and a "Request to Join" button
-
-**Data:** Hardcoded `TripData` object and hardcoded `itinerary`/`members` arrays in the component class.
-
-**TripData interface (local to this file):**
+**Auth Guard (authGuard):**
 ```typescript
-enum TripStatus { Planning, Available, Ongoing, Completed }
-
-interface TripData {
-  Id: number; Title: string; Description: string; Location: string;
-  Budget: number; StartDate: Date; EndDate: Date; Seats: number;
-  TravelType: string; Status: TripStatus; HostId: number; CreatedAt: Date;
+const token = localStorage.getItem('tc_token');
+if (token) {
+  return true;  // Allow access
 }
+return inject(Router).createUrlTree(['/login']);  // Redirect to login
 ```
 
----
+### 6.4 Logout
 
-#### `NewTrip` — `Pages/new-trip/new-trip.ts`
-**Route:** `/create`
+**Method:** `authService.logout()`
 
-Full trip creation form. Uses Angular signals for all form fields.
-
-**Form fields (all signals):**
-
-| Signal | Type | Notes |
-|---|---|---|
-| `title` | `signal<string>` | |
-| `description` | `signal<string>` | |
-| `location` | `signal<string>` | |
-| `budget` | `signal<number \| null>` | |
-| `startDate` | `signal<string>` | |
-| `endDate` | `signal<string>` | |
-| `seats` | `signal<number>` | |
-| `imageUrl` | `signal<string>` | |
-| `travelType` | `signal<string>` | |
-| `errors` | `signal<Record<string, string>>` | Validation error map |
-| `travelTypes` | `signal<string[]>` | Dropdown options |
-| `minEndDate` | `computed()` | Derived from `startDate` |
-
-**`createTrip()` method:** Validates all fields, populates `errors` signal if invalid. On valid form, currently only calls `console.log()` + `alert()` — **no HTTP call yet**.
+**Flow:**
+1. Send POST request to `/api/user/logout`
+2. Clear all tokens from localStorage
+3. Navigate to `/login`
 
 ---
 
-#### `JoinRequest` — `Pages/join-request/join-request.ts`
-**Route:** `/request/:id`
+## 7. HTTP Services
 
-Trip host's dashboard to review incoming join requests. Shows a list of requests filterable by status.
+### 7.1 AuthService
 
-**Interfaces (local):**
-```typescript
-interface JoinRequestItem {
-  id: number; name: string; username: string; avatar: string;
-  status: 'Pending' | 'Accepted' | 'Rejected' | 'Cancelled';
-}
+**File:** `services/auth.service.ts`
 
-interface FilterOption {
-  label: string; value: string; selected: boolean;
-}
-```
-
-**State:** Plain class properties (not signals). Filter options and request list are hardcoded.
-
-**Methods:**
-- `acceptRequest(id: number)` — mutates local array, sets status to `'Accepted'`
-- `declineRequest(id: number)` — mutates local array, sets status to `'Rejected'`
-- `filterRequests(value: string)` — toggles filter selection in `filterOptions`
-- `getFilteredRequests()` — returns requests filtered by selected statuses
-
-No API calls. All mutations are in-memory only.
-
----
-
-#### `Profile` — `Pages/profile/profile.ts`
-**Route:** `/profile`
-
-The logged-in user's own profile page. Shows:
-- User avatar, name, handle, star rating, member-since date
-- Verification badges (Phone, ID)
-- Masked contact info (email/phone)
-- Edit modal for updating email and phone (uses `[(ngModel)]` two-way binding)
-- `ProfileTabs` component (Hosted / Joined / Reviews tabs)
-
-**Data:** Injects `ProfileService` and calls `getUserProfile()` in `ngOnInit`. Uses `[(ngModel)]` for the edit modal fields `editEmail` and `editPhone`.
-
----
-
-#### `ProfileTabs` — `Pages/profile/profile-tabs.ts`
-**Parent:** `Profile`
-
-Tab switcher component. Manages `activeTab: string` as a plain class property (`'hosted'` | `'joined'` | `'reviews'`). Renders the appropriate sub-component based on the active tab:
-- `'hosted'` → `HostedTrips`
-- `'joined'` → `JoinedTrips`
-- `'reviews'` → `Reviews`
-
----
-
-#### `HostedTrips` — `Pages/profile/components/hosted-trips/hosted-trips.ts`
-**Parent:** `ProfileTabs`
-
-Lists trips hosted by the logged-in user. Fetches data from `ProfileService.getHostedTrips()` in `ngOnInit`. Clicking the "Manage Members" button navigates to `/request/:id` using Angular Router.
-
----
-
-#### `JoinedTrips` — `Pages/profile/components/joined-trips/joined-trips.ts`
-**Parent:** `ProfileTabs` and `ViewProfileTabs` (reused in both)
-
-Lists trips the user has joined. Fetches from `ProfileService.getJoinedTrips()` in `ngOnInit`. Reused in both own profile and view-profile pages.
-
----
-
-#### `Reviews` — `Pages/profile/components/reviews/reviews.ts`
-**Parent:** `ProfileTabs` and `ViewProfileTabs` (reused in both)
-
-Lists reviews received by the user. Fetches from `ProfileService.getReviews()` in `ngOnInit`. Renders star ratings and helpful-count indicators. Reused across both profile views.
-
----
-
-#### `ViewProfile` — `Pages/view-profile/view-profile.ts`
-**Route:** None (no route registered yet — `/profile/:id` is missing)
-
-Read-only view of another user's public profile. Mirrors the `Profile` layout but without any edit capability. Injects `ProfileService` (same mock data as own profile). Uses `ViewProfileTabs` for its tab section.
-
----
-
-#### `ViewProfileTabs` — `Pages/view-profile/view-profile-tabs.ts`
-**Parent:** `ViewProfile`
-
-Tab switcher for the viewed user's profile. Same `activeTab` pattern as `ProfileTabs`. Renders:
-- `'hosted'` → `ViewHostedTrips`
-- `'joined'` → `JoinedTrips` (shared component)
-- `'reviews'` → `Reviews` (shared component)
-
----
-
-#### `ViewHostedTrips` — `Pages/view-profile/view-hosted-trips.ts`
-**Parent:** `ViewProfileTabs`
-
-Read-only version of the hosted trips list for another user's profile. Fetches from `ProfileService.getHostedTrips()`. All action buttons are disabled — no "Manage Members" navigation.
-
----
-
-## 7. Services
-
-### `ProfileService` — `Pages/profile/profile.service.ts`
-
-The **only service** in the entire frontend. It is:
-
-```typescript
-@Injectable({ providedIn: 'root' })
-export class ProfileService { ... }
-```
-
-Provided at the root level — a singleton shared across all components that inject it.
+**Dependencies:**
+- HttpClient
+- Router
+- environment (API base URL)
 
 **Methods:**
 
-| Method | Return Type | Description |
-|---|---|---|
-| `getUserProfile()` | `User` | Returns a single hardcoded user object (Sarah Peterson) |
-| `getHostedTrips()` | `Trip[]` | Returns 9 hardcoded trips hosted by the user |
-| `getJoinedTrips()` | `Trip[]` | Returns 6 hardcoded trips the user has joined |
-| `getReviews()` | `Review[]` | Returns 10 hardcoded reviews received by the user |
+```typescript
+// Login with username/password
+login(username: string, password: string): Observable<AuthResponseDto>
 
-> All methods return **static in-memory data**. There are no `HttpClient` calls. When backend integration is added, these methods should be converted to return `Observable<T>` using `HttpClient`.
+// Register new user
+register(name, username, email, phone, password): Observable<AuthResponseDto>
 
-**Consumed by:** `Profile`, `ViewProfile`, `HostedTrips`, `JoinedTrips`, `ViewHostedTrips`, `Reviews`
+// Logout and clear tokens
+logout(): Observable<any>
+
+// Get stored access token
+getToken(): string | null
+
+// Get stored refresh token
+getRefreshToken(): string | null
+
+// Refresh expired access token using refresh token
+refreshToken(): Observable<any>
+
+// Get current user ID from localStorage
+getCurrentUserId(): number
+
+// Check if user is authenticated
+isAuthenticated(): boolean
+```
+
+**Logging:**
+- Logs token storage/retrieval for debugging
+- Console logs indicate success/failure
+
+### 7.2 TripService
+
+**File:** `services/trip.service.ts`
+
+**Base URL:** `{apiBaseUrl}/api/trip`
+
+**Methods:**
+
+```typescript
+// Get paginated trips (public)
+getAllTrips(pageNumber = 1, pageSize = 20): Observable<TripResponseDto[]>
+
+// Search trips with filters (public)
+searchTrips(filters: TripSearchFilters): Observable<TripResponseDto[]>
+
+// Get single trip by ID (protected)
+getTripById(id: number): Observable<TripResponseDto>
+
+// Create new trip (protected)
+createTrip(userId: number, dto: CreateTripDto): Observable<TripResponseDto>
+
+// Get trips hosted by user
+getHostedTrips(userId: number): Observable<TripResponseDto[]>
+
+// Get trips user has joined (via accepted join requests)
+getJoinedTrips(userId: number): Observable<TripResponseDto[]>
+
+// Get upcoming trips
+getUpcomingTrips(): Observable<TripResponseDto[]>
+
+// Get members of a trip
+getTripMembers(tripId: number): Observable<TripMemberResponseDto[]>
+
+// Update trip details (protected)
+updateTrip(tripId, userId, dto): Observable<TripResponseDto>
+
+// Delete trip (protected)
+deleteTrip(tripId, userId): Observable<void>
+```
+
+**Search Filters:**
+```typescript
+interface TripSearchFilters {
+  location?: string;        // Exact location match
+  startDate?: string;       // ISO date string
+  maxBudget?: number;       // Maximum budget filter
+  travelType?: string;      // e.g., "Adventure", "Leisure"
+}
+```
+
+### 7.3 ImageService
+
+**File:** `services/image.service.ts`
+
+**Base URL:** `{apiBaseUrl}/api/image`
+
+**Methods:**
+
+```typescript
+// Upload image for trip
+uploadTripImage(tripId: number, file: File): Observable<ImageUploadResponse>
+
+// Upload profile image
+uploadProfileImage(file: File): Observable<ImageUploadResponse>
+
+// Upload expense receipt image
+uploadExpenseImage(expenseId: number, file: File): Observable<ImageUploadResponse>
+```
+
+**Response:**
+```typescript
+interface ImageUploadResponse {
+  fileId: string;           // ImageKit file ID
+  imageUrl: string;         // Full image URL with transformations
+  publicUrl: string;        // Public image URL
+  uploadedAt: string;       // DateTime ISO string
+  success: boolean;
+  message: string;
+  fileSize: number;         // Bytes
+  width?: number;           // Image width in pixels
+  height?: number;          // Image height in pixels
+  fileName: string;         // Original file name
+}
+```
+
+**Implementation:**
+- Converts `File` to `FormData`
+- POSTs to `/upload-trip/{tripId}` endpoint
+- Backend validates size (5MB max), format (jpg/jpeg/png/webp)
+
+### 7.4 JoinRequestService
+
+**File:** `services/join-request.service.ts`
+
+**Base URL:** `{apiBaseUrl}/api/joinrequest`
+
+**Methods:**
+
+```typescript
+// Send join request to trip
+sendJoinRequest(userId: number, tripId: number): Observable<JoinRequestResponseDto>
+
+// Get join requests for a trip (host only)
+getRequestsForTrip(tripId: number): Observable<JoinRequestResponseDto[]>
+
+// Accept join request (host only)
+acceptRequest(requestId: number, hostId: number): Observable<void>
+
+// Reject join request (host only)
+rejectRequest(requestId: number, hostId: number): Observable<void>
+
+// Cancel own join request
+cancelRequest(requestId: number, userId: number): Observable<void>
+
+// Check if user already requested to join
+checkHasRequested(userId: number, tripId: number): Observable<boolean>
+
+// Get requests sent by user
+getUserRequests(userId: number): Observable<JoinRequestResponseDto[]>
+```
 
 ---
 
-## 8. State Management
+## 8. Models & Type Definitions
 
-There is no external state management library. The app uses two approaches:
+**File:** `models/api.types.ts` — Single source of truth for all backend DTOs
 
-### Angular Signals (newer components)
-Used in `ExporeTrips`, `NewTrip`, `NavbarProfile`, and `App`:
+### 8.1 Authentication Types
+
 ```typescript
-// Simple reactive state
-location = signal<string>('Location');
+interface LoginUserDto {
+  username: string;
+  password: string;
+}
 
-// Derived state
-minEndDate = computed(() => this.startDate() || this.today);
+interface CreateUserDto {
+  name: string;
+  email: string;
+  username: string;
+  phone: string;
+  password: string;
+}
+
+interface JwtTokenResponseDto {
+  accessToken: string;           // JWT Bearer token
+  refreshToken: string;          // For token refresh
+  tokenType: string;             // "Bearer"
+  expiresIn: number;             // Seconds (3600 = 60 min)
+  issuedAt: string;              // ISO datetime
+  expiresAt: string;             // ISO datetime
+}
+
+interface AuthResponseDto {
+  success: boolean;
+  message: string;
+  user: UserResponseDto;         // Authenticated user info
+  token: JwtTokenResponseDto;
+}
 ```
 
-### Plain class properties (older-style components)
-Used in `JoinRequest`, `Profile`, `ViewProfile`, `ProfileTabs`, `ViewProfileTabs`:
-```typescript
-activeTab: string = 'hosted';
-requests: JoinRequestItem[] = [...];
-```
-
-### ProfileService as data source
-`ProfileService` acts as a root-level singleton "store" — but it only holds static mock data. It does not implement observables, BehaviorSubjects, or any reactivity.
-
----
-
-## 9. Type Definitions / Interfaces
-
-There is no dedicated `types/` or `models/` folder. All interfaces are defined **inline** in the file where they are used, and exported from `profile.service.ts`.
-
-### Exported from `profile.service.ts`
+### 8.2 User Types
 
 ```typescript
-interface User {
+interface UserResponseDto {
   id: number;
   name: string;
-  handle: string;
-  rating: number;
-  reviews: number;
-  memberSince: string;
+  username: string;
   email: string;
   phone: string;
-  avatar: string;
-  badges: Badge[];
+  rating: number;                // Average rating (1.0-5.0)
+  phoneVerified: boolean;
+  idVerified: boolean;
+  emailVerified: boolean;
+  createdAt: string;             // ISO datetime
 }
 
-interface Badge {
-  id: number;
+interface UserFullDto extends UserResponseDto {
+  avatarUrl?: string;
+  averageRating?: number;
+  totalRatings?: number;
+}
+
+interface UpdateUserDto {
   name: string;
-  verified: boolean;
-}
-
-// Trip used in profile context (hosted/joined lists)
-interface Trip {
-  id: number;
-  title: string;
-  location: string;
-  dates: string;
-  budget: string;      // string e.g. "$1,400"
-  seats: string;       // string e.g. "4/6 available"
-  status: 'Upcoming' | 'Completed' | 'Live';
-  organizerName: string;
-  organizerAvatar: string;
-}
-
-interface Review {
-  id: number;
-  reviewerName: string;
-  reviewerAvatar: string;
-  reviewDate: string;
-  rating: number;
-  tripName: string;
-  reviewText: string;
-  helpfulCount: number;
+  phone: string;
 }
 ```
 
-### Local to `trip-card.ts` (explore trips — different shape)
+### 8.3 Trip Types
 
 ```typescript
-// Different Trip interface — NOT compatible with profile.service.ts Trip
-interface Trip {
+interface TripDayDto {
+  day: number;
+  location?: string;
+  date: string;                  // ISO date: "YYYY-MM-DD"
+  description?: string;
+  imgUrl?: string;
+}
+
+interface TripResponseDto {
+  id: number;
+  title: string;
+  description: string;
+  location: string;
+  budget: number;                // Trip budget
+  startDate: string;             // ISO datetime
+  endDate: string;               // ISO datetime
+  seats: number;                 // Available seats
+  travelType: string;            // e.g., "Adventure", "Leisure"
+  status: string;                // "Planned", "Ongoing", "Completed", "Cancelled"
+  hostId: number;
+  hostName: string | null;
+  imgUrl: string;                // Hero image URL
+  createdAt: string;             // ISO datetime
+  tripDays: TripDayResponseDto[];
+}
+
+interface CreateTripDto {
+  title: string;
+  description: string;
+  location: string;
+  budget: number;
+  startDate: string;             // ISO format
+  endDate: string;
+  seats: number;
+  travelType: string;
+  ImgUrl: string;                // Capitalized (backend quirk)
+  tripDays?: TripDayDto[];
+}
+
+interface UpdateTripDto {
+  title: string;
+  description: string;
+  location: string;
+  budget: number;
+  startDate: string;
+  endDate: string;
+  seats: number;
+  travelType: string;
+  ImgUrl?: string;
+  tripDays?: TripDayDto[];
+}
+
+interface TripSearchFilters {
+  location?: string;
+  startDate?: string;
+  maxBudget?: number;
+  travelType?: string;
+}
+```
+
+### 8.4 Join Request Types
+
+```typescript
+interface SendJoinRequestDto {
+  tripId: number;
+}
+
+interface JoinRequestResponseDto {
+  id: number;
+  tripId: number;
+  userId: number;
+  userName: string;
+  userUsername?: string;
+  userAvatar?: string;
+  status: 'Pending' | 'Accepted' | 'Rejected' | 'Cancelled';
+  requestedAt: string;           // ISO datetime
+  respondedAt?: string | null;
+}
+```
+
+### 8.5 Rating Types
+
+```typescript
+interface CreateRatingDto {
+  tripId: number;
+  ratedUserId: number;
+  rating: number;                // 1.0-5.0
+  review: string;
+}
+
+interface RatingResponseDto {
+  id: number;
+  tripId: number;
+  tripTitle: string;
+  raterUserId: number;
+  raterUserName: string;
+  ratedUserId: number;
+  rating: number;
+  review: string;
+  createdAt: string;
+}
+```
+
+---
+
+## 9. Components
+
+### 9.1 Root Component (app.ts)
+
+**Selector:** `app-root`
+**Imports:** RouterOutlet, Navbar
+**Template:**
+```html
+<app-navbar></app-navbar>
+<router-outlet></router-outlet>
+```
+
+**Purpose:** Bootstrap component containing navigation and route placeholder
+
+**State:**
+```typescript
+title = signal('TripConnect');
+```
+
+---
+
+### 9.2 Navbar Component
+
+**Selector:** `app-navbar`
+**Location:** `Components/navbar/`
+**Sub-components:** NavLink, NavbarProfile
+
+**Purpose:** Top navigation bar with:
+- TripConnect logo/branding
+- Navigation links (Explore, Create, Profile)
+- Profile dropdown (user menu, logout)
+- Responsive mobile menu
+
+**Template Structure:**
+```html
+<!-- Logo / Brand -->
+<!-- Navigation Links -->
+<!-- Profile Menu with Dropdown -->
+```
+
+---
+
+### 9.3 Trip Card Component
+
+**Selector:** `app-trip-card`
+**Location:** `Components/trip-card/`
+
+**Purpose:** Display trip in grid/list with:
+- Hero image
+- Title
+- Dates
+- Budget
+- Member avatars
+- Status badge
+
+**Inputs:**
+```typescript
+trip: {
   id: number;
   title: string;
   image: string;
   dates: string;
   status: string;
-  price: number;       // number, not string
-  isNew?: boolean;
+  price: number;
   avatars: string[];
 }
 ```
 
-> **Warning:** Two separate `Trip` interfaces exist with incompatible shapes. This needs to be unified into a shared types file.
+**Usage:** `expore-trips` page displays multiple trip cards
 
-### Local to `trip.ts` (trip detail page)
+---
 
+### 9.4 Trip Itinerary Component
+
+**Selector:** `app-trip-itinerary`
+**Location:** `Components/trip-itinerary/`
+
+**Purpose:** Display trip days/schedule in timeline format
+
+**Inputs:**
 ```typescript
-enum TripStatus { Planning, Available, Ongoing, Completed }
-
-interface TripData {
-  Id: number; Title: string; Description: string; Location: string;
-  Budget: number; StartDate: Date; EndDate: Date; Seats: number;
-  TravelType: string; Status: TripStatus; HostId: number; CreatedAt: Date;
-}
-```
-
-### Local to `join-request.ts`
-
-```typescript
-interface JoinRequestItem {
-  id: number;
-  name: string;
-  username: string;
-  avatar: string;
-  status: 'Pending' | 'Accepted' | 'Rejected' | 'Cancelled';
-}
-
-interface FilterOption {
-  label: string;
-  value: string;
-  selected: boolean;
-}
+tripDays: TripDayResponseDto[];
 ```
 
 ---
 
-## 10. Styling Approach
+### 9.5 Trip Member List Component
 
-All styling is done via **Tailwind CSS v4** utility classes inline in HTML templates.
+**Selector:** `app-trip-member-list`
+**Location:** `Components/trip-member-list/`
 
-### Setup
-- Tailwind v4 is configured via PostCSS (`.postcssrc.json`), not a `tailwind.config.js`
-- `src/styles.css` contains only `@import 'tailwindcss';`
-- All component `.css` files are **empty**
+**Purpose:** Display trip members with:
+- User avatars
+- Names
+- Roles (Host/Member)
+- Join date
 
-### Patterns Used
-
-**Custom colors (arbitrary values):**
-```html
-<div class="bg-[#f4f7fb] text-[#417cca] rounded-[20px]">
+**Inputs:**
+```typescript
+members: TripMemberResponseDto[];
 ```
-
-**Custom scrollbar hiding:**
-```html
-<div class="[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-```
-
-**Custom range slider thumb styling:**
-```html
-<input class="[&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4">
-```
-
-**Responsive breakpoints:** `sm:`, `md:`, `lg:` prefixes used throughout.
-
-### Missing Definitions
-The following CSS animation classes are referenced in templates but are **not defined anywhere** — they will not render:
-- `animate-fadeIn`
-- `animate-slideUp`
-
-These need to be added to `styles.css` as custom Tailwind animations or via `@keyframes`.
 
 ---
 
-## 11. Configuration Files
+## 10. Pages
 
-### `angular.json`
-- Builder: `@angular/build:application` (Vite-based, not Webpack)
-- Entry point: `src/main.ts`
-- Global styles: `src/styles.css`
-- Default output: `dist/trip-connect-frontend`
-- No environment file substitutions configured
+### 10.1 Login Page
 
-### `tsconfig.json`
-Strict TypeScript settings:
-```json
+**Route:** `/login`
+**File:** `Pages/login/login.ts`
+**Auth Required:** ❌
+
+**Features:**
+- Username and password input
+- Error message display
+- Loading state during submission
+- Link to registration
+- Form validation
+
+**Implementation:**
+- Uses `FormsModule` for two-way binding
+- Signal-based state management
+- Calls `authService.login()`
+- Navigates to `/explore` on success
+
+**UI:**
+```html
+<input [(ngModel)]="username()">
+<input [(ngModel)]="password()" type="password">
+<button (click)="login()" [disabled]="isLoading()">Login</button>
+<p *ngIf="errorMessage()">{{ errorMessage() }}</p>
+```
+
+### 10.2 Register Page
+
+**Route:** `/register`
+**File:** `Pages/register/register.ts`
+**Auth Required:** ❌
+
+**Features:**
+- Name, username, email, phone, password inputs
+- Error message display
+- Loading state
+- Link to login
+- Form validation
+- Duplicate username/email handling
+
+**Implementation:**
+- Uses `FormsModule`
+- Signal-based state
+- Calls `authService.register()`
+- Navigates to `/profile` on success
+
+### 10.3 Explore Trips Page
+
+**Route:** `/explore`
+**File:** `Pages/expore-trips/expore-trips.ts`
+**Auth Required:** ❌
+
+**Features:**
+- Trip listing with grid layout
+- Filter by location (dropdown)
+- Filter by trip type (dropdown)
+- Budget range slider (min/max)
+- Loading state
+- Cancelled trips excluded
+
+**Implementation:**
+```typescript
+location = signal<string>('');
+budgetMin = signal<number>(30);
+budgetMax = signal<number>(1400);
+tripType = signal<string>('');
+
+ngOnInit(): void {
+  this.loadTrips();
+}
+
+loadTrips(): void {
+  const hasFilters = this.location() || this.tripType();
+  
+  const request$ = hasFilters 
+    ? this.tripService.searchTrips({...})
+    : this.tripService.getAllTrips();
+
+  request$.subscribe({
+    next: (data) => this.trips.set(data),
+    error: () => {}
+  });
+}
+```
+
+**UI Components:**
+- Location dropdown
+- Trip type dropdown
+- Budget sliders
+- Trip card grid (TripCard components)
+
+### 10.4 Trip Details Page
+
+**Route:** `/trip/:id`
+**File:** `Pages/trip/trip.ts`
+**Auth Required:** ✅
+
+**Features:**
+- Trip title, description, dates, budget
+- Hero image
+- Trip itinerary (days with activities)
+- Member list
+- Join request button (if not member)
+- Chat messages (if member)
+- Expense list (if member)
+- Ratings and reviews
+- Edit/delete buttons (if host)
+
+**Implementation:**
+```typescript
+tripId = input<number>();  // From route params
+trip = signal<TripResponseDto | null>(null);
+
+ngOnInit(): void {
+  const id = this.tripId();
+  this.tripService.getTripById(id).subscribe(
+    trip => this.trip.set(trip)
+  );
+}
+```
+
+### 10.5 New Trip Page
+
+**Route:** `/create`
+**File:** `Pages/new-trip/new-trip.ts`
+**Auth Required:** ✅
+
+**Features:**
+- Trip title, description, location inputs
+- Budget input
+- Start/end date pickers
+- Available seats input
+- Travel type selection
+- Hero image upload
+- Itinerary day management (add/remove days)
+- Submit button
+
+**Implementation:**
+- Form-based trip creation
+- Image upload via `ImageService`
+- Call `tripService.createTrip(userId, dto)`
+- Navigate to `/trip/:id` on success
+
+### 10.6 Edit Trip Page
+
+**Route:** `/edit/:id`
+**File:** `Pages/edit-trip/edit-trip.ts`
+**Auth Required:** ✅
+
+**Features:**
+- Load existing trip data
+- Edit all trip fields
+- Update hero image
+- Manage itinerary days
+- Cancel/delete trip button
+
+**Implementation:**
+- Load trip via `getTripById()`
+- Update via `updateTrip(tripId, userId, dto)`
+- Delete via `deleteTrip(tripId, userId)`
+
+### 10.7 Join Request Page
+
+**Route:** `/request/:id`
+**File:** `Pages/join-request/join-request.ts`
+**Auth Required:** ✅
+
+**Features (for trip host):**
+- List pending join requests
+- Show requester profile preview
+- Accept/reject buttons
+- Request status display
+
+**Implementation:**
+```typescript
+tripId = input<number>();
+
+ngOnInit(): void {
+  this.joinRequestService.getRequestsForTrip(this.tripId()).subscribe(
+    requests => this.requests.set(requests)
+  );
+}
+
+acceptRequest(requestId: number): void {
+  this.joinRequestService.acceptRequest(requestId, this.currentUserId).subscribe(
+    () => this.loadRequests()
+  );
+}
+```
+
+### 10.8 Profile Page
+
+**Route:** `/profile`
+**File:** `Pages/profile/profile.ts`
+**Auth Required:** ✅
+
+**Features:**
+- Display current user info
+- Edit name/phone
+- Profile picture upload
+- View hosted trips
+- View joined trips
+- Rating/reputation score
+- Email/phone verification status
+
+**Implementation:**
+- Load user from `authService.getCurrentUserId()`
+- Update via API
+- Display trips lists
+
+### 10.9 View Profile Page
+
+**Route:** `/user/:id`
+**File:** `Pages/view-profile/view-profile.ts`
+**Auth Required:** ✅
+
+**Features:**
+- Display user info (name, avatar, rating)
+- User statistics
+- Trips hosted/participated
+- Ratings and reviews from others
+
+---
+
+## 11. HTTP Interceptor
+
+**File:** `interceptors/auth.interceptor.ts`
+
+**Purpose:** Automatically inject JWT token into all outgoing requests
+
+**Implementation:**
+```typescript
+export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const token = localStorage.getItem('tc_token');
+  if (token) {
+    req = req.clone({
+      setHeaders: { Authorization: `Bearer ${token}` }
+    });
+  }
+  return next(req);
+};
+```
+
+**How It Works:**
+1. Read token from localStorage
+2. Clone request and add Authorization header
+3. Pass modified request to next interceptor/handler
+4. Backend validates JWT signature
+
+**Note:** No custom error handling for 401s (frontend assumes tokens don't expire during session)
+
+---
+
+## 12. Route Guard
+
+**File:** `guards/auth.guard.ts`
+
+**Purpose:** Protect routes that require authentication
+
+**Implementation:**
+```typescript
+export const authGuard: CanActivateFn = (route, state) => {
+  const token = localStorage.getItem('tc_token');
+  if (token) {
+    return true;
+  }
+  return inject(Router).createUrlTree(['/login']);
+};
+```
+
+**Usage in Routes:**
+```typescript
 {
-  "strict": true,
-  "noImplicitOverride": true,
-  "noPropertyAccessFromIndexSignature": true,
-  "noImplicitReturns": true,
-  "target": "ES2022",
-  "module": "preserve"
+  path: 'create',
+  component: NewTrip,
+  canActivate: [authGuard]  // Redirect to /login if no token
 }
 ```
-Angular-specific: `strictTemplates: true`, `strictInjectionParameters: true`.
-
-### `.postcssrc.json`
-```json
-{ "plugins": { "@tailwindcss/postcss": {} } }
-```
-This is the Tailwind v4 PostCSS integration — replaces the old `tailwind.config.js` approach.
-
-### `.prettierrc`
-Standard Prettier config — enforces consistent code formatting. Run with `npx prettier --write .`.
-
-### Environment Files
-**None exist.** There are no `environment.ts` / `environment.prod.ts` files and no `.env` file. An `API_BASE_URL` constant will need to be created when backend integration begins.
 
 ---
 
-## 12. Known Gaps & TODOs
+## 13. Styling
 
-The following items are incomplete or missing in the current codebase:
+**Framework:** Tailwind CSS 4.1.12
 
-| # | Area | Issue |
-|---|---|---|
-| 1 | HTTP | `provideHttpClient()` is not configured in `app.config.ts` — no API calls can be made |
-| 2 | Auth — Login | `Login` component has no logic; no route; form fields have no binding |
-| 3 | Auth — Register | `Register` component has no logic; no route; form fields have no binding |
-| 4 | Auth — Guards | No `canActivate` guards on any routes — all pages are publicly accessible |
-| 5 | Auth — Interceptor | No `HttpInterceptor` for attaching JWT tokens to API requests |
-| 6 | Auth — Storage | No `localStorage`/`sessionStorage` usage for persisting session |
-| 7 | Routing | `ViewProfile` has no route — `/profile/:id` path is missing from `app.routes.ts` |
-| 8 | Data | All data is hardcoded mock data — no API integration anywhere |
-| 9 | NewTrip | `createTrip()` only calls `console.log()` + `alert()` — no HTTP POST |
-| 10 | Types | Two incompatible `Trip` interfaces exist — needs a shared types file |
-| 11 | Types | `TripItinerary` and `TripMemberList` use `any[]` — need typed interfaces |
-| 12 | Styling | `animate-fadeIn` and `animate-slideUp` are referenced but undefined |
-| 13 | Naming | Folder typo: `expore-trips/` should be `explore-trips/` |
-| 14 | NavbarProfile | User avatar is hardcoded — should come from auth state |
-| 15 | Environment | No `environment.ts` / `API_BASE_URL` constant for backend URL |
-| 16 | ExporeTrips | Filter signals exist but filtering logic is not applied to the trip list |
+**Configuration Files:**
+- `.postcssrc.json` — PostCSS config for Tailwind
+- `tailwind.config.ts` — Tailwind configuration (if exists)
+- `src/styles.css` — Global imports and custom animations
+
+**Global Styles (styles.css):**
+```css
+@import 'tailwindcss';
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.animate-slideUp {
+  animation: slideUp 0.25s ease-out;
+}
+```
+
+**Tailwind Classes Used:**
+- `container` — Max-width wrapper
+- `grid grid-cols-{n}` — Responsive grid layouts
+- `flex justify-{x} items-{y}` — Flexbox alignment
+- `bg-{color}` — Background colors
+- `text-{color}` — Text colors
+- `rounded-lg` — Border radius
+- `shadow-md` — Box shadow
+- `p-{x} m-{x}` — Padding/margin
+- `hover:bg-{color}` — Hover states
+- `max-w-{x}` — Max width
+- `hidden md:block` — Responsive visibility
+
+**Color Palette:**
+- Primary: Blue (`bg-blue-500`, `text-blue-600`)
+- Secondary: Gray (`bg-gray-100`, `text-gray-700`)
+- Success: Green (`bg-green-500`)
+- Danger: Red (`bg-red-500`)
+- Warning: Yellow (`bg-yellow-500`)
+
+---
+
+## 14. Development Workflow
+
+### 14.1 Development Server
+
+**Start:**
+```bash
+npm install          # Install dependencies
+npm start            # or: ng serve
+```
+
+**Access:** http://localhost:4200
+
+**Auto-reload:** Changes to `.ts`, `.html`, `.css` trigger automatic rebuild
+
+### 14.2 Building for Production
+
+```bash
+npm run build        # Builds to dist/ directory
+```
+
+**Build Optimization:**
+- Output hashing (cache busting)
+- Minification
+- Tree-shaking (unused code removal)
+- Lazy loading
+
+**Production Config:** `angular.json` > `build.configurations.production`
+
+### 14.3 Testing
+
+```bash
+npm test             # Run Vitest unit tests
+npm run e2e          # End-to-end testing (not configured by default)
+```
+
+**Test Setup:**
+- Vitest configured via `angular.json`
+- jsdom for DOM simulation
+- `.spec.ts` file suffix convention
+
+### 14.4 Code Formatting
+
+```bash
+npx prettier --write src/      # Auto-format code
+```
+
+**Prettier Config:** `.prettierrc`
+- Trailing commas
+- Semi-colons
+- Quote style
+
+---
+
+## 15. State Management
+
+**Pattern:** Angular Signals (fine-grained reactivity)
+
+**Examples:**
+
+```typescript
+// Simple signal
+const name = signal('John');
+name.set('Jane');
+console.log(name());  // Output: Jane
+
+// Computed signal (derived state)
+const fullName = computed(() => 
+  `${firstName()} ${lastName()}`
+);
+
+// Array signal
+const trips = signal<TripResponseDto[]>([]);
+trips.update(current => [...current, newTrip]);
+```
+
+**Benefits:**
+- No NgModule boilerplate
+- Automatic change detection
+- Fine-grained reactivity
+- Type-safe
+
+---
+
+## 16. Error Handling
+
+**HTTP Errors:**
+- 401 Unauthorized → Assumed to not happen (token managed)
+- 400 Bad Request → Display backend error message in component
+- 404 Not Found → Display "Not found" message
+- 500 Server Error → Display generic error message
+
+**Pattern:**
+```typescript
+this.tripService.getTripById(id).subscribe({
+  next: (trip) => this.trip.set(trip),
+  error: (err) => {
+    console.error('Error fetching trip:', err);
+    this.errorMessage.set('Failed to load trip');
+  }
+});
+```
+
+**Error Handling in Services:**
+- Services don't catch errors (let components handle)
+- Exceptions logged to console for debugging
+
+---
+
+## 17. API Integration Patterns
+
+### 17.1 GET Request (No Body)
+
+```typescript
+getTripById(id: number): Observable<TripResponseDto> {
+  return this.http.get<TripResponseDto>(`${this.base}/${id}`);
+}
+```
+
+### 17.2 GET with Query Parameters
+
+```typescript
+getAllTrips(page = 1, size = 20): Observable<TripResponseDto[]> {
+  const params = new HttpParams()
+    .set('pageNumber', page)
+    .set('pageSize', size);
+  return this.http.get<TripResponseDto[]>(this.base, { params });
+}
+```
+
+### 17.3 POST with Body
+
+```typescript
+login(username: string, password: string): Observable<AuthResponseDto> {
+  const dto: LoginUserDto = { username, password };
+  return this.http.post<AuthResponseDto>(`${this.base}/login`, dto);
+}
+```
+
+### 17.4 PUT (Update)
+
+```typescript
+updateTrip(tripId: number, userId: number, dto: UpdateTripDto): Observable<TripResponseDto> {
+  const params = new HttpParams().set('userId', userId);
+  return this.http.put<TripResponseDto>(`${this.base}/${tripId}`, dto, { params });
+}
+```
+
+### 17.5 DELETE
+
+```typescript
+deleteTrip(tripId: number, userId: number): Observable<void> {
+  const params = new HttpParams().set('userId', userId);
+  return this.http.delete<void>(`${this.base}/${tripId}`, { params });
+}
+```
+
+### 17.6 FormData (File Upload)
+
+```typescript
+uploadTripImage(tripId: number, file: File): Observable<ImageUploadResponse> {
+  const formData = new FormData();
+  formData.append('imageFile', file);
+  return this.http.post<ImageUploadResponse>(`${this.base}/upload-trip/${tripId}`, formData);
+}
+```
+
+**Note:** HttpClient automatically sets Content-Type header to `multipart/form-data` when FormData is posted
+
+### 17.7 RxJS Operators
+
+**Tap (side effects):**
+```typescript
+return this.http.post(...).pipe(
+  tap(res => {
+    if (res.success) {
+      localStorage.setItem('tc_token', res.token.accessToken);
+    }
+  })
+);
+```
+
+**CatchError (error handling):**
+```typescript
+return this.http.post(...).pipe(
+  catchError(err => {
+    console.error(err);
+    return throwError(() => err);
+  })
+);
+```
+
+---
+
+## 18. Environment Configuration
+
+**File:** `environments/environment.ts`
+
+```typescript
+export const environment = {
+  apiBaseUrl: 'https://localhost:7142'
+};
+```
+
+**Usage:**
+```typescript
+import { environment } from '../../environments/environment';
+
+const url = `${environment.apiBaseUrl}/api/trip`;
+```
+
+**For Production:**
+- Create `environment.prod.ts` with production URL
+- Use `--configuration production` flag during build
+
+---
+
+## 19. Key Features Checklist
+
+✅ **Authentication**
+- Login with username/password
+- Register new user
+- JWT token storage
+- Token injection in requests
+- Logout with token cleanup
+- Protected routes
+
+✅ **Trip Management**
+- Browse all trips
+- Search/filter trips (location, budget, type)
+- Create new trip
+- Edit trip details
+- Delete trip
+- View trip members
+- Manage itinerary days
+
+✅ **Join Requests**
+- Send join request
+- Accept/reject requests (host)
+- View request status
+- Check if already requested
+
+✅ **User Profiles**
+- View own profile
+- Edit profile (name, phone)
+- Upload profile picture
+- View other user profiles
+- Ratings/reputation display
+
+✅ **Image Uploads**
+- Upload trip hero image
+- Upload profile picture
+- Upload expense receipts
+- ImageKit integration
+
+✅ **Responsive Design**
+- Mobile-friendly layout (Tailwind CSS)
+- Desktop optimized
+- Tablet compatible
+
+---
+
+## 20. Deployment
+
+### 20.1 Build Production Bundle
+
+```bash
+npm run build  # Generates dist/ folder
+```
+
+**Output:** `dist/trip-connect-frontend/browser/`
+
+**Files Include:**
+- `index.html` — Main HTML file
+- `main-*.js` — Main application bundle
+- `polyfills-*.js` — Browser compatibility shims
+- `*.css` — Compiled Tailwind styles
+- Static assets from `public/`
+
+### 20.2 Hosting Options
+
+**Option 1: Netlify**
+```bash
+npm install -g netlify-cli
+netlify deploy --prod --dir dist/trip-connect-frontend/browser
+```
+
+**Option 2: Vercel**
+```bash
+npm install -g vercel
+vercel --prod
+```
+
+**Option 3: GitHub Pages**
+- Set `base href` in `angular.json`
+- Build and push `dist/` to `gh-pages` branch
+
+**Option 4: Self-hosted (Nginx/Apache)**
+- Copy `dist/` contents to web server
+- Configure SPA routing (fallback to index.html)
+
+### 20.3 Environment Variables
+
+```bash
+# .env.production
+VITE_API_BASE_URL=https://api.tripconnect.com
+```
+
+**Update environment.ts:**
+```typescript
+export const environment = {
+  apiBaseUrl: process.env['VITE_API_BASE_URL'] || 'https://localhost:7142'
+};
+```
+
+---
+
+## 21. Performance Considerations
+
+**Lazy Loading:**
+- Routes can be lazy-loaded (if configured)
+- Components only loaded when route activated
+
+**Change Detection:**
+- Signals provide fine-grained reactivity
+- Reduces unnecessary checks
+
+**Bundle Size:**
+- Angular 21 with standalone: ~150KB gzipped
+- Tailwind CSS: ~10-20KB gzipped
+- Total initial: ~160-170KB
+
+**Caching:**
+- HTTP caching via Cache-Control headers
+- localStorage for tokens (persists across sessions)
+
+---
+
+## 22. Common Tasks
+
+### Create New Page
+
+```bash
+ng generate component Pages/new-page-name
+# or manually create Pages/new-page-name/ folder with:
+# - new-page-name.ts (component)
+# - new-page-name.html (template)
+# - new-page-name.css (styles)
+# - new-page-name.spec.ts (tests)
+```
+
+### Create New Service
+
+```bash
+ng generate service services/my-service
+# or manually create services/my-service.ts with @Injectable decorator
+```
+
+### Add Route
+
+Edit `app.routes.ts`:
+```typescript
+{
+  path: 'my-path',
+  component: MyComponent,
+  canActivate: [authGuard]  // Optional
+}
+```
+
+### Import Component in Template
+
+```typescript
+@Component({
+  imports: [MyComponent, CommonModule, FormsModule],
+  // ...
+})
+```
+
+---
+
+## 23. Summary
+
+The **Frontend** provides a modern, responsive user interface for TripConnect with:
+
+1. **Clean Architecture** — Standalone components, services, guards, interceptors
+2. **Authentication** — JWT-based login/register with token management
+3. **Trip Management** — Create, browse, search, edit, delete trips
+4. **Social Features** — Join requests, ratings, user profiles, chat
+5. **Image Handling** — Upload and display images via ImageKit
+6. **Responsive Design** — Tailwind CSS for all screen sizes
+7. **Type Safety** — TypeScript with shared DTO interfaces
+8. **State Management** — Angular Signals for reactive updates
+9. **HTTP Integration** — Interceptors and guards for API communication
+10. **Developer Experience** — Fast development server, hot reload, easy scaffolding
+
+Perfect for group trip planning and expense sharing!
+
