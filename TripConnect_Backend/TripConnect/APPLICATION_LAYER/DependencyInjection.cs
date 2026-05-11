@@ -46,6 +46,9 @@ namespace APPLICATION_LAYER
             services.AddScoped<IChatService, ChatService>();
             services.AddScoped<IRatingService, RatingService>();
 
+            // Register Image Service
+            services.AddScoped<IImageService, ImageService>();
+
             // Add AutoMapper
             services.AddAutoMapper(cfg =>
             {
@@ -55,6 +58,7 @@ namespace APPLICATION_LAYER
                 cfg.AddProfile<ExpenseProfile>();
                 cfg.AddProfile<ChatMessageProfile>();
                 cfg.AddProfile<TripRatingProfile>();
+                cfg.AddProfile<ImageMappingProfile>();
             });
 
             return services;
