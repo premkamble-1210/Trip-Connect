@@ -6,10 +6,11 @@ import { TripService } from '../../services/trip.service';
 import { AuthService } from '../../services/auth.service';
 import { ImageService } from '../../services/image.service';
 import { TripDayDto } from '../../models/api.types';
+import { LocationAutocompleteComponent, LocationSelectedEvent } from '../../Components/location-autocomplete/location-autocomplete.component';
 
 @Component({
   selector: 'app-edit-trip',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, LocationAutocompleteComponent],
   templateUrl: './edit-trip.html',
   styleUrl: './edit-trip.css',
 })
@@ -72,7 +73,9 @@ export class EditTrip implements OnInit {
               location: td.location ?? '',
               date: td.date ?? '',
               description: td.description ?? '',
-              imgUrl: td.imgUrl ?? ''
+              imgUrl: td.imgUrl ?? '',
+              latitude: td.latitude,
+              longitude: td.longitude
             }))
         );
         this.isFetching.set(false);
@@ -86,12 +89,18 @@ export class EditTrip implements OnInit {
 
   addTripDay(): void {
     const existing = this.tripDays();
-    this.tripDays.set([...existing, { day: existing.length + 1, location: '', date: '', description: '', imgUrl: '' }]);
+    this.tripDays.set([...existing, { day: existing.length + 1, location: '', date: '', description: '', imgUrl: '', latitude: undefined, longitude: undefined }]);
   }
 
   removeTripDay(index: number): void {
     const updated = this.tripDays().filter((_, i) => i !== index);
     this.tripDays.set(updated.map((d, i) => ({ ...d, day: i + 1 })));
+  }
+
+  updateTripDayLocation(index: number, e: LocationSelectedEvent): void {
+    const days = [...this.tripDays()];
+    days[index] = { ...days[index], location: e.name, latitude: e.lat, longitude: e.lng };
+    this.tripDays.set(days);
   }
 
   updateTripDay(index: number, field: keyof TripDayDto, value: string | number): void {

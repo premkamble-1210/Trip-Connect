@@ -26,4 +26,9 @@ export class TripCard {
   navigateToTrip(): void {
     this.router.navigate(['/trip', this.trip.id]);
   }
+
+  navigateToMap(event: Event): void {
+    event.stopPropagation();
+    this.router.navigate(['/map', this.trip.id]);
+  }
 }

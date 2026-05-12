@@ -65,6 +65,8 @@ export interface TripDayDto {
   date: string;        // "YYYY-MM-DD"
   description?: string;
   imgUrl?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface TripDayResponseDto {
@@ -75,6 +77,8 @@ export interface TripDayResponseDto {
   date: string;        // "YYYY-MM-DD"
   description?: string;
   imgUrl?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface TripResponseDto {

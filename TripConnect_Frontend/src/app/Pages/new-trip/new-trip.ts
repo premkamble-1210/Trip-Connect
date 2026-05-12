@@ -5,10 +5,11 @@ import { Router } from '@angular/router';
 import { TripService } from '../../services/trip.service';
 import { AuthService } from '../../services/auth.service';
 import { TripDayDto } from '../../models/api.types';
+import { LocationAutocompleteComponent, LocationSelectedEvent } from '../../Components/location-autocomplete/location-autocomplete.component';
 
 @Component({
   selector: 'app-new-trip',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, LocationAutocompleteComponent],
   templateUrl: './new-trip.html',
   styleUrl: './new-trip.css',
 })
@@ -46,12 +47,18 @@ export class NewTrip {
 
   addTripDay(): void {
     const existing = this.tripDays();
-    this.tripDays.set([...existing, { day: existing.length + 1, location: '', date: '', description: '', imgUrl: '' }]);
+    this.tripDays.set([...existing, { day: existing.length + 1, location: '', date: '', description: '', imgUrl: '', latitude: undefined, longitude: undefined }]);
   }
 
   removeTripDay(index: number): void {
     const updated = this.tripDays().filter((_, i) => i !== index);
     this.tripDays.set(updated.map((d, i) => ({ ...d, day: i + 1 })));
+  }
+
+  updateTripDayLocation(index: number, e: LocationSelectedEvent): void {
+    const days = [...this.tripDays()];
+    days[index] = { ...days[index], location: e.name, latitude: e.lat, longitude: e.lng };
+    this.tripDays.set(days);
   }
 
   updateTripDay(index: number, field: keyof TripDayDto, value: string | number): void {

@@ -17,3 +17,8 @@
 .animate-slideUp {
   animation: slideUp 0.25s ease-out;
 }
+
+/* Leaflet marker icon fix for bundled builds */
+.leaflet-default-icon-path {
+  background-image: url(https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png);
+}
