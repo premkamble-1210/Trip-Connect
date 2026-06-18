@@ -8,6 +8,7 @@ import { EditTrip } from './Pages/edit-trip/edit-trip';
 import { JoinRequest } from './Pages/join-request/join-request';
 import { Profile } from './Pages/profile/profile';
 import { ViewProfile } from './Pages/view-profile/view-profile';
+import { TripMapComponent } from './features/trip-map/pages/trip-map/trip-map.component';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -53,6 +54,16 @@ export const routes: Routes = [
       {
         path: 'user/:id',
         component: ViewProfile,
+        canActivate: [authGuard]
+      },
+      {
+        path: 'map',
+        component: TripMapComponent,
+        canActivate: [authGuard]
+      },
+      {
+        path: 'map/:id',
+        component: TripMapComponent,
         canActivate: [authGuard]
       }
     ]

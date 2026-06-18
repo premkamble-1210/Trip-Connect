@@ -1,0 +1,9 @@
+2026-05-12 09:08:41.360 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-05-12 09:08:54.603 +05:30 [INF] Fetching members for trip: 3
+2026-05-12 09:08:54.605 +05:30 [INF] Fetching trip: 3
+2026-05-12 09:08:54.607 +05:30 [INF] Fetching trips for user: 3
+2026-05-12 09:09:07.827 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-05-12 09:09:07.942 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-05-12 09:09:10.238 +05:30 [INF] Fetching trip: 3
+2026-05-12 09:09:30.173 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-05-12 09:09:30.268 +05:30 [INF] Trips cache hit - Page: 1, Size: 20

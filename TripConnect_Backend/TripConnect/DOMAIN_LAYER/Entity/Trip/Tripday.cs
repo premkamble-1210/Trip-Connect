@@ -9,5 +9,7 @@ public class TripDay
     public DateOnly Date { get; set; }
     public string? Description { get; set; }
     public string? ImgUrl { get; set; }
+    public double? Latitude { get; set; }
+    public double? Longitude { get; set; }
     public Trip Trip { get; set; }
 }

@@ -1,0 +1,17 @@
+<div class="flex items-center gap-2 flex-wrap justify-center">
+  @for (day of days; track day.day; let i = $index) {
+    <button
+      (click)="select(i)"
+      [style.background]="i === selectedDay ? day.color : 'white'"
+      [style.color]="i === selectedDay ? '#fff' : '#374151'"
+      [style.border-color]="i === selectedDay ? day.color : '#e5e7eb'"
+      class="px-4 py-2 rounded-full text-sm font-semibold border-2 transition-all duration-200 shadow-sm hover:shadow-md whitespace-nowrap"
+      [class.scale-105]="i === selectedDay"
+    >
+      Day {{ day.day }}
+      <span class="hidden sm:inline ml-1 font-normal opacity-80">
+        · {{ day.source | slice:0:8 }}
+      </span>
+    </button>
+  }
+</div>
