@@ -1,0 +1,2 @@
+2026-05-18 16:25:00.731 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-05-18 16:25:07.290 +05:30 [INF] Fetching trip: 5

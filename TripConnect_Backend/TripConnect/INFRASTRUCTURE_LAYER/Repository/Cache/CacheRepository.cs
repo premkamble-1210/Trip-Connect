@@ -29,19 +29,22 @@ namespace INFRASTRUCTURE_LAYER.Repository.Cache
             if (string.IsNullOrEmpty(key))
                 throw new ArgumentNullException(nameof(key));
 
-            var value = await _redisDb.StringGetAsync(key);
-            
-            if (!value.HasValue)
-                return default;
-
             try
             {
+                var value = await _redisDb.StringGetAsync(key);
+
+                if (!value.HasValue)
+                    return default;
+
                 return JsonSerializer.Deserialize<T>(value.ToString());
             }
             catch (JsonException)
             {
-                // If deserialization fails, remove the corrupted cache
-                await _redisDb.KeyDeleteAsync(key);
+                return default;
+            }
+            catch (RedisException ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Redis unavailable for GetAsync key '{key}': {ex.Message}");
                 return default;
             }
         }
@@ -75,9 +78,7 @@ namespace INFRASTRUCTURE_LAYER.Repository.Cache
             }
             catch (Exception ex)
             {
-                // Log the exception - you can integrate with your logging system
-                System.Diagnostics.Debug.WriteLine($"Error setting cache for key {key}: {ex.Message}");
-                throw;
+                System.Diagnostics.Debug.WriteLine($"Redis unavailable for SetAsync key '{key}': {ex.Message}");
             }
         }
 
@@ -89,7 +90,14 @@ namespace INFRASTRUCTURE_LAYER.Repository.Cache
             if (string.IsNullOrEmpty(key))
                 throw new ArgumentNullException(nameof(key));
 
-            await _redisDb.KeyDeleteAsync(key);
+            try
+            {
+                await _redisDb.KeyDeleteAsync(key);
+            }
+            catch (RedisException ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Redis unavailable for RemoveAsync key '{key}': {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -100,7 +108,14 @@ namespace INFRASTRUCTURE_LAYER.Repository.Cache
             if (string.IsNullOrEmpty(key))
                 throw new ArgumentNullException(nameof(key));
 
-            return await _redisDb.KeyExistsAsync(key);
+            try
+            {
+                return await _redisDb.KeyExistsAsync(key);
+            }
+            catch (RedisException)
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -114,7 +129,16 @@ namespace INFRASTRUCTURE_LAYER.Repository.Cache
                 return result;
 
             var redisKeys = keys.Select(k => (RedisKey)k).ToArray();
-            var values = await _redisDb.StringGetAsync(redisKeys);
+            RedisValue[] values;
+            try
+            {
+                values = await _redisDb.StringGetAsync(redisKeys);
+            }
+            catch (RedisException ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Redis unavailable for GetManyAsync: {ex.Message}");
+                return result;
+            }
 
             for (int i = 0; i < keys.Length; i++)
             {

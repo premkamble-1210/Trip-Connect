@@ -42,19 +42,28 @@ namespace INFRASTRUCTURE_LAYER.Cache
             if (string.IsNullOrEmpty(key))
                 throw new ArgumentNullException(nameof(key));
 
-            var fullKey = GetFullCacheKey(key);
-            var result = await _cacheRepository.GetAsync<T>(fullKey);
+            try
+            {
+                var fullKey = GetFullCacheKey(key);
+                var result = await _cacheRepository.GetAsync<T>(fullKey);
 
-            if (result != null)
-            {
-                Interlocked.Increment(ref _cacheHits);
+                if (result != null)
+                {
+                    Interlocked.Increment(ref _cacheHits);
+                }
+                else
+                {
+                    Interlocked.Increment(ref _cacheMisses);
+                }
+
+                return result;
             }
-            else
+            catch (Exception ex)
             {
+                Serilog.Log.Warning($"Cache unavailable for key '{key}', falling back to source: {ex.Message}");
                 Interlocked.Increment(ref _cacheMisses);
+                return default;
             }
-
-            return result;
         }
 
         /// <summary>
