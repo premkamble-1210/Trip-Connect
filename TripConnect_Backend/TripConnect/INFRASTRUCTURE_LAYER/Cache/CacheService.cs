@@ -231,7 +231,15 @@ namespace INFRASTRUCTURE_LAYER.Cache
             if (string.IsNullOrEmpty(tag))
                 throw new ArgumentNullException(nameof(tag));
 
-            return await _invalidationRepository.InvalidateByTagAsync(tag);
+            try
+            {
+                return await _invalidationRepository.InvalidateByTagAsync(tag);
+            }
+            catch (Exception ex)
+            {
+                Serilog.Log.Warning(ex, "Failed to invalidate cache tag '{Tag}'. Continuing without cache invalidation.", tag);
+                return 0;
+            }
         }
 
         /// <summary>
@@ -242,7 +250,15 @@ namespace INFRASTRUCTURE_LAYER.Cache
             if (tags == null || tags.Length == 0)
                 return 0;
 
-            return await _invalidationRepository.InvalidateByTagsAsync(tags);
+            try
+            {
+                return await _invalidationRepository.InvalidateByTagsAsync(tags);
+            }
+            catch (Exception ex)
+            {
+                Serilog.Log.Warning(ex, "Failed to invalidate cache tags. Continuing without cache invalidation.");
+                return 0;
+            }
         }
 
         /// <summary>
@@ -250,7 +266,14 @@ namespace INFRASTRUCTURE_LAYER.Cache
         /// </summary>
         public async Task ClearAllAsync()
         {
-            await _cacheRepository.ClearAllAsync();
+            try
+            {
+                await _cacheRepository.ClearAllAsync();
+            }
+            catch (Exception ex)
+            {
+                Serilog.Log.Warning(ex, "Failed to clear cache. Continuing without cache clear.");
+            }
         }
 
         /// <summary>

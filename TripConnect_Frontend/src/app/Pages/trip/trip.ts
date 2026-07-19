@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TripMemberList } from '../../Components/trip-member-list/trip-member-list';
 import { TripItinerary } from '../../Components/trip-itinerary/trip-itinerary';
+import { TexttailPipe } from '../../pip/texttail-pipe';
 import { TripService } from '../../services/trip.service';
 import { JoinRequestService } from '../../services/join-request.service';
 import { AuthService } from '../../services/auth.service';
@@ -11,7 +12,7 @@ import type { ItineraryDay } from '../../Components/trip-itinerary/trip-itinerar
 
 @Component({
   selector: 'app-trip',
-  imports: [CommonModule, TripMemberList, TripItinerary],
+  imports: [CommonModule, TripMemberList, TripItinerary, TexttailPipe],
   templateUrl: './trip.html',
   styleUrl: './trip.css'
 })

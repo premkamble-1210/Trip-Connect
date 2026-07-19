@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { TexttailPipe } from '../../pip/texttail-pipe';
 export interface ItineraryDay {
   day: string;
   location?: string;
@@ -11,7 +11,7 @@ export interface ItineraryDay {
 
 @Component({
   selector: 'app-trip-itinerary',
-  imports: [CommonModule],
+  imports: [CommonModule,TexttailPipe],
   templateUrl: './trip-itinerary.html',
   styleUrls: ['./trip-itinerary.css']
 })

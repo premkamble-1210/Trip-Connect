@@ -1,8 +1,11 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { TripCard } from '../../Components/trip-card/trip-card';
 import { TripService } from '../../services/trip.service';
 import { TripResponseDto } from '../../models/api.types';
+import { Subject, debounceTime, finalize, switchMap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-expore-trips',
@@ -11,6 +14,7 @@ import { TripResponseDto } from '../../models/api.types';
   styleUrl: './expore-trips.css'
 })
 export class ExporeTrips implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
   location = signal<string>('');
   budgetMin = signal<number>(30);
   budgetMax = signal<number>(1400);
@@ -18,6 +22,8 @@ export class ExporeTrips implements OnInit {
 
   trips = signal<TripResponseDto[]>([]);
   isLoading = signal(false);
+
+  private readonly refreshTrips$ = new Subject<void>();
 
   locations: string[] = ['', 'Bali', 'Alps', 'New York City', 'Tokyo', 'Paris'];
   tripTypes: string[] = ['', 'Business', 'Leisure', 'Adventure', 'Cultural', 'Wellness'];
@@ -27,38 +33,42 @@ export class ExporeTrips implements OnInit {
     { label: 'Custom range', checked: false }
   ];
 
-  private readonly tripService: TripService;
-
-  constructor(tripService: TripService) {
-    this.tripService = tripService;
-  }
+  constructor(private readonly tripService: TripService) {}
 
   ngOnInit(): void {
+    this.refreshTrips$
+      .pipe(
+        debounceTime(250),
+        switchMap(() => {
+          const hasFilters = this.location() || this.tripType();
+          const request$ = hasFilters
+            ? this.tripService.searchTrips({
+                location: this.location() || undefined,
+                maxBudget: this.budgetMax(),
+                travelType: this.tripType() || undefined
+              })
+            : this.tripService.getAllTrips();
+
+          this.isLoading.set(true);
+
+          return request$.pipe(finalize(() => this.isLoading.set(false)));
+        }),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe({
+        next: (data) => {
+          this.trips.set(data.filter(trip => trip.status !== 'Cancelled'));
+        },
+        error: (_error: HttpErrorResponse) => {
+          this.trips.set([]);
+        }
+      });
+
     this.loadTrips();
   }
 
   loadTrips(): void {
-    this.isLoading.set(true);
-    
-    const hasFilters = this.location() || this.tripType();
-    
-    const request$ = hasFilters 
-      ? this.tripService.searchTrips({
-          location: this.location() || undefined,
-          maxBudget: this.budgetMax(),
-          travelType: this.tripType() || undefined
-        })
-      : this.tripService.getAllTrips();
-
-    request$.subscribe({
-      next: (data) => {
-        this.trips.set(data.filter(trip => trip.status !== 'Cancelled'));
-        this.isLoading.set(false);
-      },
-      error: () => {
-        this.isLoading.set(false);
-      }
-    });
+    this.refreshTrips$.next();
   }
 
   updateLocation(event: Event): void {

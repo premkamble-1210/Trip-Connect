@@ -139,7 +139,9 @@ namespace API_LAYER.Controllers
         }
 
         /// <summary>
-        /// Search trips by location
+        /// Search trips by location http://localhost:5126/api/trip/search?location=g&maxBudget=2500
+// Request Method
+// GET
         /// </summary>
         [HttpGet("search/location/{location}")]
         public async Task<IActionResult> SearchTripsByLocation([FromRoute] string location)

@@ -36,7 +36,7 @@
               <div class="flex items-center gap-1 min-w-0">
                 <span class="text-[12px] leading-none flex-shrink-0">📍</span>
                 <span class="text-[13px] font-bold text-gray-900 truncate">
-                  {{ item.location || item.day }}
+                  {{ item.location | texttail :10 }} 
                 </span>
               </div>
               <span class="text-[10px] font-medium text-gray-400 flex-shrink-0 mt-px">

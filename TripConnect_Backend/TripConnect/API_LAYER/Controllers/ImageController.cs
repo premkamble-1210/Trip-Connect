@@ -3,6 +3,7 @@ using APPLICATION_LAYER.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using API_LAYER.Models;
 
 namespace API_LAYER.Controllers
 {
@@ -29,11 +30,13 @@ namespace API_LAYER.Controllers
         /// <param name="imageFile">Image file to upload</param>
         /// <returns>Image upload response with file ID and URLs</returns>
         [HttpPost("upload-profile")]
-        public async Task<IActionResult> UploadProfileImage([FromForm] IFormFile imageFile)
+        [Consumes("multipart/form-data")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task<IActionResult> UploadProfileImage([FromForm] ImageUploadFormDto request)
         {
             try
             {
-                if (imageFile == null || imageFile.Length == 0)
+                if (request.ImageFile == null || request.ImageFile.Length == 0)
                 {
                     return BadRequest(new { success = false, message = "No image file provided" });
                 }
@@ -46,11 +49,11 @@ namespace API_LAYER.Controllers
                     return Unauthorized(new { success = false, message = "Invalid user claim" });
                 }
 
-                _logger.LogInformation("Uploading profile image for user {UserId}, file: {FileName}", userId, imageFile.FileName);
+                _logger.LogInformation("Uploading profile image for user {UserId}, file: {FileName}", userId, request.ImageFile.FileName);
 
                 // Convert IFormFile to Stream
-                await using var stream = imageFile.OpenReadStream();
-                var response = await _imageService.UploadProfileImageAsync(stream, imageFile.FileName, userId);
+                await using var stream = request.ImageFile.OpenReadStream();
+                var response = await _imageService.UploadProfileImageAsync(stream, request.ImageFile.FileName, userId);
 
                 if (!response.Success)
                 {
@@ -78,7 +81,9 @@ namespace API_LAYER.Controllers
         /// <param name="imageFile">Image file to upload</param>
         /// <returns>Image upload response with file ID and URLs</returns>
         [HttpPost("upload-trip/{tripId}")]
-        public async Task<IActionResult> UploadTripImage([FromRoute] int tripId, [FromForm] IFormFile imageFile)
+        [Consumes("multipart/form-data")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task<IActionResult> UploadTripImage([FromRoute] int tripId, [FromForm] ImageUploadFormDto request)
         {
             try
             {
@@ -87,20 +92,20 @@ namespace API_LAYER.Controllers
                     return BadRequest(new { success = false, message = "Invalid trip ID" });
                 }
 
-                if (imageFile == null || imageFile.Length == 0)
+                if (request.ImageFile == null || request.ImageFile.Length == 0)
                 {
                     return BadRequest(new { success = false, message = "No image file provided" });
                 }
 
-                _logger.LogInformation("Uploading trip image for trip {TripId}, file: {FileName}", tripId, imageFile.FileName);
+                _logger.LogInformation("Uploading trip image for trip {TripId}, file: {FileName}", tripId, request.ImageFile.FileName);
 
                 // Convert IFormFile to MemoryStream to avoid position issues
-                await using var originalStream = imageFile.OpenReadStream();
+                await using var originalStream = request.ImageFile.OpenReadStream();
                 await using var memoryStream = new MemoryStream();
                 await originalStream.CopyToAsync(memoryStream);
                 memoryStream.Position = 0; // Ensure clean start
                 
-                var response = await _imageService.UploadTripImageAsync(memoryStream, imageFile.FileName, tripId);
+                var response = await _imageService.UploadTripImageAsync(memoryStream, request.ImageFile.FileName, tripId);
 
                 if (!response.Success)
                 {
@@ -128,7 +133,9 @@ namespace API_LAYER.Controllers
         /// <param name="imageFile">Image file to upload</param>
         /// <returns>Image upload response with file ID and URLs</returns>
         [HttpPost("upload-expense/{expenseId}")]
-        public async Task<IActionResult> UploadExpenseImage([FromRoute] int expenseId, [FromForm] IFormFile imageFile)
+        [Consumes("multipart/form-data")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task<IActionResult> UploadExpenseImage([FromRoute] int expenseId, [FromForm] ImageUploadFormDto request)
         {
             try
             {
@@ -137,16 +144,16 @@ namespace API_LAYER.Controllers
                     return BadRequest(new { success = false, message = "Invalid expense ID" });
                 }
 
-                if (imageFile == null || imageFile.Length == 0)
+                if (request.ImageFile == null || request.ImageFile.Length == 0)
                 {
                     return BadRequest(new { success = false, message = "No image file provided" });
                 }
 
-                _logger.LogInformation("Uploading expense image for expense {ExpenseId}, file: {FileName}", expenseId, imageFile.FileName);
+                _logger.LogInformation("Uploading expense image for expense {ExpenseId}, file: {FileName}", expenseId, request.ImageFile.FileName);
 
                 // Convert IFormFile to Stream
-                await using var stream = imageFile.OpenReadStream();
-                var response = await _imageService.UploadExpenseImageAsync(stream, imageFile.FileName, expenseId);
+                await using var stream = request.ImageFile.OpenReadStream();
+                var response = await _imageService.UploadExpenseImageAsync(stream, request.ImageFile.FileName, expenseId);
 
                 if (!response.Success)
                 {

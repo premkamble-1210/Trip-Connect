@@ -1,0 +1,63 @@
+2026-07-13 10:02:16.933 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-07-13 10:02:46.527 +05:30 [INF] Fetching members for trip: 1
+2026-07-13 10:02:46.529 +05:30 [INF] Fetching trip: 1
+2026-07-13 10:02:46.530 +05:30 [INF] Fetching trips for user: 1
+2026-07-13 10:03:02.884 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-07-13 10:03:02.925 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-07-13 10:04:16.372 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-07-13 10:04:16.411 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-07-13 10:04:53.549 +05:30 [INF] Login attempt for username: premkamble
+2026-07-13 10:04:53.811 +05:30 [INF] Refresh token generated
+2026-07-13 10:04:54.154 +05:30 [INF] User logged in successfully: 1
+2026-07-13 10:04:54.212 +05:30 [INF] Access token generated for user: 1
+2026-07-13 10:04:54.305 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-07-13 10:04:54.338 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-07-13 10:04:56.006 +05:30 [INF] Fetching user: 1
+2026-07-13 10:04:56.410 +05:30 [INF] Fetching trips created by user: 1
+2026-07-13 10:05:02.165 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-07-13 10:05:02.196 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-07-13 10:14:41.633 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-07-13 10:14:41.678 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-07-13 10:14:53.229 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-07-13 10:14:53.265 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-07-13 10:15:52.968 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-07-13 10:15:52.998 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-07-13 10:17:39.796 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-07-13 10:17:39.827 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-07-13 10:17:44.102 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-07-13 10:17:44.135 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-07-13 10:17:54.743 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-07-13 10:17:54.785 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-07-13 10:17:55.719 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-07-13 10:17:55.754 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-07-13 10:20:41.305 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-07-13 10:20:41.372 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-07-13 10:21:19.296 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-07-13 10:21:19.338 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-07-13 10:21:25.768 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-07-13 10:21:25.794 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-07-13 10:21:26.046 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-07-13 10:21:26.077 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-07-13 10:24:49.689 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-07-13 10:24:49.715 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-07-13 10:25:53.493 +05:30 [INF] Fetching members for trip: 1
+2026-07-13 10:25:53.494 +05:30 [INF] Fetching trips for user: 1
+2026-07-13 10:25:53.494 +05:30 [INF] Fetching trip: 1
+2026-07-13 10:25:53.529 +05:30 [INF] User member trips cache hit: 1
+2026-07-13 10:26:11.613 +05:30 [INF] Fetching user: 1
+2026-07-13 10:26:11.659 +05:30 [INF] User cache hit: 1
+2026-07-13 10:26:11.673 +05:30 [INF] Fetching trips created by user: 1
+2026-07-13 10:26:11.710 +05:30 [INF] User trips cache hit: 1
+2026-07-13 10:26:17.527 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-07-13 10:26:17.558 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-07-13 10:26:35.022 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-07-13 10:26:35.053 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-07-13 10:26:48.393 +05:30 [INF] Fetching trips for user: 1
+2026-07-13 10:26:48.393 +05:30 [INF] Fetching trip: 1
+2026-07-13 10:26:48.396 +05:30 [INF] Fetching members for trip: 1
+2026-07-13 10:26:48.421 +05:30 [INF] User member trips cache hit: 1
+2026-07-13 10:26:57.729 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-07-13 10:26:57.770 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
+2026-07-13 10:26:59.409 +05:30 [INF] Fetching trip: 1
+2026-07-13 10:27:07.363 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-07-13 10:27:07.397 +05:30 [INF] Trips cache hit - Page: 1, Size: 20
