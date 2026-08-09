@@ -33,7 +33,8 @@ namespace INFRASTRUCTURE_LAYER
             // Add DbContext
             services.AddDbContext<TripConnectDbContext>(options =>
                 options.UseSqlServer(
-                    configuration.GetConnectionString("DefaultConnection")));
+                    configuration.GetConnectionString("DefaultConnection"),
+                    sqlOptions => sqlOptions.EnableRetryOnFailure()));
 
             // Register DbContext as generic DbContext for repositories
             services.AddScoped<DbContext>(provider => provider.GetRequiredService<TripConnectDbContext>());

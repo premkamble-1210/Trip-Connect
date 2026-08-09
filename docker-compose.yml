@@ -1,0 +1,55 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: tripconnect-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+      MSSQL_PID: Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+
+  redis:
+    image: redis:7-alpine
+    container_name: tripconnect-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+  api:
+    build:
+      context: ./TripConnect_Backend/TripConnect
+      dockerfile: API_LAYER/Dockerfile
+    container_name: tripconnect-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: Server=sqlserver,1433;Database=TripConnect;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;MultipleActiveResultSets=true
+      RedisCache__ConnectionString: redis:6379
+      JwtSettings__SecretKey: ${JWT_SECRET_KEY}
+      JwtSettings__Issuer: TripConnectAPI
+      JwtSettings__Audience: TripConnectApp
+      JwtSettings__ExpirationMinutes: 60
+      JwtSettings__RefreshTokenExpirationDays: 7
+    ports:
+      - "5126:8080"
+    depends_on:
+      - sqlserver
+      - redis
+
+  frontend:
+    build:
+      context: ./TripConnect_Frontend
+      dockerfile: Dockerfile
+    container_name: tripconnect-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - api
+
+volumes:
+  sqlserver-data:
+  redis-data:

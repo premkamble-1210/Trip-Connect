@@ -2,8 +2,10 @@ using APPLICATION_LAYER;
 using APPLICATION_LAYER.Models;
 using APPLICATION_LAYER.Services.Interfaces;
 using INFRASTRUCTURE_LAYER;
+using INFRASTRUCTURE_LAYER.Data;
 using API_LAYER.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -105,6 +107,12 @@ builder.Services.AddApplicationLayer(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<TripConnectDbContext>();
+    dbContext.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
