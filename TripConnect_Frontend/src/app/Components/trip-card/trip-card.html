@@ -1,45 +1,45 @@
-<div class="bg-white rounded-[20px] shadow-sm border border-gray-100 overflow-hidden flex flex-col hover:shadow-lg transition-shadow duration-300 h-full cursor-pointer" (click)="navigateToTrip()">
+<div class="bg-paper rounded-2xl shadow-sm border border-[#e5eae7] overflow-hidden flex flex-col hover:shadow-md hover:border-[#0e7c7b]/30 transition-all duration-300 h-full cursor-pointer" (click)="navigateToTrip()">
   <!-- Clickable card -->
   <!-- Image Header -->
   <div class="relative h-44 w-full">
     <img [src]="trip.image" [alt]="trip.title" class="w-full h-full object-cover">
-    
+
     <!-- Badges -->
-    <div *ngIf="trip.isNew" class="absolute top-3 left-3 bg-yellow-100/90 backdrop-blur-sm text-yellow-800 text-[10px] font-bold px-2 py-1 rounded shadow-sm">
+    <div *ngIf="trip.isNew" class="absolute top-3 left-3 bg-[#fde8df]/95 backdrop-blur-sm text-[#c9583e] text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
       New
     </div>
-    
+
     <!-- Heart Icon -->
-    <button (click)="$event.stopPropagation()" class="absolute top-3 right-3 p-1.5 bg-white/20 backdrop-blur-md rounded-full text-white hover:bg-white/40 hover:text-red-500 transition-colors">
+    <button (click)="$event.stopPropagation()" class="absolute top-3 right-3 p-1.5 bg-white/25 backdrop-blur-md rounded-full text-white hover:bg-white/40 hover:text-[#e76f51] transition-colors">
       <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
     </button>
   </div>
 
   <!-- Content -->
   <div class="p-4 flex flex-col flex-grow">
-    <h3 class="font-bold text-gray-900 text-[15px] truncate mb-1 leading-tight">{{ trip.title }}</h3>
-    <p class="text-[11px] text-gray-500 mb-1.5">{{ trip.dates }}</p>
-    <p class="text-[11px] font-semibold text-green-600 mb-4">{{ trip.status }}</p>
-    
+    <h3 class="font-display font-semibold text-ink text-[16px] truncate mb-1 leading-snug">{{ trip.title }}</h3>
+    <p class="text-xs text-[#6b807c] mb-1.5">{{ trip.dates }}</p>
+    <p class="text-xs font-semibold text-reed mb-4">{{ trip.status }}</p>
+
     <div class="mt-auto flex items-center justify-between">
       <!-- Avatars -->
       <div class="flex -space-x-1.5 align-middle">
         <img *ngFor="let avatar of trip.avatars; let i = index"
              [src]="avatar"
-             class="w-[22px] h-[22px] rounded-full border-2 border-white object-cover"
+             class="w-[24px] h-[24px] rounded-full border-2 border-paper object-cover"
              [style.zIndex]="10 - i">
       </div>
 
       <!-- Price + Map button -->
       <div class="flex items-center gap-2">
         <button (click)="navigateToMap($event)"
-          class="p-1.5 rounded-full bg-blue-50 text-blue-500 hover:bg-blue-100 transition-colors"
+          class="p-1.5 rounded-full bg-wave-light text-wave hover:bg-[#bfe0dd] transition-colors"
           title="View trip map">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
           </svg>
         </button>
-        <div class="font-extrabold text-gray-900 text-sm">
+        <div class="font-bold text-ink text-sm">
           ₹{{ trip.price | number:'1.0-0' }}
         </div>
       </div>

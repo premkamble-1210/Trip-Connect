@@ -1,5 +1,54 @@
 @import 'tailwindcss';
 
+@theme {
+  --color-wave: #0e7c7b;
+  --color-wave-dark: #0a5f5e;
+  --color-wave-light: #d7ecea;
+  --color-coral: #e76f51;
+  --color-coral-dark: #c9583e;
+  --color-coral-light: #fde8df;
+  --color-ink: #16302e;
+  --color-ink-soft: #4a5f5d;
+  --color-fog: #eef3f4;
+  --color-paper: #fbfaf6;
+  --color-reed: #5c7a02;
+  --color-reed-light: #eef3da;
+
+  --font-display: 'Fraunces', ui-serif, Georgia, serif;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  background-color: var(--color-fog);
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-fog);
+}
+
+/* Topographical contour line pattern */
+.bg-topo {
+  background-image:
+    radial-gradient(ellipse at 20% 50%, transparent 0%, rgba(14,124,123,0.05) 55%, transparent 70%),
+    repeating-radial-gradient(ellipse 60% 40% at 30% 60%, transparent 0px, transparent 40px, rgba(255,255,255,0.08) 41px, rgba(255,255,255,0.08) 43px),
+    repeating-radial-gradient(ellipse 70% 45% at 70% 40%, transparent 0px, transparent 60px, rgba(255,255,255,0.06) 61px, rgba(255,255,255,0.06) 63px);
+}
+
+.bg-topo-light {
+  background-image:
+    radial-gradient(ellipse at 20% 50%, transparent 0%, rgba(14,124,123,0.04) 55%, transparent 70%),
+    repeating-radial-gradient(ellipse 60% 40% at 30% 60%, transparent 0px, transparent 40px, rgba(14,124,123,0.05) 41px, rgba(14,124,123,0.05) 43px),
+    repeating-radial-gradient(ellipse 70% 45% at 70% 40%, transparent 0px, transparent 60px, rgba(14,124,123,0.04) 61px, rgba(14,124,123,0.04) 63px);
+}
+
+/* Display font helper */
+.font-display {
+  font-family: var(--font-display);
+}
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
@@ -8,6 +57,11 @@
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes contourDrift {
+  0%   { background-position: 0 0; }
+  100% { background-position: 400px 200px; }
 }
 
 .animate-fadeIn {

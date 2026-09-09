@@ -1,8 +1,8 @@
-<div class="trip-map-shell flex h-screen overflow-hidden bg-gray-50">
+<div class="trip-map-shell flex h-screen overflow-hidden bg-fog">
 
   <!-- ───────────────── SIDEBAR ───────────────── -->
   <aside
-    class="sidebar flex-shrink-0 overflow-hidden border-r border-gray-200 bg-white transition-all duration-300 shadow-sm"
+    class="sidebar flex-shrink-0 overflow-hidden border-r border-[#e5eae7] bg-paper transition-all duration-300 shadow-sm"
     [class.sidebar-open]="sidebarOpen()"
     [class.sidebar-closed]="!sidebarOpen()"
   >
@@ -21,10 +21,10 @@
     <!-- Mobile sidebar toggle -->
     <button
       (click)="toggleSidebar()"
-      class="absolute top-4 left-4 z-[500] bg-white rounded-xl p-2.5 shadow-md border border-gray-200 hover:bg-gray-50 transition-colors"
+      class="absolute top-4 left-4 z-[500] bg-white rounded-xl p-2.5 shadow-md border border-[#e5eae7] hover:bg-fog transition-colors"
       title="Toggle sidebar"
     >
-      <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg class="w-5 h-5 text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
       </svg>
     </button>
@@ -32,11 +32,11 @@
     <!-- Trip title pill (trip mode only) -->
     @if (isTripMode() && tripTitle()) {
       <div class="absolute top-4 left-1/2 -translate-x-1/2 z-[500]">
-        <div class="bg-white/95 backdrop-blur-sm rounded-2xl px-5 py-2.5 shadow-xl border border-gray-200 flex items-center gap-2">
-          <svg class="w-4 h-4 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <div class="bg-white/95 backdrop-blur-sm rounded-2xl px-5 py-2.5 shadow-xl border border-[#e5eae7] flex items-center gap-2">
+          <svg class="w-4 h-4 text-coral flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
           </svg>
-          <span class="text-sm font-semibold text-gray-800">{{ tripTitle() }}</span>
+          <span class="text-sm font-semibold text-ink">{{ tripTitle() }}</span>
         </div>
       </div>
     }
@@ -46,7 +46,7 @@
 
     <!-- Error message -->
     @if (errorMessage()) {
-      <div class="absolute top-4 left-1/2 -translate-x-1/2 z-[500] bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-2.5 rounded-xl shadow-md">
+      <div class="absolute top-4 left-1/2 -translate-x-1/2 z-[500] bg-[#fde8df] border border-[#e76f51]/40 text-[#c9583e] text-sm px-4 py-2.5 rounded-xl shadow-md">
         {{ errorMessage() }}
       </div>
     }
@@ -55,8 +55,8 @@
     @if (loading()) {
       <div class="absolute inset-0 flex items-center justify-center z-[400] pointer-events-none">
         <div class="bg-white/90 backdrop-blur-sm rounded-2xl px-6 py-5 shadow-lg flex items-center gap-3">
-          <div class="w-5 h-5 border-2 border-[#417cca] border-t-transparent rounded-full animate-spin"></div>
-          <span class="text-sm font-medium text-gray-700">Loading route…</span>
+          <div class="w-5 h-5 border-2 border-wave border-t-transparent rounded-full animate-spin"></div>
+          <span class="text-sm font-medium text-ink-soft">Loading route…</span>
         </div>
       </div>
     }
@@ -64,7 +64,7 @@
     <!-- Day selector floating panel (demo mode only) -->
     @if (!isTripMode()) {
       <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-[500]">
-        <div class="bg-white/95 backdrop-blur-sm rounded-2xl px-5 py-3.5 shadow-xl border border-gray-200">
+        <div class="bg-white/95 backdrop-blur-sm rounded-2xl px-5 py-3.5 shadow-xl border border-[#e5eae7]">
           <app-trip-day-selector
             [days]="trip.days"
             [selectedDay]="selectedDayIndex()"
@@ -81,9 +81,9 @@
       @if (!isTripMode()) {
         <button
           (click)="toggleAutoPlay()"
-          class="flex items-center gap-2 bg-white/95 backdrop-blur-sm rounded-xl px-4 py-2.5 shadow-md border border-gray-200 hover:bg-gray-50 transition-all text-sm font-semibold"
-          [class.text-[#417cca]]="!autoPlay()"
-          [class.text-red-500]="autoPlay()"
+          class="flex items-center gap-2 bg-white/95 backdrop-blur-sm rounded-xl px-4 py-2.5 shadow-md border border-[#e5eae7] hover:bg-fog transition-all text-sm font-semibold"
+          [class.text-wave]="!autoPlay()"
+          [class.text-coral]="autoPlay()"
         >
           @if (autoPlay()) {
             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -104,7 +104,7 @@
       @if (!autoPlay()) {
         <button
           (click)="playAnimation()"
-          class="flex items-center gap-2 bg-[#e74c3c] text-white rounded-xl px-4 py-2.5 shadow-md hover:bg-[#c0392b] transition-all text-sm font-semibold"
+          class="flex items-center gap-2 bg-coral text-white rounded-xl px-4 py-2.5 shadow-md hover:bg-coral-dark transition-all text-sm font-semibold"
         >
           <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
             <path d="M8 5v14l11-7z"/>
@@ -116,7 +116,7 @@
       @if (autoPlay()) {
         <button
           (click)="pauseAnimation()"
-          class="flex items-center gap-2 bg-white/95 backdrop-blur-sm rounded-xl px-4 py-2.5 shadow-md border border-gray-200 hover:bg-gray-50 transition-all text-sm font-semibold text-gray-700"
+          class="flex items-center gap-2 bg-white/95 backdrop-blur-sm rounded-xl px-4 py-2.5 shadow-md border border-[#e5eae7] hover:bg-fog transition-all text-sm font-semibold text-ink-soft"
         >
           <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
             <rect x="6" y="4" width="4" height="16" rx="1"/>

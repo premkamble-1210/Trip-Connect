@@ -1,20 +1,20 @@
 <div class="w-full min-h-[300px]">
   <!-- Loading State -->
   @if (isLoading) {
-    <div class="p-4 text-center text-gray-600">Loading joined trips...</div>
+    <div class="p-4 text-center text-ink-soft">Loading joined trips...</div>
   }
-  
+
   <!-- Error State -->
   @if (errorMessage) {
-    <div class="p-4 text-center text-red-600 font-semibold">{{ errorMessage }}</div>
+    <div class="p-4 text-center text-coral font-semibold">{{ errorMessage }}</div>
   }
-  
+
   <!-- Empty State -->
   @if (!isLoading && !errorMessage && trips.length === 0) {
     <div class="flex flex-col items-center justify-center h-[250px] text-center">
-      <span class="text-4xl mb-3">🎒</span>
-      <p class="text-gray-500 text-sm">No trips joined yet</p>
-      <p class="text-gray-400 text-xs mt-1">Join a trip to see it here</p>
+      <span class="text-4xl mb-3">🧭</span>
+      <p class="text-ink-soft text-sm">No trips joined yet</p>
+      <p class="text-[#8aa09d] text-xs mt-1">Join a trip to see it here</p>
     </div>
   }
 
@@ -22,16 +22,16 @@
   @if (trips.length > 0) {
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4 w-full">
       @for (trip of trips; track trip.id) {
-        <div class="border border-gray-300 rounded-lg overflow-hidden bg-white transition-all hover:shadow-lg hover:border-blue-600">
+        <div class="border border-[#d9e1df] rounded-xl overflow-hidden bg-white transition-all hover:shadow-md hover:border-wave/40">
           <!-- Trip Image -->
           @if (trip.imgUrl) {
-            <div class="h-48 sm:h-48 bg-gray-200 overflow-hidden">
+            <div class="h-48 sm:h-48 bg-fog overflow-hidden">
               <img [src]="trip.imgUrl" [alt]="trip.title" class="w-full h-full object-cover">
             </div>
           }
           @if (!trip.imgUrl) {
-            <div class="h-28 sm:h-32 bg-gradient-to-br from-blue-100 to-blue-50 flex items-center justify-center">
-              <span class="text-3xl">🎒</span>
+            <div class="h-28 sm:h-32 bg-gradient-to-br from-wave-light to-wave/20 flex items-center justify-center">
+              <span class="text-3xl">🧭</span>
             </div>
           }
 
@@ -39,43 +39,43 @@
           <div class="p-2 sm:p-3">
             <!-- Trip Header -->
             <div class="flex justify-between items-start gap-2 mb-2 sm:mb-3">
-            <h3 class="text-xs sm:text-sm font-semibold text-gray-900 m-0 flex-1">{{ trip.title }}</h3>
-            <span class="text-xs font-semibold px-2 py-1 rounded whitespace-nowrap"
-              [ngClass]="trip.status.toLowerCase() === 'planned' ? 'bg-blue-100 text-blue-600' : 
-                         trip.status.toLowerCase() === 'completed' ? 'bg-green-100 text-green-600' : 
-                         'bg-orange-100 text-orange-600'">
+            <h3 class="font-display text-sm font-semibold text-ink m-0 flex-1">{{ trip.title }}</h3>
+            <span class="text-xs font-semibold px-2 py-1 rounded-full whitespace-nowrap"
+              [ngClass]="trip.status.toLowerCase() === 'planned' ? 'bg-wave-light text-wave' :
+                         trip.status.toLowerCase() === 'completed' ? 'bg-reed-light text-reed' :
+                         'bg-[#fde8df] text-coral'">
               {{ trip.status }}
             </span>
           </div>
-          
+
           <!-- Trip Details -->
           <div class="mb-2 sm:mb-3">
-            <div class="flex justify-between items-center py-0.5 sm:py-1 px-0 text-xs border-b border-gray-100">
-              <span class="text-gray-600 font-medium">📍 Location:</span>
-              <span class="text-gray-900 font-semibold">{{ trip.location }}</span>
+            <div class="flex justify-between items-center py-0.5 sm:py-1 px-0 text-xs border-b border-[#e5eae7]">
+              <span class="text-ink-soft font-medium">📍 Location:</span>
+              <span class="text-ink font-semibold">{{ trip.location }}</span>
             </div>
-            <div class="flex justify-between items-center py-0.5 sm:py-1 px-0 text-xs border-b border-gray-100">
-              <span class="text-gray-600 font-medium">📅 Dates:</span>
-              <span class="text-gray-900 font-semibold">{{ trip.startDate | date:'MMM d' }} – {{ trip.endDate | date:'MMM d, yyyy' }}</span>
+            <div class="flex justify-between items-center py-0.5 sm:py-1 px-0 text-xs border-b border-[#e5eae7]">
+              <span class="text-ink-soft font-medium">📅 Dates:</span>
+              <span class="text-ink font-semibold">{{ trip.startDate | date:'MMM d' }} – {{ trip.endDate | date:'MMM d, yyyy' }}</span>
             </div>
-            <div class="flex justify-between items-center py-0.5 sm:py-1 px-0 text-xs border-b border-gray-100">
-              <span class="text-gray-600 font-medium">💰 Budget:</span>
-              <span class="text-gray-900 font-semibold">₹{{ trip.budget | number:'1.0-0' }}</span>
+            <div class="flex justify-between items-center py-0.5 sm:py-1 px-0 text-xs border-b border-[#e5eae7]">
+              <span class="text-ink-soft font-medium">💰 Budget:</span>
+              <span class="text-ink font-semibold">₹{{ trip.budget | number:'1.0-0' }}</span>
             </div>
             <div class="flex justify-between items-center py-0.5 sm:py-1 px-0 text-xs">
-              <span class="text-gray-600 font-medium">👥 Seats:</span>
-              <span class="text-gray-900 font-semibold">{{ trip.seats }}</span>
+              <span class="text-ink-soft font-medium">👥 Seats:</span>
+              <span class="text-ink font-semibold">{{ trip.seats }}</span>
             </div>
           </div>
-          
+
           <!-- Travel Type -->
-          <div class="flex items-center gap-2 py-1.5 sm:py-2 px-0 border-b border-gray-300 text-xs text-gray-600 mb-2 sm:mb-3">
-            <span class="text-xs">✈️ {{ trip.travelType }}</span>
+          <div class="flex items-center gap-2 py-1.5 sm:py-2 px-0 border-b border-[#d9e1df] text-xs text-ink-soft mb-2 sm:mb-3">
+            <span class="text-xs">🧭 {{ trip.travelType }}</span>
           </div>
-          
+
           <!-- Actions -->
           <div class="flex gap-1 sm:gap-2">
-            <a [routerLink]="['/trip', trip.id]" class="w-full py-1.5 sm:py-2 px-2 sm:px-3 bg-blue-600 text-white text-xs font-semibold rounded-md cursor-pointer transition-all hover:bg-blue-700 text-center">{{ trip.status === 'Completed' ? 'View Trip Details' : 'View Trip' }}</a>
+            <a [routerLink]="['/trip', trip.id]" class="w-full py-1.5 sm:py-2 px-2 sm:px-3 bg-wave text-white text-xs font-semibold rounded-lg cursor-pointer transition-all hover:bg-wave-dark text-center">{{ trip.status === 'Completed' ? 'View Trip Details' : 'View Trip' }}</a>
           </div>
           </div>
         </div>
@@ -83,5 +83,3 @@
     </div>
   }
 </div>
-
-

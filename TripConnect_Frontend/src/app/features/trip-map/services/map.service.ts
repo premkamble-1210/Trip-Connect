@@ -6,8 +6,8 @@ const OSM_TILE = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 const OSM_ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
 const CAR_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="36" height="36">
-  <circle cx="24" cy="24" r="22" fill="#417cca" opacity="0.15"/>
-  <circle cx="24" cy="24" r="16" fill="#417cca"/>
+  <circle cx="24" cy="24" r="22" fill="#0e7c7b" opacity="0.15"/>
+  <circle cx="24" cy="24" r="16" fill="#0e7c7b"/>
   <text x="24" y="30" text-anchor="middle" font-size="18" fill="white">🚗</text>
 </svg>`;
 
@@ -71,7 +71,7 @@ export class MapService {
   addDayWaypointMarker(coord: Coordinate, dayNumber: number, label: string): L.Marker {
     const icon = L.divIcon({
       className: '',
-      html: `<div style="background:#417cca;color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,0.3);border:2px solid #fff">${dayNumber}</div>`,
+      html: `<div style="background:#0e7c7b;color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,0.3);border:2px solid #fff">${dayNumber}</div>`,
       iconSize: [30, 30],
       iconAnchor: [15, 15],
       popupAnchor: [0, -18],

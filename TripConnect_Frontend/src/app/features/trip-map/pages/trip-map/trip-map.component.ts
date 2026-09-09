@@ -20,7 +20,7 @@ import { TripDaySelectorComponent } from '../../components/trip-day-selector/tri
 import { TripSidebarComponent } from '../../components/trip-sidebar/trip-sidebar.component';
 import { TripService } from '../../../../services/trip.service';
 
-const DAY_COLORS = ['#417cca', '#e74c3c', '#2ecc71', '#f39c12', '#9b59b6'];
+const DAY_COLORS = ['#0e7c7b', '#e76f51', '#5c7a02', '#f39c12', '#9b59b6'];
 const ANIMATION_INTERVAL_MS = 50;
 
 const KONKAN_TRIP: Trip = {
@@ -199,7 +199,7 @@ export class TripMapComponent implements OnInit, AfterViewInit, OnDestroy {
           this.currentRouteCoords = routeCoords;
 
           this.zone.runOutsideAngular(() => {
-            this.mapService.drawPolyline(routeCoords, '#e74c3c');
+            this.mapService.drawPolyline(routeCoords, '#e76f51');
             this.mapService.fitBounds(coords);
             this.mapService.createVehicleMarker(routeCoords[0]);
           });

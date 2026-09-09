@@ -1,14 +1,14 @@
-<div class="min-h-screen bg-gradient-to-br from-blue-50 via-blue-100 to-cyan-50">
+<div class="min-h-screen bg-fog">
 
   <div class="flex flex-col lg:flex-row px-4 sm:px-6 py-6 gap-4 lg:gap-6">
-    
+
     <!-- Mobile/Tablet: Horizontal Filter Pills -->
     <div class="lg:hidden overflow-x-auto pb-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
       <div class="flex space-x-2 min-w-max">
         @for (filter of filters; track filter.value) {
-          <button 
+          <button
             (click)="selectFilter(filter)"
-            [class]="filter.selected ? 'px-4 py-2 rounded-full text-sm font-medium bg-blue-500 text-white shadow-sm whitespace-nowrap' : 'px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-700 shadow-sm whitespace-nowrap'">
+            [class]="filter.selected ? 'px-4 py-2 rounded-full text-sm font-medium bg-wave text-white shadow-sm whitespace-nowrap' : 'px-4 py-2 rounded-full text-sm font-medium bg-white text-ink-soft shadow-sm whitespace-nowrap'">
             {{ filter.label }}
           </button>
         }
@@ -17,16 +17,16 @@
 
     <!-- Desktop Sidebar Filters -->
     <aside class="hidden lg:block w-56 flex-shrink-0">
-      <div class="bg-white rounded-2xl shadow-sm p-5">
-        <div class="font-semibold text-gray-800 mb-4">Request Filters</div>
+      <div class="bg-paper rounded-2xl shadow-sm p-5 border border-[#e5eae7]">
+        <div class="font-semibold text-ink mb-4">Request Filters</div>
         <ul class="space-y-1">
           @for (filter of filters; track filter.value) {
             <li>
-              <label 
+              <label
                 (click)="selectFilter(filter)"
-                [class]="filter.selected ? 'flex items-center space-x-3 px-3 py-2 rounded-lg cursor-pointer bg-gray-100' : 'flex items-center space-x-3 px-3 py-2 rounded-lg cursor-pointer hover:bg-gray-50'">
-                <input type="radio" name="filter" [checked]="filter.selected" class="w-4 h-4 accent-blue-600" />
-                <span [class]="filter.selected ? 'text-gray-800 font-medium' : 'text-gray-700'">{{ filter.label }}</span>
+                [class]="filter.selected ? 'flex items-center space-x-3 px-3 py-2 rounded-lg cursor-pointer bg-wave-light' : 'flex items-center space-x-3 px-3 py-2 rounded-lg cursor-pointer hover:bg-fog'">
+                <input type="radio" name="filter" [checked]="filter.selected" class="w-4 h-4 accent-[#0e7c7b]" />
+                <span [class]="filter.selected ? 'text-wave font-medium' : 'text-ink-soft'">{{ filter.label }}</span>
               </label>
             </li>
           }
@@ -36,30 +36,30 @@
 
     <!-- Main Content -->
     <main class="flex-1 w-full lg:max-w-2xl">
-      <h1 class="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-5">{{ tripName }}</h1>
+      <h1 class="font-display text-2xl font-semibold text-ink mb-4 sm:mb-5">{{ tripName }}</h1>
       <div class="h-[calc(100vh-220px)] sm:h-[calc(100vh-200px)] lg:h-[calc(100vh-180px)] overflow-y-auto space-y-3 sm:space-y-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-        
+
         @for (request of filteredRequests; track request.id) {
-          <div class="bg-white rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-5">
+          <div class="bg-white rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-5 border border-[#e5eae7]">
             <div class="flex items-center justify-between">
               <div class="flex items-center space-x-3">
-                <img [src]="'https://ui-avatars.com/api/?name=' + request.userName + '&background=random'" [alt]="request.userName" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover ring-2 ring-gray-100" />
+                <img [src]="'https://ui-avatars.com/api/?name=' + request.userName + '&background=random'" [alt]="request.userName" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover ring-2 ring-fog" />
                 <a [routerLink]="['/user', request.userId]" class="group">
-                  <div class="font-semibold text-gray-900 text-sm sm:text-base group-hover:text-blue-600 transition">{{ request.userName }}</div>
-                  <div class="text-xs text-gray-400 group-hover:text-blue-500 transition">Requested {{ request.requestedAt | date:'MMM d, yyyy' }}</div>
+                  <div class="font-semibold text-ink text-sm sm:text-base group-hover:text-wave transition">{{ request.userName }}</div>
+                  <div class="text-xs text-[#8aa09d] group-hover:text-wave transition">Requested {{ request.requestedAt | date:'MMM d, yyyy' }}</div>
                 </a>
               </div>
               <div class="flex items-center space-x-2 sm:space-x-3">
                 <span [class]="getStatusClass(request.status) + ' text-xs font-semibold px-2 sm:px-3 py-1 rounded-full'">{{ request.status }}</span>
                 @if (request.status === 'Pending') {
-                  <button 
+                  <button
                     (click)="acceptRequest(request)"
-                    class="border border-gray-300 text-gray-700 hover:bg-gray-50 px-3 sm:px-5 py-1.5 rounded-lg font-medium text-xs sm:text-sm transition">
+                    class="border border-wave text-wave hover:bg-wave-light px-3 sm:px-5 py-1.5 rounded-lg font-medium text-xs sm:text-sm transition">
                     Accept
                   </button>
-                  <button 
+                  <button
                     (click)="declineRequest(request)"
-                    class="bg-red-500 hover:bg-red-600 text-white px-3 sm:px-5 py-1.5 rounded-lg font-medium text-xs sm:text-sm transition">
+                    class="bg-coral hover:bg-coral-dark text-white px-3 sm:px-5 py-1.5 rounded-lg font-medium text-xs sm:text-sm transition">
                     Decline
                   </button>
                 }
@@ -67,49 +67,49 @@
             </div>
           </div>
         } @empty {
-          <div class="bg-white rounded-xl sm:rounded-2xl shadow-sm p-8 text-center">
-            <div class="text-gray-400 text-sm">No {{ selectedFilter.toLowerCase() }} requests found.</div>
+          <div class="bg-white rounded-xl sm:rounded-2xl shadow-sm p-8 text-center border border-[#e5eae7]">
+            <div class="text-ink-soft text-sm">No {{ selectedFilter.toLowerCase() }} requests found.</div>
           </div>
         }
-        
+
       </div>
     </main>
 
     <!-- Profile Card - Hidden on mobile, shown on lg -->
     <aside class="hidden lg:block w-72 flex-shrink-0">
-      <div class="bg-white rounded-2xl shadow-sm p-6 flex flex-col items-center">
-        <div class="w-20 h-20 rounded-full bg-gray-100 mb-3 overflow-hidden ring-4 ring-blue-50">
+      <div class="bg-paper rounded-2xl shadow-sm p-6 flex flex-col items-center border border-[#e5eae7]">
+        <div class="w-20 h-20 rounded-full bg-fog mb-3 overflow-hidden ring-4 ring-wave-light">
           <img [src]="profile.avatar" [alt]="profile.name" class="w-full h-full object-cover" />
         </div>
-        <div class="font-bold text-lg text-gray-900">{{ profile.name }}</div>
-        <div class="text-xs text-gray-400 mb-5">{{ profile.username }}</div>
+        <div class="font-display text-lg font-semibold text-ink">{{ profile.name }}</div>
+        <div class="text-xs text-[#8aa09d] mb-5">{{ profile.username }}</div>
         <div class="flex justify-between w-full mb-4">
           <div class="flex flex-col items-center flex-1">
-            <span class="font-bold text-gray-800 text-lg">{{ pendingCount }}</span>
-            <span class="text-xs text-gray-400">Pending</span>
+            <span class="font-bold text-ink text-lg">{{ pendingCount }}</span>
+            <span class="text-xs text-ink-soft">Pending</span>
           </div>
           <div class="flex flex-col items-center flex-1">
-            <span class="font-bold text-gray-800 text-lg">{{ acceptedCount }}</span>
-            <span class="text-xs text-gray-400">Accepted</span>
+            <span class="font-bold text-ink text-lg">{{ acceptedCount }}</span>
+            <span class="text-xs text-ink-soft">Accepted</span>
           </div>
           <div class="flex flex-col items-center flex-1">
-            <span class="font-bold text-gray-800 text-lg">{{ totalCount }}</span>
-            <span class="text-xs text-gray-400">Total</span>
+            <span class="font-bold text-ink text-lg">{{ totalCount }}</span>
+            <span class="text-xs text-ink-soft">Total</span>
           </div>
         </div>
-        <div class="w-full border-t border-gray-100 my-3"></div>
-        <div class="w-full text-sm text-gray-600 space-y-2">
+        <div class="w-full border-t border-[#e5eae7] my-3"></div>
+        <div class="w-full text-sm text-ink-soft space-y-2">
           <div class="flex justify-between">
-            <span class="text-gray-400">Pending</span>
-            <span class="text-gray-700">{{ pendingCount }}</span>
+            <span class="text-[#8aa09d]">Pending</span>
+            <span class="text-ink">{{ pendingCount }}</span>
           </div>
           <div class="flex justify-between">
-            <span class="text-gray-400">Accepted</span>
-            <span class="text-gray-700">{{ acceptedCount }}</span>
+            <span class="text-[#8aa09d]">Accepted</span>
+            <span class="text-ink">{{ acceptedCount }}</span>
           </div>
           <div class="flex justify-between font-semibold">
-            <span class="text-gray-500">Total</span>
-            <span class="text-gray-800">{{ totalCount }}</span>
+            <span class="text-ink-soft">Total</span>
+            <span class="text-ink">{{ totalCount }}</span>
           </div>
         </div>
       </div>

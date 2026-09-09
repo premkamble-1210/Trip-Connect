@@ -1,11 +1,11 @@
 <div>
-  <h3 class="text-[17px] font-bold mb-6">Member list</h3>
-  <div class="space-y-[22px] max-h-[220px] overflow-y-auto pr-2" style="scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent;">
+  <h3 class="font-display text-[19px] font-semibold text-ink mb-6">Travelers</h3>
+  <div class="space-y-[22px] max-h-[220px] overflow-y-auto pr-2" style="scrollbar-width: thin; scrollbar-color: #a8cfcd transparent;">
     <div *ngFor="let member of members" class="flex items-center gap-3.5">
-      <img [src]="member.avatar" class="w-[42px] h-[42px] rounded-full object-cover shadow-sm">
+      <img [src]="member.avatar" class="w-[42px] h-[42px] rounded-full object-cover shadow-sm border border-[#e5eae7]">
       <div>
-        <a [routerLink]="['/user', member.userId]" class="font-bold text-[14px] text-gray-900 leading-tight mb-0.5 hover:underline cursor-pointer block">{{ member.name }}</a>
-        <p class="text-[12px] text-blue-500 font-medium">{{ member.role }}</p>
+        <a [routerLink]="['/user', member.userId]" class="font-semibold text-[15px] text-ink leading-tight mb-0.5 hover:text-wave hover:underline cursor-pointer block">{{ member.name }}</a>
+        <p class="text-xs text-wave font-medium">{{ member.role }}</p>
       </div>
     </div>
   </div>

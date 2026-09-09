@@ -4,13 +4,13 @@
     [value]="inputText"
     (input)="onInput($any($event.target).value)"
     [placeholder]="placeholder"
-    class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+    class="w-full border border-[#d9e1df] rounded-xl px-3 py-2 text-sm bg-white focus:outline-none focus:border-wave focus:ring-2 focus:ring-wave/25"
     autocomplete="off"
   />
 
   @if (isLoading) {
     <div class="absolute right-3 top-1/2 -translate-y-1/2">
-      <svg class="animate-spin h-4 w-4 text-blue-400" fill="none" viewBox="0 0 24 24">
+      <svg class="animate-spin h-4 w-4 text-wave" fill="none" viewBox="0 0 24 24">
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
       </svg>
@@ -18,13 +18,13 @@
   }
 
   @if (isOpen && suggestions.length > 0) {
-    <ul class="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-52 overflow-y-auto">
+    <ul class="absolute z-50 mt-1 w-full bg-white border border-[#d9e1df] rounded-xl shadow-lg max-h-52 overflow-y-auto">
       @for (s of suggestions; track s.displayName) {
         <li
           (mousedown)="selectSuggestion(s)"
-          class="px-3 py-2 text-sm text-gray-700 cursor-pointer hover:bg-blue-50 hover:text-blue-700 flex items-start gap-2"
+          class="px-3 py-2 text-sm text-ink cursor-pointer hover:bg-wave-light hover:text-wave flex items-start gap-2"
         >
-          <svg class="mt-0.5 h-3.5 w-3.5 shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#8aa09d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>

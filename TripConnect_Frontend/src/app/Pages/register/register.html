@@ -1,49 +1,107 @@
-<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-4 py-10">
-  <div class="max-w-xl w-full bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl overflow-hidden border border-white/20">
-    <div class="p-8 sm:p-10">
-      <div class="text-center mb-8">
-        <h2 class="text-3xl font-extrabold text-white mb-2 tracking-tight">Create an Account</h2>
-        <p class="text-indigo-100/80 text-sm">Join us today! Please fill in your details.</p>
+<div class="min-h-screen flex bg-[#fbfaf6]">
+
+  <!-- Left panel: atlas atmosphere -->
+  <div class="hidden lg:flex lg:w-[52%] bg-[#16302e] bg-topo relative overflow-hidden flex-col justify-between p-12">
+    <div class="relative z-10">
+      <div class="flex items-center gap-2.5">
+        <svg class="w-8 h-8 text-[#e76f51]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <circle cx="12" cy="12" r="9.5"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 2.5v4M12 17.5v4M2.5 12h4M17.5 12h4M5.3 5.3l2.8 2.8M15.9 15.9l2.8 2.8M18.7 5.3l-2.8 2.8M8.1 15.9l-2.8 2.8"/>
+        </svg>
+        <span class="font-display text-2xl font-semibold text-[#fbfaf6] tracking-tight">TripConnect</span>
+      </div>
+    </div>
+
+    <div class="relative z-10 max-w-md">
+      <h1 class="font-display text-4xl font-semibold text-[#fbfaf6] leading-[1.15] tracking-tight mb-5">
+        Your next adventure starts here.
+      </h1>
+      <p class="text-[#a8cfcd] text-[15px] leading-relaxed">
+        Meet co-travelers, discover shared trips, and tell the stories only made at the edge of a map.
+      </p>
+
+      <div class="mt-8 space-y-3">
+        <div class="flex items-center gap-3 text-sm text-[#fbfaf6]/85">
+          <span class="w-6 h-6 rounded-full bg-[#0e7c7b] flex items-center justify-center text-[#fbfaf6] text-xs font-bold flex-shrink-0">✓</span>
+          Browse trips from verified hosts
+        </div>
+        <div class="flex items-center gap-3 text-sm text-[#fbfaf6]/85">
+          <span class="w-6 h-6 rounded-full bg-[#0e7c7b] flex items-center justify-center text-[#fbfaf6] text-xs font-bold flex-shrink-0">✓</span>
+          Plan itineraries day by day
+        </div>
+        <div class="flex items-center gap-3 text-sm text-[#fbfaf6]/85">
+          <span class="w-6 h-6 rounded-full bg-[#0e7c7b] flex items-center justify-center text-[#fbfaf6] text-xs font-bold flex-shrink-0">✓</span>
+          Join a trip or host your own
+        </div>
+      </div>
+    </div>
+
+    <div class="relative z-10 flex items-center gap-8 text-[#fbfaf6]/80 text-sm">
+      <div>
+        <div class="text-xl font-bold text-[#fbfaf6]">100%</div>
+        <div class="text-xs text-[#a8cfcd] mt-0.5">Community-driven</div>
+      </div>
+      <div class="w-px h-10 bg-[#fbfaf6]/15"></div>
+      <div>
+        <div class="text-xl font-bold text-[#fbfaf6]">Free</div>
+        <div class="text-xs text-[#a8cfcd] mt-0.5">To join the club</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right panel: form -->
+  <div class="flex-1 flex items-center justify-center p-6 sm:p-10">
+    <div class="w-full max-w-md">
+
+      <!-- Mobile logo -->
+      <div class="flex items-center gap-2 justify-center mb-8 lg:hidden">
+        <svg class="w-7 h-7 text-[#0e7c7b]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <circle cx="12" cy="12" r="9.5"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 2.5v4M12 17.5v4M2.5 12h4M17.5 12h4M5.3 5.3l2.8 2.8M15.9 15.9l2.8 2.8M18.7 5.3l-2.8 2.8M8.1 15.9l-2.8 2.8"/>
+        </svg>
+        <span class="font-display text-xl font-semibold text-[#16302e] tracking-tight">TripConnect</span>
       </div>
 
+      <h2 class="font-display text-3xl font-semibold text-[#16302e] tracking-tight">Create an account</h2>
+      <p class="text-[#4a5f5d] text-sm mt-1.5 mb-8">Fill in your details to get started.</p>
+
       <form class="space-y-5" (ngSubmit)="register()">
-        <!-- Error Message -->
+
         @if (errorMessage()) {
-          <div class="rounded-xl bg-red-500/20 border border-red-400/40 px-4 py-3 text-sm text-white">
+          <div class="rounded-xl bg-[#fde8df] border border-[#e76f51]/40 px-4 py-3 text-sm text-[#c9583e]">
             {{ errorMessage() }}
           </div>
         }
 
-        <!-- 2 Column Grid for Name and Username -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <!-- Name Input -->
           <div>
-            <label for="name" class="block text-sm font-medium text-white/90 mb-2">Name</label>
+            <label for="name" class="block text-sm font-medium text-[#16302e] mb-1.5">Name</label>
             <div class="relative group">
-              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-white text-indigo-200/70">
+              <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none transition-colors group-focus-within:text-[#0e7c7b] text-[#8aa09d]">
                 <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
                 </svg>
               </div>
               <input id="name" name="name" type="text" required
                 [ngModel]="name()" (ngModelChange)="name.set($event)"
-                class="block w-full pl-11 pr-4 py-3 border border-white/20 rounded-2xl bg-white/10 text-white placeholder-indigo-200/50 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent transition-all duration-300 ease-in-out backdrop-blur-md shadow-inner"
+                class="block w-full pl-10 pr-3.5 py-2.5 border border-[#d9e1df] rounded-xl bg-white text-[#16302e] placeholder-[#9aafac] focus:outline-none focus:ring-2 focus:ring-[#0e7c7b]/25 focus:border-[#0e7c7b] transition-all duration-200"
                 placeholder="Full name">
             </div>
           </div>
 
           <!-- Username Input -->
           <div>
-            <label for="username" class="block text-sm font-medium text-white/90 mb-2">Username</label>
+            <label for="username" class="block text-sm font-medium text-[#16302e] mb-1.5">Username</label>
             <div class="relative group">
-              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-white text-indigo-200/70">
+              <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none transition-colors group-focus-within:text-[#0e7c7b] text-[#8aa09d]">
                 <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd" />
                 </svg>
               </div>
               <input id="username" name="username" type="text" required
                 [ngModel]="username()" (ngModelChange)="username.set($event)"
-                class="block w-full pl-11 pr-4 py-3 border border-white/20 rounded-2xl bg-white/10 text-white placeholder-indigo-200/50 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent transition-all duration-300 ease-in-out backdrop-blur-md shadow-inner"
+                class="block w-full pl-10 pr-3.5 py-2.5 border border-[#d9e1df] rounded-xl bg-white text-[#16302e] placeholder-[#9aafac] focus:outline-none focus:ring-2 focus:ring-[#0e7c7b]/25 focus:border-[#0e7c7b] transition-all duration-200"
                 placeholder="Username">
             </div>
           </div>
@@ -51,9 +109,9 @@
 
         <!-- Email Input -->
         <div>
-          <label for="email" class="block text-sm font-medium text-white/90 mb-2">Email Address</label>
+          <label for="email" class="block text-sm font-medium text-[#16302e] mb-1.5">Email Address</label>
           <div class="relative group">
-            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-white text-indigo-200/70">
+            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none transition-colors group-focus-within:text-[#0e7c7b] text-[#8aa09d]">
               <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                 <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                 <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
@@ -61,63 +119,62 @@
             </div>
             <input id="email" name="email" type="email" required
               [ngModel]="email()" (ngModelChange)="email.set($event)"
-              class="block w-full pl-11 pr-4 py-3 border border-white/20 rounded-2xl bg-white/10 text-white placeholder-indigo-200/50 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent transition-all duration-300 ease-in-out backdrop-blur-md shadow-inner"
+              class="block w-full pl-10 pr-3.5 py-2.5 border border-[#d9e1df] rounded-xl bg-white text-[#16302e] placeholder-[#9aafac] focus:outline-none focus:ring-2 focus:ring-[#0e7c7b]/25 focus:border-[#0e7c7b] transition-all duration-200"
               placeholder="you@example.com">
           </div>
         </div>
 
         <!-- Phone Input -->
         <div>
-          <label for="phone" class="block text-sm font-medium text-white/90 mb-2">Phone Number</label>
+          <label for="phone" class="block text-sm font-medium text-[#16302e] mb-1.5">Phone Number</label>
           <div class="relative group">
-            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-white text-indigo-200/70">
+            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none transition-colors group-focus-within:text-[#0e7c7b] text-[#8aa09d]">
               <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                 <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
               </svg>
             </div>
             <input id="phone" name="phone" type="tel" required
               [ngModel]="phone()" (ngModelChange)="phone.set($event)"
-              class="block w-full pl-11 pr-4 py-3 border border-white/20 rounded-2xl bg-white/10 text-white placeholder-indigo-200/50 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent transition-all duration-300 ease-in-out backdrop-blur-md shadow-inner"
+              class="block w-full pl-10 pr-3.5 py-2.5 border border-[#d9e1df] rounded-xl bg-white text-[#16302e] placeholder-[#9aafac] focus:outline-none focus:ring-2 focus:ring-[#0e7c7b]/25 focus:border-[#0e7c7b] transition-all duration-200"
               placeholder="+1 (555) 000-0000">
           </div>
         </div>
 
         <!-- Password Input -->
         <div>
-          <label for="password" class="block text-sm font-medium text-white/90 mb-2">Password</label>
+          <label for="password" class="block text-sm font-medium text-[#16302e] mb-1.5">Password</label>
           <div class="relative group">
-            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-white text-indigo-200/70">
+            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none transition-colors group-focus-within:text-[#0e7c7b] text-[#8aa09d]">
               <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
               </svg>
             </div>
             <input id="password" name="password" type="password" required
               [ngModel]="password()" (ngModelChange)="password.set($event)"
-              class="block w-full pl-11 pr-4 py-3 border border-white/20 rounded-2xl bg-white/10 text-white placeholder-indigo-200/50 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent transition-all duration-300 ease-in-out backdrop-blur-md shadow-inner"
+              class="block w-full pl-10 pr-3.5 py-2.5 border border-[#d9e1df] rounded-xl bg-white text-[#16302e] placeholder-[#9aafac] focus:outline-none focus:ring-2 focus:ring-[#0e7c7b]/25 focus:border-[#0e7c7b] transition-all duration-200"
               placeholder="Create a strong password">
           </div>
         </div>
 
         <!-- Register Button -->
-        <div class="pt-4">
+        <div class="pt-3">
           <button type="submit" [disabled]="isLoading()"
-            class="w-full flex justify-center items-center py-3.5 px-4 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] text-sm font-bold text-indigo-600 bg-white hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-indigo-500 focus:ring-white transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed">
+            class="w-full flex justify-center items-center py-3.5 px-4 rounded-xl text-sm font-semibold text-white bg-[#0e7c7b] hover:bg-[#0a5f5e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0e7c7b]/30 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed">
             @if (isLoading()) {
-              <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
               </svg>
               Creating account...
             } @else {
               Create Account
-              <svg class="ml-2 -mr-1 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
             }
           </button>
         </div>
 
-        <p class="text-center text-sm text-indigo-100/70">
+        <p class="text-center text-sm text-[#6b807c]">
           Already have an account?
-          <a routerLink="/login" class="text-white font-semibold hover:underline">Sign in</a>
+          <a routerLink="/login" class="text-[#0e7c7b] font-semibold hover:text-[#0a5f5e] hover:underline">Sign in</a>
         </p>
       </form>
     </div>

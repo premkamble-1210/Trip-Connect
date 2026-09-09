@@ -1,11 +1,11 @@
-<div class="flex flex-col lg:flex-row gap-3 md:gap-4 p-2 sm:p-3 md:p-4 bg-gray-100 min-h-screen w-full box-border" *ngIf="!isLoading && !errorMessage && user">
+<div class="flex flex-col lg:flex-row gap-3 md:gap-4 p-2 sm:p-3 md:p-4 bg-fog min-h-screen w-full box-border" *ngIf="!isLoading && !errorMessage && user">
   <!-- Profile Card -->
-  <div class="flex-shrink-0 w-full lg:w-72 bg-white rounded-lg p-3 sm:p-4 md:p-5 shadow-sm lg:sticky lg:top-5 h-fit">
+  <div class="flex-shrink-0 w-full lg:w-72 bg-paper rounded-2xl p-3 sm:p-4 md:p-5 shadow-sm lg:sticky lg:top-5 h-fit border border-[#e5eae7]">
     <!-- Profile Header -->
     <div class="text-center mb-3 sm:mb-4 md:mb-5">
       <div class="relative w-fit mx-auto">
-        <img [src]="'https://ui-avatars.com/api/?name=' + user.name" [alt]="user.name" class="w-24 sm:w-28 md:w-32 h-24 sm:h-28 md:h-32 rounded-full object-cover border-4 border-gray-200 shadow-md">
-        <button class="absolute bottom-0 right-0 w-7 sm:w-8 md:w-9 h-7 sm:h-8 md:h-9 rounded-full bg-blue-600 border-4 border-white text-white cursor-pointer flex items-center justify-center hover:bg-blue-700 transition-all shadow-md" (click)="openEditModal()" title="Edit contact info">
+        <img [src]="'https://ui-avatars.com/api/?name=' + user.name" [alt]="user.name" class="w-24 sm:w-28 md:w-32 h-24 sm:h-28 md:h-32 rounded-full object-cover border-4 border-[#e5eae7] shadow-md">
+        <button class="absolute bottom-0 right-0 w-7 sm:w-8 md:w-9 h-7 sm:h-8 md:h-9 rounded-full bg-wave border-4 border-paper text-white cursor-pointer flex items-center justify-center hover:bg-wave-dark transition-all shadow-md" (click)="openEditModal()" title="Edit contact info">
           <span class="font-bold text-base">✎</span>
         </button>
       </div>
@@ -13,144 +13,144 @@
 
     <!-- Profile Info -->
     <div>
-      <h2 class="text-base sm:text-lg font-semibold text-gray-900 m-0 my-2 sm:my-4">{{ user.name }}</h2>
-      <p class="text-gray-600 text-xs sm:text-sm mb-2">@{{ user.username }}</p>
+      <h2 class="font-display text-xl font-semibold text-ink m-0 my-2 sm:my-4 text-center">{{ user.name }}</h2>
+      <p class="text-ink-soft text-xs sm:text-sm mb-2 text-center">@{{ user.username }}</p>
 
       <!-- Rating -->
-      <div class="flex items-center gap-2 mb-2 flex-wrap" *ngIf="user.rating">
+      <div class="flex items-center gap-2 mb-2 flex-wrap justify-center" *ngIf="user.rating">
         <span class="text-yellow-400 text-xs sm:text-sm">{{ renderStars(user.rating) }}</span>
-        <span class="font-semibold text-gray-900 text-xs sm:text-sm">{{ user.rating }} <span class="text-gray-500 font-normal">rating</span></span>
+        <span class="font-semibold text-ink text-xs sm:text-sm">{{ user.rating }} <span class="text-ink-soft font-normal">rating</span></span>
       </div>
 
-      <p class="text-gray-600 text-xs mb-3 sm:mb-4">Member Since: {{ user.createdAt | date:'MMMM yyyy' }}</p>
+      <p class="text-ink-soft text-xs mb-3 sm:mb-4 text-center">Member since {{ user.createdAt | date:'MMMM yyyy' }}</p>
 
       <!-- Contact Info -->
-      <div class="border-t border-b border-gray-200 py-2 sm:py-3 mb-3 sm:mb-4">
-        <h3 class="text-xs font-semibold text-gray-900 mb-2 uppercase">Contact Info</h3>
-        <p class="text-xs text-gray-600 my-1"><strong>Email:</strong> <span class="text-gray-900">{{ user.email }}</span></p>
-        <p class="text-xs text-gray-600"><strong>Phone:</strong> <span class="text-gray-900">{{ user.phone }}</span></p>
+      <div class="border-t border-b border-[#e5eae7] py-2 sm:py-3 mb-3 sm:mb-4">
+        <h3 class="text-xs font-semibold text-ink mb-2">Contact info</h3>
+        <p class="text-xs text-ink-soft my-1"><strong>Email:</strong> <span class="text-ink">{{ user.email }}</span></p>
+        <p class="text-xs text-ink-soft"><strong>Phone:</strong> <span class="text-ink">{{ user.phone }}</span></p>
       </div>
 
       <!-- Verification Badges -->
       <div class="mt-4">
-        <h3 class="text-xs font-semibold text-gray-900 mb-3 uppercase">Verification Badges</h3>
+        <h3 class="text-xs font-semibold text-ink mb-3">Verification</h3>
         <div class="flex gap-4 justify-center mb-4">
           <!-- Phone Verified Badge -->
-          <div class="flex flex-col items-center gap-2" [ngClass]="user.phoneVerified ? '' : ''">
-            <div class="w-16 h-16 rounded-lg flex items-center justify-center border-3 relative" [ngClass]="user.phoneVerified ? 'border-green-500 bg-green-50' : 'border-orange-400 bg-orange-50'">
-              <svg class="w-8 h-8" [ngClass]="user.phoneVerified ? 'text-green-600' : 'text-orange-600'" fill="currentColor" viewBox="0 0 24 24">
+          <div class="flex flex-col items-center gap-2">
+            <div class="w-16 h-16 rounded-lg flex items-center justify-center border-3 relative" [ngClass]="user.phoneVerified ? 'border-reed bg-reed-light' : 'border-orange-400 bg-orange-50'">
+              <svg class="w-8 h-8" [ngClass]="user.phoneVerified ? 'text-reed' : 'text-orange-600'" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
               </svg>
-              <span *ngIf="user.phoneVerified" class="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center border-2 border-white">
+              <span *ngIf="user.phoneVerified" class="absolute -top-2 -right-2 w-6 h-6 bg-reed rounded-full flex items-center justify-center border-2 border-paper">
                 <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                 </svg>
               </span>
             </div>
-            <span class="text-xs font-semibold text-gray-900">Phone</span>
-            <span class="text-xs" [ngClass]="user.phoneVerified ? 'text-green-600 font-semibold' : 'text-orange-600 font-semibold'">{{ user.phoneVerified ? 'Verified' : 'Not Verified' }}</span>
+            <span class="text-xs font-semibold text-ink">Phone</span>
+            <span class="text-xs" [ngClass]="user.phoneVerified ? 'text-reed font-semibold' : 'text-orange-600 font-semibold'">{{ user.phoneVerified ? 'Verified' : 'Not verified' }}</span>
           </div>
 
           <!-- ID Verified Badge -->
           <div class="flex flex-col items-center gap-2">
-            <div class="w-16 h-16 rounded-lg flex items-center justify-center border-3 relative" [ngClass]="user.idVerified ? 'border-green-500 bg-green-50' : 'border-orange-400 bg-orange-50'">
-              <svg class="w-8 h-8" [ngClass]="user.idVerified ? 'text-green-600' : 'text-orange-600'" fill="currentColor" viewBox="0 0 24 24">
+            <div class="w-16 h-16 rounded-lg flex items-center justify-center border-3 relative" [ngClass]="user.idVerified ? 'border-reed bg-reed-light' : 'border-orange-400 bg-orange-50'">
+              <svg class="w-8 h-8" [ngClass]="user.idVerified ? 'text-reed' : 'text-orange-600'" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-2.16-2.66c-.44-.53-1.25-.58-1.78-.15-.53.44-.58 1.25-.15 1.78l3 3.68c.28.34.7.53 1.13.53.48 0 .9-.22 1.18-.58l3.96-4.88c.44-.53.39-1.34-.15-1.78-.53-.44-1.34-.39-1.78.15z"/>
               </svg>
-              <span *ngIf="user.idVerified" class="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center border-2 border-white">
+              <span *ngIf="user.idVerified" class="absolute -top-2 -right-2 w-6 h-6 bg-reed rounded-full flex items-center justify-center border-2 border-paper">
                 <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                 </svg>
               </span>
             </div>
-            <span class="text-xs font-semibold text-gray-900">ID</span>
-            <span class="text-xs" [ngClass]="user.idVerified ? 'text-green-600 font-semibold' : 'text-orange-600 font-semibold'">{{ user.idVerified ? 'Verified' : 'Not Verified' }}</span>
+            <span class="text-xs font-semibold text-ink">ID</span>
+            <span class="text-xs" [ngClass]="user.idVerified ? 'text-reed font-semibold' : 'text-orange-600 font-semibold'">{{ user.idVerified ? 'Verified' : 'Not verified' }}</span>
           </div>
 
           <!-- Email Verified Badge -->
           <div class="flex flex-col items-center gap-2">
-            <div class="w-16 h-16 rounded-lg flex items-center justify-center border-3 relative" [ngClass]="user.emailVerified ? 'border-green-500 bg-green-50' : 'border-orange-400 bg-orange-50'">
-              <svg class="w-8 h-8" [ngClass]="user.emailVerified ? 'text-green-600' : 'text-orange-600'" fill="currentColor" viewBox="0 0 24 24">
+            <div class="w-16 h-16 rounded-lg flex items-center justify-center border-3 relative" [ngClass]="user.emailVerified ? 'border-reed bg-reed-light' : 'border-orange-400 bg-orange-50'">
+              <svg class="w-8 h-8" [ngClass]="user.emailVerified ? 'text-reed' : 'text-orange-600'" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
               </svg>
-              <span *ngIf="user.emailVerified" class="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center border-2 border-white">
+              <span *ngIf="user.emailVerified" class="absolute -top-2 -right-2 w-6 h-6 bg-reed rounded-full flex items-center justify-center border-2 border-paper">
                 <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                 </svg>
               </span>
             </div>
-            <span class="text-xs font-semibold text-gray-900">Email</span>
-            <span class="text-xs" [ngClass]="user.emailVerified ? 'text-green-600 font-semibold' : 'text-orange-600 font-semibold'">{{ user.emailVerified ? 'Verified' : 'Not Verified' }}</span>
+            <span class="text-xs font-semibold text-ink">Email</span>
+            <span class="text-xs" [ngClass]="user.emailVerified ? 'text-reed font-semibold' : 'text-orange-600 font-semibold'">{{ user.emailVerified ? 'Verified' : 'Not verified' }}</span>
           </div>
         </div>
         <!-- Unified Verification Button -->
         <button
-          class="w-full py-2 bg-white border border-gray-300 rounded-md text-gray-600 text-xs font-semibold transition-all hover:border-gray-600 hover:bg-gray-50 cursor-pointer"
+          class="w-full py-2 bg-white border border-[#d9e1df] rounded-xl text-ink-soft text-xs font-semibold transition-all hover:border-wave hover:text-ink hover:bg-fog cursor-pointer"
           (click)="openVerificationSelector()">
           Request Verification
         </button>
 
         <!-- Verification Type Selector Popup -->
         <div *ngIf="isVerificationSelectorOpen"
-          class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+          class="fixed inset-0 bg-ink/50 flex items-center justify-center z-50"
           (click)="closeVerificationSelector()">
-          <div class="bg-white rounded-lg shadow-2xl w-11/12 sm:w-80 p-5"
+          <div class="bg-white rounded-xl shadow-2xl w-11/12 sm:w-80 p-5"
             (click)="$event.stopPropagation()">
             <div class="flex justify-between items-center mb-4">
-              <h3 class="text-sm font-semibold text-gray-900">What would you like to verify?</h3>
-              <button class="text-gray-400 hover:text-gray-900 text-xl leading-none w-8 h-8 flex items-center justify-center" (click)="closeVerificationSelector()">✕</button>
+              <h3 class="text-sm font-semibold text-ink">What would you like to verify?</h3>
+              <button class="text-[#8aa09d] hover:text-ink text-xl leading-none w-8 h-8 flex items-center justify-center" (click)="closeVerificationSelector()">✕</button>
             </div>
             <div class="flex flex-col gap-2">
               <!-- Phone option -->
               <button
-                class="flex items-center gap-3 p-3 border rounded-md text-sm text-gray-700 transition-all hover:border-blue-500 hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                class="flex items-center gap-3 p-3 border border-[#d9e1df] rounded-xl text-sm text-ink-soft transition-all hover:border-wave hover:bg-wave-light disabled:opacity-50 disabled:cursor-not-allowed"
                 [disabled]="user.phoneVerified"
                 (click)="selectVerificationType('phone')">
-                <svg class="w-5 h-5 text-blue-500 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 text-wave shrink-0" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
                 </svg>
                 <div class="text-left">
                   <p class="font-semibold">Phone</p>
-                  <p class="text-xs text-gray-500">{{ user.phoneVerified ? 'Already verified' : 'Verify via SMS OTP' }}</p>
+                  <p class="text-xs text-ink-soft">{{ user.phoneVerified ? 'Already verified' : 'Verify via SMS OTP' }}</p>
                 </div>
               </button>
               <!-- ID option -->
               <button
-                class="flex items-center gap-3 p-3 border rounded-md text-sm text-gray-700 transition-all hover:border-purple-500 hover:bg-purple-50"
+                class="flex items-center gap-3 p-3 border border-[#d9e1df] rounded-xl text-sm text-ink-soft transition-all hover:border-wave hover:bg-wave-light"
                 (click)="selectVerificationType('id')">
-                <svg class="w-5 h-5 text-purple-500 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 text-wave shrink-0" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5.04 6.71l-2.75 3.54-2.16-2.66c-.44-.53-1.25-.58-1.78-.15-.53.44-.58 1.25-.15 1.78l3 3.68c.28.34.7.53 1.13.53.48 0 .9-.22 1.18-.58l3.96-4.88c.44-.53.39-1.34-.15-1.78-.53-.44-1.34-.39-1.78.15z"/>
                 </svg>
                 <div class="text-left">
-                  <p class="font-semibold">ID Document</p>
-                  <p class="text-xs text-gray-500">Government-issued ID</p>
+                  <p class="font-semibold">ID document</p>
+                  <p class="text-xs text-ink-soft">Government-issued ID</p>
                 </div>
               </button>
               <!-- Email option -->
               <button
-                class="flex items-center gap-3 p-3 border rounded-md text-sm text-gray-700 transition-all hover:border-green-500 hover:bg-green-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                class="flex items-center gap-3 p-3 border border-[#d9e1df] rounded-xl text-sm text-ink-soft transition-all hover:border-reed hover:bg-reed-light disabled:opacity-50 disabled:cursor-not-allowed"
                 [disabled]="user.emailVerified || isRequestingVerification"
                 (click)="selectVerificationType('email')">
-                <svg class="w-5 h-5 text-green-500 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 text-reed shrink-0" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
                 </svg>
                 <div class="text-left">
                   <p class="font-semibold">Email</p>
-                  <p class="text-xs text-gray-500">{{ user.emailVerified ? 'Already verified' : isRequestingVerification ? 'Sending...' : 'Verify via email link' }}</p>
+                  <p class="text-xs text-ink-soft">{{ user.emailVerified ? 'Already verified' : isRequestingVerification ? 'Sending...' : 'Verify via email link' }}</p>
                 </div>
               </button>
             </div>
-            <p *ngIf="showIdComingSoon" class="text-xs text-purple-600 font-semibold mt-3 text-center">ID verification — feature coming soon.</p>
+            <p *ngIf="showIdComingSoon" class="text-xs text-wave font-semibold mt-3 text-center">ID verification — feature coming soon.</p>
           </div>
         </div>
 
-        <p *ngIf="phoneVerificationMessage" class="text-xs text-green-600 font-semibold mt-2 text-center">{{ phoneVerificationMessage }}</p>
-        <p *ngIf="verificationMessage" class="text-xs text-green-600 font-semibold mt-2 text-center">{{ verificationMessage }}</p>
-        <p *ngIf="verificationError" class="text-xs text-red-600 font-semibold mt-2 text-center">{{ verificationError }}</p>
+        <p *ngIf="phoneVerificationMessage" class="text-xs text-reed font-semibold mt-2 text-center">{{ phoneVerificationMessage }}</p>
+        <p *ngIf="verificationMessage" class="text-xs text-reed font-semibold mt-2 text-center">{{ verificationMessage }}</p>
+        <p *ngIf="verificationError" class="text-xs text-coral font-semibold mt-2 text-center">{{ verificationError }}</p>
       </div>
 
       <!-- Logout Button -->
-      <button (click)="logout()" class="w-full py-2 mt-4 bg-red-50 border border-red-300 rounded-md text-red-600 text-xs font-semibold cursor-pointer transition-all hover:bg-red-100 hover:border-red-400">Logout</button>
+      <button (click)="logout()" class="w-full py-2 mt-4 bg-[#fde8df] border border-[#e76f51]/40 rounded-xl text-coral text-xs font-semibold cursor-pointer transition-all hover:bg-[#f8cfc2] hover:border-coral">Logout</button>
     </div>
   </div>
 
@@ -158,56 +158,56 @@
   <app-profile-tabs></app-profile-tabs>
 
   <!-- OTP Verification Modal -->
-  <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+  <div class="fixed inset-0 bg-ink/50 flex items-center justify-center z-50"
     *ngIf="isOtpModalOpen"
     (click)="closeOtpModal()">
-    <div class="bg-white rounded-lg shadow-2xl w-11/12 sm:w-full max-w-sm"
+    <div class="bg-white rounded-xl shadow-2xl w-11/12 sm:w-full max-w-sm"
       (click)="$event.stopPropagation()">
-      <div class="flex justify-between items-center p-4 border-b border-gray-200">
-        <h3 class="text-base font-semibold text-gray-900">Verify Phone Number</h3>
-        <button class="text-gray-400 hover:text-gray-900 text-xl leading-none w-8 h-8 flex items-center justify-center" (click)="closeOtpModal()">✕</button>
+      <div class="flex justify-between items-center p-4 border-b border-[#e5eae7]">
+        <h3 class="text-base font-semibold text-ink">Verify Phone Number</h3>
+        <button class="text-[#8aa09d] hover:text-ink text-xl leading-none w-8 h-8 flex items-center justify-center" (click)="closeOtpModal()">✕</button>
       </div>
       <div class="p-5">
-        <p *ngIf="isRequestingPhoneOtp" class="text-sm text-gray-500 text-center mb-4">Sending OTP to your phone...</p>
-        <p *ngIf="!isRequestingPhoneOtp" class="text-sm text-gray-600 mb-4 text-center">
+        <p *ngIf="isRequestingPhoneOtp" class="text-sm text-ink-soft text-center mb-4">Sending OTP to your phone...</p>
+        <p *ngIf="!isRequestingPhoneOtp" class="text-sm text-ink-soft mb-4 text-center">
           Enter the 6-digit code sent to <strong>{{ user.phone }}</strong>
         </p>
         <!-- 6-digit OTP input row -->
         <div class="flex gap-2 justify-center mb-4" (paste)="onOtpPaste($event)">
           <input id="otp-0" type="text" inputmode="numeric" maxlength="1"
             (input)="onOtpInput($event, 0)" (keydown)="onOtpKeydown($event, 0)"
-            class="w-10 h-12 border-2 border-gray-300 rounded-md text-center text-lg font-bold focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all"
+            class="w-10 h-12 border-2 border-[#c5d1cd] rounded-lg text-center text-lg font-bold focus:outline-none focus:border-wave focus:ring-2 focus:ring-wave/25 transition-all"
             [disabled]="isRequestingPhoneOtp" autocomplete="off">
           <input id="otp-1" type="text" inputmode="numeric" maxlength="1"
             (input)="onOtpInput($event, 1)" (keydown)="onOtpKeydown($event, 1)"
-            class="w-10 h-12 border-2 border-gray-300 rounded-md text-center text-lg font-bold focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all"
+            class="w-10 h-12 border-2 border-[#c5d1cd] rounded-lg text-center text-lg font-bold focus:outline-none focus:border-wave focus:ring-2 focus:ring-wave/25 transition-all"
             [disabled]="isRequestingPhoneOtp" autocomplete="off">
           <input id="otp-2" type="text" inputmode="numeric" maxlength="1"
             (input)="onOtpInput($event, 2)" (keydown)="onOtpKeydown($event, 2)"
-            class="w-10 h-12 border-2 border-gray-300 rounded-md text-center text-lg font-bold focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all"
+            class="w-10 h-12 border-2 border-[#c5d1cd] rounded-lg text-center text-lg font-bold focus:outline-none focus:border-wave focus:ring-2 focus:ring-wave/25 transition-all"
             [disabled]="isRequestingPhoneOtp" autocomplete="off">
           <input id="otp-3" type="text" inputmode="numeric" maxlength="1"
             (input)="onOtpInput($event, 3)" (keydown)="onOtpKeydown($event, 3)"
-            class="w-10 h-12 border-2 border-gray-300 rounded-md text-center text-lg font-bold focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all"
+            class="w-10 h-12 border-2 border-[#c5d1cd] rounded-lg text-center text-lg font-bold focus:outline-none focus:border-wave focus:ring-2 focus:ring-wave/25 transition-all"
             [disabled]="isRequestingPhoneOtp" autocomplete="off">
           <input id="otp-4" type="text" inputmode="numeric" maxlength="1"
             (input)="onOtpInput($event, 4)" (keydown)="onOtpKeydown($event, 4)"
-            class="w-10 h-12 border-2 border-gray-300 rounded-md text-center text-lg font-bold focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all"
+            class="w-10 h-12 border-2 border-[#c5d1cd] rounded-lg text-center text-lg font-bold focus:outline-none focus:border-wave focus:ring-2 focus:ring-wave/25 transition-all"
             [disabled]="isRequestingPhoneOtp" autocomplete="off">
           <input id="otp-5" type="text" inputmode="numeric" maxlength="1"
             (input)="onOtpInput($event, 5)" (keydown)="onOtpKeydown($event, 5)"
-            class="w-10 h-12 border-2 border-gray-300 rounded-md text-center text-lg font-bold focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all"
+            class="w-10 h-12 border-2 border-[#c5d1cd] rounded-lg text-center text-lg font-bold focus:outline-none focus:border-wave focus:ring-2 focus:ring-wave/25 transition-all"
             [disabled]="isRequestingPhoneOtp" autocomplete="off">
         </div>
-        <p *ngIf="otpError" class="text-xs text-red-600 font-semibold text-center mb-3">{{ otpError }}</p>
+        <p *ngIf="otpError" class="text-xs text-coral font-semibold text-center mb-3">{{ otpError }}</p>
         <div class="flex gap-2">
           <button type="button"
-            class="flex-1 py-2 bg-gray-100 border border-gray-300 rounded-md text-gray-600 text-xs font-semibold cursor-pointer transition-all hover:bg-gray-200"
+            class="flex-1 py-2 bg-fog border border-[#d9e1df] rounded-xl text-ink-soft text-xs font-semibold cursor-pointer transition-all hover:bg-[#e2e8e5]"
             (click)="closeOtpModal()">
             Cancel
           </button>
           <button type="button"
-            class="flex-1 py-2 bg-blue-600 text-white text-xs font-semibold cursor-pointer rounded-md transition-all hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="flex-1 py-2 bg-wave text-white text-xs font-semibold cursor-pointer rounded-xl transition-all hover:bg-wave-dark disabled:opacity-50 disabled:cursor-not-allowed"
             [disabled]="isVerifyingOtp || isRequestingPhoneOtp || !isOtpComplete()"
             (click)="submitOtp()">
             {{ isVerifyingOtp ? 'Verifying...' : 'Verify' }}
@@ -218,44 +218,44 @@
   </div>
 
   <!-- Edit Modal -->
-  <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" *ngIf="isEditModalOpen" (click)="closeEditModal()">
-    <div class="bg-white rounded-lg shadow-2xl w-11/12 sm:w-full max-w-sm" (click)="$event.stopPropagation()">
+  <div class="fixed inset-0 bg-ink/50 flex items-center justify-center z-50" *ngIf="isEditModalOpen" (click)="closeEditModal()">
+    <div class="bg-white rounded-xl shadow-2xl w-11/12 sm:w-full max-w-sm" (click)="$event.stopPropagation()">
       <!-- Modal Header -->
-      <div class="flex justify-between items-center p-3 sm:p-4 md:p-5 border-b border-gray-200">
-        <h3 class="m-0 text-base sm:text-lg text-gray-900 font-semibold">Edit Profile</h3>
-        <button class="bg-none border-none text-2xl text-gray-600 cursor-pointer p-0 w-8 h-8 flex items-center justify-center hover:text-gray-900 transition-colors" (click)="closeEditModal()">✕</button>
+      <div class="flex justify-between items-center p-3 sm:p-4 md:p-5 border-b border-[#e5eae7]">
+        <h3 class="m-0 text-base sm:text-lg text-ink font-semibold">Edit Profile</h3>
+        <button class="bg-none border-none text-2xl text-ink-soft cursor-pointer p-0 w-8 h-8 flex items-center justify-center hover:text-ink transition-colors" (click)="closeEditModal()">✕</button>
       </div>
 
       <!-- Form -->
       <form class="p-3 sm:p-4 md:p-5">
         <!-- Name Field -->
         <div class="mb-5">
-          <label for="editName" class="block text-xs font-semibold text-gray-900 mb-2">Full Name</label>
+          <label for="editName" class="block text-xs font-semibold text-ink mb-2">Full Name</label>
           <input
             type="text"
             id="editName"
             [(ngModel)]="editForm.name"
             name="editName"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm transition-all hover:border-gray-400 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+            class="w-full px-3 py-2 border border-[#d9e1df] rounded-xl text-sm transition-all hover:border-[#c5d1cd] focus:outline-none focus:border-wave focus:ring-2 focus:ring-wave/25"
             placeholder="Enter name">
         </div>
 
         <!-- Phone Field -->
         <div class="mb-6">
-          <label for="editPhone" class="block text-xs font-semibold text-gray-900 mb-2">Phone Number</label>
+          <label for="editPhone" class="block text-xs font-semibold text-ink mb-2">Phone Number</label>
           <input
             type="tel"
             id="editPhone"
             [(ngModel)]="editForm.phone"
             name="editPhone"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm transition-all hover:border-gray-400 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+            class="w-full px-3 py-2 border border-[#d9e1df] rounded-xl text-sm transition-all hover:border-[#c5d1cd] focus:outline-none focus:border-wave focus:ring-2 focus:ring-wave/25"
             placeholder="Enter phone">
         </div>
 
         <!-- Actions -->
         <div class="flex gap-2">
-          <button type="button" class="flex-1 py-2 bg-gray-100 border border-gray-300 rounded-md text-gray-600 text-xs font-semibold cursor-pointer transition-all hover:bg-gray-200 hover:border-gray-400" (click)="closeEditModal()">Cancel</button>
-          <button type="button" class="flex-1 py-2 bg-blue-600 text-white text-xs font-semibold cursor-pointer rounded-md transition-all hover:bg-blue-700 hover:shadow-md" (click)="saveChanges()">Save Changes</button>
+          <button type="button" class="flex-1 py-2 bg-fog border border-[#d9e1df] rounded-xl text-ink-soft text-xs font-semibold cursor-pointer transition-all hover:bg-[#e2e8e5] hover:border-[#c5d1cd]" (click)="closeEditModal()">Cancel</button>
+          <button type="button" class="flex-1 py-2 bg-wave text-white text-xs font-semibold cursor-pointer rounded-xl transition-all hover:bg-wave-dark hover:shadow-md" (click)="saveChanges()">Save Changes</button>
         </div>
       </form>
     </div>
@@ -263,7 +263,7 @@
 </div>
 
 <!-- Loading State -->
-<div *ngIf="isLoading" class="p-4 text-center text-gray-600 text-lg">Loading profile...</div>
+<div *ngIf="isLoading" class="p-4 text-center text-ink-soft text-lg">Loading profile...</div>
 
 <!-- Error State -->
-<div *ngIf="errorMessage" class="p-4 text-center text-red-600 text-lg font-semibold">{{ errorMessage }}</div>
+<div *ngIf="errorMessage" class="p-4 text-center text-coral text-lg font-semibold">{{ errorMessage }}</div>

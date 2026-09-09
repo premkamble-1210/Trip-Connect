@@ -1,0 +1,26 @@
+2026-09-08 21:05:45.231 +05:30 [INF] Login attempt for username: premkamble
+2026-09-08 21:05:47.191 +05:30 [INF] Refresh token generated
+2026-09-08 21:05:47.672 +05:30 [INF] User logged in successfully: 1
+2026-09-08 21:05:47.736 +05:30 [INF] Access token generated for user: 1
+2026-09-08 21:05:49.269 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-09-08 21:06:16.076 +05:30 [INF] Fetching trip: 1
+2026-09-08 21:06:16.077 +05:30 [INF] Fetching trips for user: 1
+2026-09-08 21:06:16.078 +05:30 [INF] Fetching members for trip: 1
+2026-09-08 21:06:54.827 +05:30 [INF] Fetching trip: 1
+2026-09-08 21:06:54.909 +05:30 [INF] Fetching all requests for trip: 1
+2026-09-08 21:07:02.568 +05:30 [INF] Fetching user: 1
+2026-09-08 21:07:29.057 +05:30 [INF] Fetching trips created by user: 1
+2026-09-08 21:08:03.285 +05:30 [INF] Fetching trip: 1
+2026-09-08 21:09:49.746 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-09-08 21:09:59.855 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-09-08 21:10:08.718 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-09-08 21:10:22.255 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-09-08 21:10:28.507 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-09-08 21:10:45.088 +05:30 [INF] Fetching trip: 1
+2026-09-08 21:11:24.660 +05:30 [INF] Fetching trip: 1
+2026-09-08 21:12:04.385 +05:30 [INF] Fetching all trips - Page: 1, Size: 20
+2026-09-08 21:12:30.397 +05:30 [INF] Fetching trip: 1
+2026-09-08 21:12:30.452 +05:30 [INF] Fetching trips for user: 1
+2026-09-08 21:12:30.454 +05:30 [INF] Fetching members for trip: 1
+2026-09-08 21:13:02.908 +05:30 [INF] Fetching trip: 1
+2026-09-08 21:13:02.913 +05:30 [INF] Fetching all requests for trip: 1

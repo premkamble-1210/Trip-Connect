@@ -1,27 +1,27 @@
 <!-- Tabs Section -->
-<div class="flex-1 min-w-0 bg-white rounded-lg overflow-hidden shadow-sm flex flex-col max-h-screen lg:max-h-96 xl:max-h-full">
+<div class="flex-1 min-w-0 bg-paper rounded-2xl overflow-hidden shadow-sm flex flex-col max-h-screen border border-[#e5eae7]">
   <!-- Tab Buttons -->
-  <div class="flex w-full border-b-2 border-gray-200 bg-gray-50 flex-shrink-0">
-    <button 
+  <div class="flex w-full border-b-2 border-[#e5eae7] bg-fog flex-shrink-0">
+    <button
       class="flex-1 min-w-fit px-2 sm:px-3 md:px-5 py-2 sm:py-3 md:py-4 border-b-4 transition-all text-xs sm:text-sm font-semibold cursor-pointer"
-      [ngClass]="activeTab === 'hosted' ? 'text-blue-600 border-blue-600 bg-white' : 'text-gray-600 border-transparent bg-gray-50 hover:text-gray-800 hover:bg-gray-100'"
+      [ngClass]="activeTab === 'hosted' ? 'text-wave border-wave bg-paper' : 'text-ink-soft border-transparent bg-fog hover:text-ink hover:bg-[#e2e8e5]'"
       (click)="setActiveTab('hosted')">
       Hosted Trips
     </button>
-    <button 
+    <button
       class="flex-1 min-w-fit px-2 sm:px-3 md:px-5 py-2 sm:py-3 md:py-4 border-b-4 transition-all text-xs sm:text-sm font-semibold cursor-pointer"
-      [ngClass]="activeTab === 'joined' ? 'text-blue-600 border-blue-600 bg-white' : 'text-gray-600 border-transparent bg-gray-50 hover:text-gray-800 hover:bg-gray-100'"
+      [ngClass]="activeTab === 'joined' ? 'text-wave border-wave bg-paper' : 'text-ink-soft border-transparent bg-fog hover:text-ink hover:bg-[#e2e8e5]'"
       (click)="setActiveTab('joined')">
       Joined Trips
     </button>
-    <button 
+    <button
       class="flex-1 min-w-fit px-2 sm:px-3 md:px-5 py-2 sm:py-3 md:py-4 border-b-4 transition-all text-xs sm:text-sm font-semibold cursor-pointer"
-      [ngClass]="activeTab === 'reviews' ? 'text-blue-600 border-blue-600 bg-white' : 'text-gray-600 border-transparent bg-gray-50 hover:text-gray-800 hover:bg-gray-100'"
+      [ngClass]="activeTab === 'reviews' ? 'text-wave border-wave bg-paper' : 'text-ink-soft border-transparent bg-fog hover:text-ink hover:bg-[#e2e8e5]'"
       (click)="setActiveTab('reviews')">
       Reviews
     </button>
   </div>
-  
+
   <!-- Tab Content -->
   <div class="p-2 sm:p-3 md:p-4 flex-1 overflow-y-auto">
     <div *ngIf="activeTab === 'hosted'" class="animate-fadeIn">
