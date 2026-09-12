@@ -10,6 +10,12 @@ services:
       - "1433:1433"
     volumes:
       - sqlserver-data:/var/opt/mssql
+    healthcheck:
+      test: /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$$MSSQL_SA_PASSWORD" -C -Q "SELECT 1" || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
   redis:
     image: redis:7-alpine
@@ -37,8 +43,10 @@ services:
     ports:
       - "5126:8080"
     depends_on:
-      - sqlserver
-      - redis
+      sqlserver:
+        condition: service_healthy
+      redis:
+        condition: service_started
 
   frontend:
     build:
