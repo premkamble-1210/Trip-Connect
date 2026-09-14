@@ -7,7 +7,19 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
       <!-- Left Column -->
       <div class="flex flex-col gap-5">
-        <h2 class="font-display text-lg font-semibold text-ink">Trip basics</h2>
+        <div class="flex items-center justify-between">
+          <h2 class="font-display text-lg font-semibold text-ink">Trip basics</h2>
+          <button type="button" (click)="generateContent()" [disabled]="aiLoading() !== null"
+            class="flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold text-wave border border-wave rounded-lg hover:bg-wave-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+            @if (aiLoading() === 'content') {
+              <span class="inline-block w-3.5 h-3.5 border-2 border-wave border-t-transparent rounded-full animate-spin"></span>
+              Generating...
+            } @else {
+              <span>✨ Auto-generate title &amp; description</span>
+            }
+          </button>
+        </div>
+        @if (aiError()) { <p class="text-xs text-[#c9583e] font-medium">{{ aiError() }}</p> }
 
         <div>
           <label class="block text-sm font-semibold text-ink mb-1.5">Title <span class="text-coral">*</span></label>
@@ -91,9 +103,20 @@
         </div>
 
         <div class="flex flex-col flex-1">
-          <div class="mb-2">
-            <label class="block text-sm font-semibold text-ink">Image URL <span class="text-coral">*</span></label>
-            <p class="text-xs text-[#8aa09d] mt-0.5">Tip: Select image &rarr; Right click &rarr; Copy image address</p>
+          <div class="mb-2 flex items-center justify-between">
+            <div>
+              <label class="block text-sm font-semibold text-ink">Image URL <span class="text-coral">*</span></label>
+              <p class="text-xs text-[#8aa09d] mt-0.5">Tip: Select image &rarr; Right click &rarr; Copy image address</p>
+            </div>
+            <button type="button" (click)="generateBanner()" [disabled]="aiLoading() !== null" title="Generate an AI banner image for this trip"
+              class="flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold text-coral border border-coral rounded-lg hover:bg-coral/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+              @if (aiLoading() === 'banner') {
+                <span class="inline-block w-3.5 h-3.5 border-2 border-coral border-t-transparent rounded-full animate-spin"></span>
+                Generating...
+              } @else {
+                <span>✨ Generate Banner</span>
+              }
+            </button>
           </div>
           <input type="text" [(ngModel)]="imageUrl" class="w-full border border-[#d9e1df] rounded-xl px-3.5 py-2.5 text-sm text-ink bg-white focus:outline-none focus:border-wave focus:ring-2 focus:ring-wave/25" placeholder="https://example.com/image.jpg" />
           @if (errors()['imageUrl']) { <p class="text-xs text-[#c9583e] mt-1.5 font-medium">{{ errors()['imageUrl'] }}</p> }
@@ -110,10 +133,21 @@
     <div class="mt-8 pt-6 border-t border-[#e5eae7]">
       <div class="flex items-center justify-between mb-4">
         <h2 class="font-display text-lg font-semibold text-ink">Trip itinerary <span class="text-sm font-normal text-ink-soft">(optional)</span></h2>
-        <button type="button" (click)="addTripDay()"
-          class="flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold text-wave border border-wave rounded-lg hover:bg-wave-light transition-colors">
-          + Add Day
-        </button>
+        <div class="flex items-center gap-2">
+          <button type="button" (click)="generateItinerary()" [disabled]="aiLoading() !== null"
+            class="flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold text-coral border border-coral rounded-lg hover:bg-coral/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+            @if (aiLoading() === 'itinerary') {
+              <span class="inline-block w-3.5 h-3.5 border-2 border-coral border-t-transparent rounded-full animate-spin"></span>
+              Generating...
+            } @else {
+              <span>✨ Generate Itinerary</span>
+            }
+          </button>
+          <button type="button" (click)="addTripDay()"
+            class="flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold text-wave border border-wave rounded-lg hover:bg-wave-light transition-colors">
+            + Add Day
+          </button>
+        </div>
       </div>
 
       @if (tripDays().length === 0) {

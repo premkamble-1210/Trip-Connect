@@ -1,19 +1,21 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpBackend } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { Observable, firstValueFrom } from 'rxjs';
 import { environment } from '../../environments/environment';
 import {
   AuthResponseDto,
   LoginUserDto,
-  CreateUserDto
+  CreateUserDto,
+  JwtTokenResponseDto
 } from '../models/api.types';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
+  private readonly rawHttp = new HttpClient(inject(HttpBackend));
   private readonly base = environment.apiBaseUrl;
 
   login(username: string, password: string): Observable<AuthResponseDto> {
@@ -62,9 +64,7 @@ export class AuthService {
     return this.http.post<any>(`${this.base}/api/user/logout`, {}).pipe(
       tap(() => {
         console.log('✅ Backend logout successful');
-        localStorage.removeItem('tc_token');
-        localStorage.removeItem('tc_refresh_token');
-        localStorage.removeItem('tc_userId');
+        this.clearSession();
         this.router.navigate(['/login']);
       })
     );
@@ -78,21 +78,35 @@ export class AuthService {
     return localStorage.getItem('tc_refresh_token');
   }
 
-  refreshToken(): Observable<any> {
+  refreshAccessToken(): Promise<boolean> {
     const refreshToken = this.getRefreshToken();
     if (!refreshToken) {
-      throw new Error('No refresh token available');
+      return Promise.resolve(false);
     }
-    return this.http.post<any>(`${this.base}/api/user/refresh-token`, { refreshToken }).pipe(
-      tap(res => {
-        if (res.accessToken) {
+    return firstValueFrom(
+      this.rawHttp.post<JwtTokenResponseDto>(`${this.base}/api/user/refresh-token`, { refreshToken })
+    )
+      .then(res => {
+        if (res?.accessToken) {
           localStorage.setItem('tc_token', res.accessToken);
           if (res.refreshToken) {
             localStorage.setItem('tc_refresh_token', res.refreshToken);
           }
+          return true;
         }
+        this.clearSession();
+        return false;
       })
-    );
+      .catch(() => {
+        this.clearSession();
+        return false;
+      });
+  }
+
+  clearSession(): void {
+    localStorage.removeItem('tc_token');
+    localStorage.removeItem('tc_refresh_token');
+    localStorage.removeItem('tc_userId');
   }
 
   getCurrentUserId(): number {

@@ -62,6 +62,10 @@ namespace INFRASTRUCTURE_LAYER
             services.AddSingleton<HttpClient>();
             services.AddScoped<IImageKitService, ImageKitService>();
 
+            // Register AI adapters (Ollama + pollinations.ai banner)
+            services.AddScoped<IOllamaService, OllamaService>();
+            services.AddScoped<IBannerService, BannerService>();
+
             return services;
         }
 

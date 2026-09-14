@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TripService } from '../../services/trip.service';
 import { AuthService } from '../../services/auth.service';
+import { AiService } from '../../services/ai.service';
 import { TripDayDto } from '../../models/api.types';
 import { LocationAutocompleteComponent, LocationSelectedEvent } from '../../Components/location-autocomplete/location-autocomplete.component';
 
@@ -16,6 +17,7 @@ import { LocationAutocompleteComponent, LocationSelectedEvent } from '../../Comp
 export class NewTrip {
   private readonly tripService = inject(TripService);
   private readonly authService = inject(AuthService);
+  private readonly aiService = inject(AiService);
   private readonly router = inject(Router);
 
   title = signal('');
@@ -36,6 +38,8 @@ export class NewTrip {
   tripDays = signal<TripDayDto[]>([]);
   errors = signal<Record<string, string>>({});
   isLoading = signal(false);
+  aiLoading = signal<string | null>(null);
+  aiError = signal('');
 
   travelTypes = signal([
     { value: 'Business', label: 'Business' },
@@ -65,6 +69,94 @@ export class NewTrip {
     const days = [...this.tripDays()];
     days[index] = { ...days[index], [field]: value };
     this.tripDays.set(days);
+  }
+
+  private aiInputsCheck(): string {
+    if (!this.location().trim()) return 'Location is required for AI generation';
+    if (!this.startDate()) return 'Start Date is required for AI generation';
+    if (!this.endDate()) return 'End Date is required for AI generation';
+    if (!this.travelType()) return 'Travel Type is required for AI generation';
+    return '';
+  }
+
+  generateContent(): void {
+    const missing = this.aiInputsCheck();
+    if (missing) {
+      this.aiError.set(missing);
+      return;
+    }
+
+    this.aiError.set('');
+    this.aiLoading.set('content');
+    this.aiService.generateTripContent({
+      location: this.location().trim(),
+      budget: this.budget() ?? 0,
+      startDate: this.startDate(),
+      endDate: this.endDate(),
+      travelType: this.travelType(),
+      seats: this.seats() ?? undefined
+    }).subscribe({
+      next: (result) => {
+        this.title.set(result.title);
+        this.description.set(result.description);
+        this.aiLoading.set(null);
+      },
+      error: (err) => {
+        this.aiLoading.set(null);
+        this.aiError.set(err.error?.message ?? 'AI generation failed. Please try again.');
+      }
+    });
+  }
+
+  generateItinerary(): void {
+    const missing = this.aiInputsCheck();
+    if (missing) {
+      this.aiError.set(missing);
+      return;
+    }
+
+    this.aiError.set('');
+    this.aiLoading.set('itinerary');
+    this.aiService.generateItinerary({
+      location: this.location().trim(),
+      budget: this.budget() ?? 0,
+      startDate: this.startDate(),
+      endDate: this.endDate(),
+      travelType: this.travelType()
+    }).subscribe({
+      next: (result) => {
+        this.tripDays.set(result.tripDays ?? []);
+        this.aiLoading.set(null);
+      },
+      error: (err) => {
+        this.aiLoading.set(null);
+        this.aiError.set(err.error?.message ?? 'AI itinerary generation failed. Please try again.');
+      }
+    });
+  }
+
+  generateBanner(): void {
+    if (!this.location().trim()) {
+      this.aiError.set('Location is required for banner generation');
+      return;
+    }
+
+    this.aiError.set('');
+    this.aiLoading.set('banner');
+    this.aiService.generateBanner({
+      title: this.title().trim(),
+      location: this.location().trim(),
+      description: this.description().trim()
+    }).subscribe({
+      next: (result) => {
+        this.imageUrl.set(result.imgUrl);
+        this.aiLoading.set(null);
+      },
+      error: (err) => {
+        this.aiLoading.set(null);
+        this.aiError.set(err.error?.message ?? 'Banner generation failed. Please try again.');
+      }
+    });
   }
 
   createTrip(): void {

@@ -40,6 +40,9 @@ services:
       JwtSettings__Audience: TripConnectApp
       JwtSettings__ExpirationMinutes: 60
       JwtSettings__RefreshTokenExpirationDays: 7
+      # Local Ollama runs on the host machine; Docker Desktop exposes it via host.docker.internal
+      Ollama__BaseUrl: http://host.docker.internal:11434
+      Ollama__Model: llama3.2
     ports:
       - "5126:8080"
     depends_on:

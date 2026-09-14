@@ -186,3 +186,42 @@ export interface RatingResponseDto {
   review: string;
   createdAt: string;
 }
+
+// ─── AI Assistance ─────────────────────────────────────────────────────────────
+
+export interface GenerateContentDto {
+  location: string;
+  budget: number;
+  startDate: string;
+  endDate: string;
+  travelType: string;
+  seats?: number;
+}
+
+export interface GeneratedContentDto {
+  title: string;
+  description: string;
+}
+
+export interface GenerateItineraryDto {
+  location: string;
+  budget: number;
+  startDate: string;
+  endDate: string;
+  travelType: string;
+}
+
+export interface GeneratedItineraryDto {
+  tripDays: TripDayDto[];
+}
+
+export interface GenerateBannerDto {
+  title: string;
+  location: string;
+  description: string;
+}
+
+export interface GeneratedBannerDto {
+  imgUrl: string;
+  source: string;
+}
