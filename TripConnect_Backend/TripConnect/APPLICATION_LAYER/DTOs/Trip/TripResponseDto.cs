@@ -18,6 +18,10 @@ namespace APPLICATION_LAYER.DTOs.Trip
         public string Status { get; set; }
         public int HostId { get; set; }
         public string HostName { get; set; }
+        public double HostRating { get; set; }
+        public int MemberCount { get; set; }
+        public int FilledSeats { get; set; }
+        public int OpenSeats { get; set; }
         public DateTime CreatedAt { get; set; }
         public List<TripDayResponseDto> TripDays { get; set; } = new();
     }

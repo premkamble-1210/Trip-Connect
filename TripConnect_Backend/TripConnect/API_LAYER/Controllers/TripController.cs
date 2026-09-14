@@ -162,11 +162,11 @@ namespace API_LAYER.Controllers
         /// Search trips by multiple criteria
         /// </summary>
         [HttpGet("search")]
-        public async Task<IActionResult> SearchTrips([FromQuery] string location, [FromQuery] DateTime? startDate, [FromQuery] decimal? maxBudget, [FromQuery] string travelType)
+        public async Task<IActionResult> SearchTrips([FromQuery] string location, [FromQuery] DateTime? startDate, [FromQuery] decimal? minBudget, [FromQuery] decimal? maxBudget, [FromQuery] string travelType, [FromQuery] DateTime? endDate)
         {
             try
             {
-                var trips = await _tripService.SearchTripsAsync(location, startDate, maxBudget, travelType);
+                var trips = await _tripService.SearchTripsAsync(location, startDate, minBudget, maxBudget, travelType, endDate);
                 return Ok(trips);
             }
             catch (Exception ex)

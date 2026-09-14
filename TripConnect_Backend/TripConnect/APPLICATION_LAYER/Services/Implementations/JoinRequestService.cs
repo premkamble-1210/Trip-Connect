@@ -68,6 +68,9 @@ namespace APPLICATION_LAYER.Services.Implementations
                 await _cacheService.InvalidateByTagAsync($"trip:{sendJoinRequestDto.TripId}:requests");
                 await _cacheService.InvalidateByTagAsync($"trip:{sendJoinRequestDto.TripId}:pending");
 
+                // Popularity signal changed - invalidate the discover feed
+                await _cacheService.InvalidateByTagAsync("trip:all");
+
                 // Map to response DTO with user name from database
                 var user = await _unitOfWork.Users.GetByIdAsync(userId);
                 var responseDto = _mapper.Map<JoinRequestResponseDto>(newRequest);
@@ -235,6 +238,9 @@ namespace APPLICATION_LAYER.Services.Implementations
                 await _cacheService.InvalidateByTagAsync($"trip:{request.TripId}:requests");
                 await _cacheService.InvalidateByTagAsync($"trip:{request.TripId}:pending");
                 await _cacheService.InvalidateByTagAsync($"user:{request.UserId}:requests");
+
+                // Seats and popularity changed - invalidate the discover feed
+                await _cacheService.InvalidateByTagAsync("trip:all");
                 
                 return true;
             }

@@ -94,6 +94,10 @@ export interface TripResponseDto {
   status: string;
   hostId: number;
   hostName: string | null;
+  hostRating: number;
+  memberCount: number;
+  filledSeats: number;
+  openSeats: number;
   imgUrl: string;
   createdAt: string;
   tripDays: TripDayResponseDto[];
@@ -128,6 +132,8 @@ export interface UpdateTripDto {
 export interface TripSearchFilters {
   location?: string;
   startDate?: string;
+  endDate?: string;
+  minBudget?: number;
   maxBudget?: number;
   travelType?: string;
 }

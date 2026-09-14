@@ -26,6 +26,8 @@ export class TripService {
     let params = new HttpParams();
     if (filters.location) params = params.set('location', filters.location);
     if (filters.startDate) params = params.set('startDate', filters.startDate);
+    if (filters.endDate) params = params.set('endDate', filters.endDate);
+    if (filters.minBudget != null) params = params.set('minBudget', filters.minBudget);
     if (filters.maxBudget != null) params = params.set('maxBudget', filters.maxBudget);
     if (filters.travelType) params = params.set('travelType', filters.travelType);
     return this.http.get<TripResponseDto[]>(`${this.base}/search`, { params });
@@ -50,6 +52,10 @@ export class TripService {
 
   getUpcomingTrips(): Observable<TripResponseDto[]> {
     return this.http.get<TripResponseDto[]>(`${this.base}/upcoming`);
+  }
+
+  getRecommendations(userId: number): Observable<TripResponseDto[]> {
+    return this.http.get<TripResponseDto[]>(`${environment.apiBaseUrl}/api/user/${userId}/recommendations`);
   }
 
   getTripMembers(tripId: number): Observable<TripMemberResponseDto[]> {

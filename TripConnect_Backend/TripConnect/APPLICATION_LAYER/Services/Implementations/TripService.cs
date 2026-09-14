@@ -93,7 +93,7 @@ namespace APPLICATION_LAYER.Services.Implementations
         {
             try
             {
-                _logger.Information($"Fetching all trips - Page: {pageNumber}, Size: {pageSize}");
+                _logger.Information($"Fetching discover trips - Page: {pageNumber}, Size: {pageSize}");
                 
                 // Create cache key that includes pagination parameters
                 var cacheKey = $"trip:all:page:{pageNumber}:size:{pageSize}";
@@ -105,23 +105,17 @@ namespace APPLICATION_LAYER.Services.Implementations
                     return cachedTrips;
                 }
 
-                // Cache miss - fetch from database
-                var trips = await _unitOfWork.Trips.GetAllAsync();
+                // Cache miss - fetch ranked discover feed from database
+                var (trips, _) = await _unitOfWork.Trips.GetDiscoverTripsAsync(pageNumber, pageSize);
 
-                // Apply pagination
-                var paginatedTrips = trips
-                    .Skip((pageNumber - 1) * pageSize)
-                    .Take(pageSize)
-                    .ToList();
-
-                var tripDtos = _mapper.Map<IEnumerable<TripResponseDto>>(paginatedTrips);
+                var tripDtos = _mapper.Map<IEnumerable<TripResponseDto>>(trips);
 
                 // Cache the paginated result with 1 hour TTL
                 await _cacheService.SetAsync(
                     cacheKey,
                     tripDtos,
                     TimeSpan.FromHours(1),
-                    new[] { "trip:all", "trip:list" }
+                    new[] { "trip:all", "trip:feed", "trip:list" }
                 );
 
                 return tripDtos;
@@ -245,14 +239,14 @@ namespace APPLICATION_LAYER.Services.Implementations
             }
         }
 
-        public async Task<IEnumerable<TripResponseDto>> SearchTripsAsync(string location, DateTime? startDate, decimal? maxBudget, string travelType)
+        public async Task<IEnumerable<TripResponseDto>> SearchTripsAsync(string location, DateTime? startDate, decimal? minBudget, decimal? maxBudget, string travelType, DateTime? endDate)
         {
             try
             {
-                _logger.Information($"Searching trips with criteria - Location: {location}, StartDate: {startDate}, MaxBudget: {maxBudget}, TravelType: {travelType}");
+                _logger.Information($"Searching trips with criteria - Location: {location}, StartDate: {startDate}, MinBudget: {minBudget}, MaxBudget: {maxBudget}, TravelType: {travelType}, EndDate: {endDate}");
 
                 // Create cache key that includes all search parameters
-                var cacheKey = $"trip:search:{location?.ToLower()}:{startDate?.Date}:{maxBudget}:{travelType?.ToLower()}";
+                var cacheKey = $"trip:search:{location?.ToLower()}:{startDate?.Date}:{minBudget}:{maxBudget}:{travelType?.ToLower()}:{endDate?.Date}";
                 
                 var cachedTrips = await _cacheService.GetAsync<IEnumerable<TripResponseDto>>(cacheKey);
                 if (cachedTrips != null)
@@ -261,7 +255,7 @@ namespace APPLICATION_LAYER.Services.Implementations
                     return cachedTrips;
                 }
 
-                var trips = await _unitOfWork.Trips.SearchTripsAsync(location, startDate, maxBudget, travelType);
+                var trips = await _unitOfWork.Trips.SearchTripsAsync(location, startDate, minBudget, maxBudget, travelType, endDate);
                 var tripDtos = _mapper.Map<IEnumerable<TripResponseDto>>(trips);
 
                 // Cache the result with 2 hours TTL

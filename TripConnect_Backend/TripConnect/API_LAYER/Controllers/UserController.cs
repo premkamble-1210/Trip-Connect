@@ -16,12 +16,14 @@ namespace API_LAYER.Controllers
     {
         private readonly IUserService _userService;
         private readonly IRefreshTokenService _refreshTokenService;
+        private readonly IRecommendationService _recommendationService;
         private readonly ILogger<UserController> _logger;
 
-        public UserController(IUserService userService, IRefreshTokenService refreshTokenService, ILogger<UserController> logger)
+        public UserController(IUserService userService, IRefreshTokenService refreshTokenService, IRecommendationService recommendationService, ILogger<UserController> logger)
         {
             _userService = userService;
             _refreshTokenService = refreshTokenService;
+            _recommendationService = recommendationService;
             _logger = logger;
         }
 
@@ -492,6 +494,35 @@ namespace API_LAYER.Controllers
             {
                 _logger.LogError(ex, "Error verifying phone OTP");
                 return StatusCode(500, new { success = false, message = "An error occurred during verification" });
+            }
+        }
+
+        /// <summary>
+        /// Get personalized trip recommendations (self-only)
+        /// </summary>
+        /// <param name="id">User ID (must match authenticated user)</param>
+        /// <returns>Ranked list of recommended trips</returns>
+        [HttpGet("{id}/recommendations")]
+        [Authorize]
+        public async Task<IActionResult> GetRecommendations([FromRoute] int id)
+        {
+            try
+            {
+                _logger.LogInformation($"Fetching recommendations for user: {id}");
+
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (!int.TryParse(userIdClaim, out var claimUserId) || claimUserId != id)
+                {
+                    return Forbid();
+                }
+
+                var recommendations = await _recommendationService.GetRecommendationsAsync(id);
+                return Ok(recommendations);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching recommendations");
+                return StatusCode(500, new { success = false, message = "An error occurred while fetching recommendations" });
             }
         }
     }

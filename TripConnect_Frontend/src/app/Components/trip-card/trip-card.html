@@ -19,15 +19,15 @@
   <div class="p-4 flex flex-col flex-grow">
     <h3 class="font-display font-semibold text-ink text-[16px] truncate mb-1 leading-snug">{{ trip.title }}</h3>
     <p class="text-xs text-[#6b807c] mb-1.5">{{ trip.dates }}</p>
-    <p class="text-xs font-semibold text-reed mb-4">{{ trip.status }}</p>
+    <p class="text-xs font-semibold text-reed mb-3">{{ trip.status }}</p>
 
     <div class="mt-auto flex items-center justify-between">
-      <!-- Avatars -->
-      <div class="flex -space-x-1.5 align-middle">
-        <img *ngFor="let avatar of trip.avatars; let i = index"
-             [src]="avatar"
-             class="w-[24px] h-[24px] rounded-full border-2 border-paper object-cover"
-             [style.zIndex]="10 - i">
+      <!-- Host avatar + member info -->
+      <div class="flex items-center gap-2">
+        <img [src]="hostAvatar()" class="w-[26px] h-[26px] rounded-full border-2 border-paper object-cover" [alt]="trip.hostName">
+        <span class="text-[11px] text-[#6b807c]">
+          {{ trip.memberCount }} going &middot; {{ trip.openSeats }} left
+        </span>
       </div>
 
       <!-- Price + Map button -->
@@ -40,7 +40,7 @@
           </svg>
         </button>
         <div class="font-bold text-ink text-sm">
-          ₹{{ trip.price | number:'1.0-0' }}
+          &#8377;{{ trip.price | number:'1.0-0' }}
         </div>
       </div>
     </div>

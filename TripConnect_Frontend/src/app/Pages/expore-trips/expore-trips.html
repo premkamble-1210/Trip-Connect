@@ -8,6 +8,16 @@
     </button>
   </div>
 
+  <!-- Recommended for you -->
+  @if (recommendedTrips().length > 0) {
+    <div class="mb-10">
+      <h2 class="font-display text-xl font-semibold text-ink tracking-tight mb-4">Recommended for you</h2>
+      <div class="flex gap-6 overflow-x-auto pb-4 -mx-4 px-4 lg:mx-0 lg:px-0">
+        <app-trip-card *ngFor="let trip of recommendedTrips()" [trip]="toCardTrip(trip)" class="flex-shrink-0 w-[280px]"></app-trip-card>
+      </div>
+    </div>
+  }
+
   <div class="flex flex-col lg:flex-row gap-8">
 
     <!-- Sidebar Filters -->
@@ -41,12 +51,12 @@
 
             <!-- Min Input Slider -->
             <input type="range" min="0" max="10000" step="100"
-                   [value]="budgetMin()" (input)="updateBudgetMin($event)"
+                   [value]="budgetMin()" (input)="updateBudget($event, 'min')"
                    class="absolute w-full -top-[6px] h-[18px] appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-[18px] [&::-webkit-slider-thumb]:h-[18px] [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-[3px] [&::-webkit-slider-thumb]:border-wave [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-sm [&::-webkit-slider-thumb]:cursor-pointer z-20" />
 
             <!-- Max Input Slider -->
             <input type="range" min="0" max="10000" step="100"
-                   [value]="budgetMax()" (input)="updateBudgetMax($event)"
+                   [value]="budgetMax()" (input)="updateBudget($event, 'max')"
                    class="absolute w-full -top-[6px] h-[18px] appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-[18px] [&::-webkit-slider-thumb]:h-[18px] [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-[3px] [&::-webkit-slider-thumb]:border-wave [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-sm [&::-webkit-slider-thumb]:cursor-pointer z-20" />
           </div>
 
@@ -61,8 +71,8 @@
       <div>
         <label class="block text-[13px] font-semibold text-ink mb-3.5">Dates</label>
         <div class="space-y-3">
-          <label *ngFor="let date of datesFilter" class="flex items-center cursor-pointer group">
-            <input type="checkbox" [checked]="date.checked" class="h-4 w-4 text-wave focus:ring-wave border-[#c5d1cd] rounded cursor-pointer">
+          <label *ngFor="let date of datesFilter; let i = index" class="flex items-center cursor-pointer group">
+            <input type="checkbox" [checked]="date.checked" (change)="updateDates($event, i)" class="h-4 w-4 text-wave focus:ring-wave border-[#c5d1cd] rounded cursor-pointer">
             <span class="ml-3 text-[13px] text-[#6b807c] group-hover:text-ink transition-colors">{{ date.label }}</span>
           </label>
         </div>
@@ -92,6 +102,17 @@
           <div class="col-span-full flex justify-center py-12 text-[#8aa09d]">No trips found.</div>
         } @else {
           <app-trip-card *ngFor="let trip of trips()" [trip]="toCardTrip(trip)"></app-trip-card>
+        }
+      </div>
+
+      <div class="mt-8 flex justify-center">
+        @if (isLoadingMore()) {
+          <span class="text-sm text-[#8aa09d]">Loading more trips...</span>
+        } @else if (hasMore() && trips().length > 0) {
+          <button (click)="loadMore()"
+            class="bg-white border border-[#d9e1df] text-ink font-semibold py-2.5 px-6 rounded-xl shadow-sm transition-colors text-sm hover:border-wave hover:text-wave">
+            Load more
+          </button>
         }
       </div>
     </div>

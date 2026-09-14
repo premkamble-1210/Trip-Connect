@@ -40,7 +40,23 @@ namespace DOMAIN_LAYER.Repository
         /// <summary>
         /// Search trips by multiple criteria
         /// </summary>
-        Task<IEnumerable<Entity.Trip.Trip>> SearchTripsAsync(string location, DateTime? startDate, decimal? maxBudget, string travelType);
+        Task<IEnumerable<Entity.Trip.Trip>> SearchTripsAsync(string location, DateTime? startDate, decimal? minBudget, decimal? maxBudget, string travelType, DateTime? endDate);
+
+        /// <summary>
+        /// Get the ranked discover feed (Planned, ended in future, seats available),
+        /// ordered by popularity / host trust / freshness / availability
+        /// </summary>
+        Task<(IEnumerable<Entity.Trip.Trip> Trips, int TotalCount)> GetDiscoverTripsAsync(int pageNumber, int pageSize);
+
+        /// <summary>
+        /// Get trips the user has interacted with (hosted, active member, or pending/accepted join request)
+        /// </summary>
+        Task<IEnumerable<Entity.Trip.Trip>> GetUserHistoryTripsAsync(int userId);
+
+        /// <summary>
+        /// Get the top ranked discover candidates (excluding the user's own / joined / requested trips)
+        /// </summary>
+        Task<IEnumerable<Entity.Trip.Trip>> GetRecommendationCandidatesAsync(int userId, int take);
 
         /// <summary>
         /// Get trip with all related data (includes members, requests, expenses)

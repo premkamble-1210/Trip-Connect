@@ -41,7 +41,7 @@ namespace APPLICATION_LAYER.Services.Interfaces
         /// <summary>
         /// Search trips by multiple criteria
         /// </summary>
-        Task<IEnumerable<TripResponseDto>> SearchTripsAsync(string location, DateTime? startDate, decimal? maxBudget, string travelType);
+        Task<IEnumerable<TripResponseDto>> SearchTripsAsync(string location, DateTime? startDate, decimal? minBudget, decimal? maxBudget, string travelType, DateTime? endDate);
 
         /// <summary>
         /// Get trips created by user

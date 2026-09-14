@@ -2,6 +2,7 @@ using APPLICATION_LAYER.DTOs.Rating;
 using APPLICATION_LAYER.Services.Interfaces;
 using AutoMapper;
 using DOMAIN_LAYER.Repository;
+using INFRASTRUCTURE_LAYER.Cache;
 using Serilog;
 
 namespace APPLICATION_LAYER.Services.Implementations
@@ -11,12 +12,14 @@ namespace APPLICATION_LAYER.Services.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
+        private readonly ICacheService _cacheService;
 
-        public RatingService(IUnitOfWork unitOfWork, ILogger logger, IMapper mapper)
+        public RatingService(IUnitOfWork unitOfWork, ILogger logger, IMapper mapper, ICacheService cacheService)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _mapper = mapper;
+            _cacheService = cacheService;
         }
 
         public async Task<RatingResponseDto> CreateRatingAsync(CreateRatingDto dto, int userId)
@@ -76,6 +79,9 @@ namespace APPLICATION_LAYER.Services.Implementations
 
                 await _unitOfWork.TripRatings.AddAsync(rating);
                 await _unitOfWork.SaveChangesAsync();
+
+                // Host rating feeds the feed/recommendation quality score
+                await _cacheService.InvalidateByTagAsync("trip:all");
 
                 _logger.Information($"Rating created successfully with ID: {rating.Id}");
 
@@ -267,6 +273,9 @@ namespace APPLICATION_LAYER.Services.Implementations
                 await _unitOfWork.TripRatings.UpdateAsync(rating);
                 await _unitOfWork.SaveChangesAsync();
 
+                // Host rating feeds the feed/recommendation quality score
+                await _cacheService.InvalidateByTagAsync("trip:all");
+
                 _logger.Information($"Rating updated successfully: {ratingId}");
 
                 // Map to response DTO
@@ -305,6 +314,9 @@ namespace APPLICATION_LAYER.Services.Implementations
 
                 await _unitOfWork.TripRatings.DeleteAsync(rating.Id);
                 await _unitOfWork.SaveChangesAsync();
+
+                // Host rating feeds the feed/recommendation quality score
+                await _cacheService.InvalidateByTagAsync("trip:all");
 
                 _logger.Information($"Rating deleted successfully: {ratingId}");
                 return true;

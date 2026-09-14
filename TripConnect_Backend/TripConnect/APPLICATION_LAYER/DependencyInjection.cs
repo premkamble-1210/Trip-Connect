@@ -45,6 +45,7 @@ namespace APPLICATION_LAYER
             services.AddScoped<IExpenseService, ExpenseService>();
             services.AddScoped<IChatService, ChatService>();
             services.AddScoped<IRatingService, RatingService>();
+            services.AddScoped<IRecommendationService, RecommendationService>();
 
             // Register Image Service
             services.AddScoped<IImageService, ImageService>();
